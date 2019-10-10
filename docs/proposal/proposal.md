@@ -63,23 +63,31 @@ writing code and to learn the basic concepts. This would serve as a stepping sto
 ### Justification
 
 > Why/when/where/how will it be useful?
+It will be useful for secondary school students or any student that would want to learn the basics of programming
+in an easy to use language. 
 
 
 ### Programming language(s)
 
 > List the proposed language(s) to be used.
+The languages involved in this project are C++, JAVACC and JAVA
 
 ### Programming tools / Tech stack
 
 > Describe the compiler, database, web server, etc., and any other software tools you plan to use.
+We plan to use javacc to create the programming language. Javacc will allow us to build the compiler needed to create our
+new programming language. We plan to use C++ to build our debugger for our new language. 
 
 ### Hardware
 
 > Describe any non-standard hardware components which will be required.
+There will not be any hardware required for this project.
 
 ### Learning Challenges
 
 > List the main new things (technologies, languages, tools, etc) that you will have to learn.
+The main challenges would be to create a programming language as neither of us have done this before using the javacc language.
+Another challenge would be to create a debugger in C++ which we both have a limited ability in. 
 
 ### Breakdown of work
 
