@@ -9,12 +9,12 @@
 
 |                     |                   |
 |---------------------|-------------------|
-|Project Title:       | xxxxxx            |
-|Student 1 Name:      | xxxxxx            |
-|Student 1 ID:        | xxxxxx            |
+|Project Title:       | First Programming Language            |
+|Student 1 Name:      | Shanan Lynch            |
+|Student 1 ID:        | 14723071            |
 |Student 2 Name:      | xxxxxx            |
 |Student 2 ID:        | xxxxxx            |
-|Project Supervisor:  | xxxxxx            |
+|Project Supervisor:  | David Sinclair            |
 
 > Ensure that the Supervisor formally agrees to supervise your project; this is only recognised once the
 > Supervisor assigns herself/himself via the project Dashboard.
@@ -34,22 +34,36 @@
 ### Introduction
 
 > Describe the general area covered by the project.
+The area we would be covering in this project would be compilers. 
+As we are creating a new programming language we would also be covering making an editor and a debugger.
 
 ### Outline
 
 > Outline the proposed project.
+Our project will be a "First Programming Language". This means that the language we propose to make would be
+for users with no previous programming knowledge. Knowing this we plan to survey educators who are used to
+teaching programming to get insight into the features that would be useful to implement. With this language 
+the users would be able to practise the basic concepts of programming using the editor and debugger built 
+by us.
 
 ### Background
 
 > Where did the ideas come from?
+The idea came from taking David Sinclair's module CA4003 Compiler Construction. While searching through 
+David Sinclair's Undergraduate Project Ideas on his DCU website we came upon "A First Programming Language".
+While discussing the idea with David Sinclair for our project we concluded that we would want the users of
+this language to be secondary school students.
 
 ### Achievements
 
 > What functions will the project provide? Who will the users be?
+The project will provide an easy to use environment for secondary school students to ease themselves into
+writing code and to learn the basic concepts. This would serve as a stepping stone to more complex languages.
 
 ### Justification
 
 > Why/when/where/how will it be useful?
+
 
 ### Programming language(s)
 
