@@ -97,7 +97,7 @@ Another challenge would be to create a debugger in C++ which we both have a limi
 > separate, clearly-defined tasks, and that those responsibilities substantially cover all of the work required
 > for the project.
 > We plan on working on each task concurrently we will be using agile development to create tasks and active sprints.
-> The breakdown of the research below will give both students a comprehensive understanding.
+> The breakdown of the research below will give both students a comprehensive understanding of the overall project.
 
 #### Student 1
 
