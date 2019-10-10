@@ -110,13 +110,3 @@ Another challenge would be to create a debugger in C++ which we both have a limi
 > Student 2 for the time being will be incharge of the research on Compilers and to inform student 1 on the information gathered.
 
 
-## Example
-
-> Example: Here's how you can include images in markdown documents...
-
-<!-- Basically, just use HTML! -->
-
-<p align="center">
-  <img src="./res/cat.png" width="300px">
-</p>
-
