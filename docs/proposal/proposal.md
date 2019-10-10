@@ -12,8 +12,8 @@
 |Project Title:       | First Programming Language            |
 |Student 1 Name:      | Shanan Lynch            |
 |Student 1 ID:        | 14723071            |
-|Student 2 Name:      | xxxxxx            |
-|Student 2 ID:        | xxxxxx            |
+|Student 2 Name:      | Ala Al Din Afana           |
+|Student 2 ID:        | 16395986            |
 |Project Supervisor:  | David Sinclair            |
 
 > Ensure that the Supervisor formally agrees to supervise your project; this is only recognised once the
@@ -96,14 +96,19 @@ Another challenge would be to create a debugger in C++ which we both have a limi
 > It must be clear from the explanation of this breakdown of work both that each student is responsible for
 > separate, clearly-defined tasks, and that those responsibilities substantially cover all of the work required
 > for the project.
+> We plan on working on each task concurrently we will be using agile development to create tasks and active sprints.
+> The breakdown of the research below will give both students a comprehensive understanding.
 
 #### Student 1
 
 > *Student 1 should complete this section.*
+> Student 1 for the time being will be incharge of the research on debuggers and to inform student 2 on the information gathered.
 
 #### Student 2
 
 > *Student 2 should complete this section.*
+> Student 2 for the time being will be incharge of the research on Compilers and to inform student 1 on the information gathered.
+
 
 ## Example
 
