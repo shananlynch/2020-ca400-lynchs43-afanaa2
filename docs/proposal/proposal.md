@@ -53,16 +53,17 @@ by us.
 The idea came from taking David Sinclair's module CA4003 Compiler Construction. While searching through 
 David Sinclair's Undergraduate Project Ideas on his DCU website we came upon "A First Programming Language".
 While discussing the idea with David Sinclair for our project we concluded that we would want the users of
-this language to be programing begginerd, our programing language will have simple understandable syntax and our debugger
-will have precise error codes.
+this language to be beginner programmers, our programing language will have simple understandable syntax and our debugger
+will have more helpful error messages post compilation.
 We plan on having these features in our debugger Resume ,Step-over ,Step-into , Step-out.
 We would like to have a web-app where our users could run and debug code.
 
 ### Achievements
 
 > What functions will the project provide? Who will the users be?
-The project will provide an easy to use web-app for begginer programmer to ease themselves into
-writing code and to learn the basic concepts. This would serve as a stepping stone to more complex languages.
+The project will provide an easy to use web-app to use our beginner programming language for begginer programmers to ease themselves into
+writing code and to learn the basic concepts. This would serve as a stepping stone to more complex languages as it would instill
+basic problem solving skills.
 
 ### Justification
 
@@ -82,7 +83,8 @@ The languages involved in this project are JAVACC JAVA, GOLANG or RUST ,JAVA SCR
 
 > Describe the compiler, database, web server, etc., and any other software tools you plan to use.
 We plan to use javacc to create the programming language. Javacc will allow us to build the compiler needed to create our
-new programming language. We plan to use GOLANG or RUST to build our debugger for our new language. 
+new programming language. We plan to use GOLANG or RUST to build our debugger for our new language.
+We will use javascript and AngularJs to build our front end for our web application.
 
 ### Hardware
 
