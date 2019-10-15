@@ -34,8 +34,9 @@
 ### Introduction
 
 > Describe the general area covered by the project.
-The area we would be covering in this project would be compilers. 
-As we are creating a new programming language we would also be covering making an editor and a debugger.
+The area we would be covering in this project would be compilers and Programing languages.
+As we are creating a new programming language we would also be making a debugger, 
+our programing language will be mainly aimed at beginner programmers.
 
 ### Outline
 
@@ -52,31 +53,36 @@ by us.
 The idea came from taking David Sinclair's module CA4003 Compiler Construction. While searching through 
 David Sinclair's Undergraduate Project Ideas on his DCU website we came upon "A First Programming Language".
 While discussing the idea with David Sinclair for our project we concluded that we would want the users of
-this language to be secondary school students.
+this language to be programing begginerd, our programing language will have simple understandable syntax and our debugger
+will have precise error codes.
+We plan on having these features in our debugger Resume ,Step-over ,Step-into , Step-out.
+We would like to have a web-app where our users could run and debug code.
 
 ### Achievements
 
 > What functions will the project provide? Who will the users be?
-The project will provide an easy to use environment for secondary school students to ease themselves into
+The project will provide an easy to use web-app for begginer programmer to ease themselves into
 writing code and to learn the basic concepts. This would serve as a stepping stone to more complex languages.
 
 ### Justification
 
 > Why/when/where/how will it be useful?
-It will be useful for secondary school students or any student that would want to learn the basics of programming
-in an easy to use language. 
+It will be useful for beginner programmers that want an easy understandable language to begin their programming journey.
+Through our personal experiences learning programming languages from the beginning. We found ourselves falling over certain hurdles.
+These hurdles would include the mathematical language used in the syntax. We would hope this language would feel more accessible
+to people with little computing knowledge. 
 
 
 ### Programming language(s)
 
 > List the proposed language(s) to be used.
-The languages involved in this project are C++, JAVACC and JAVA
+The languages involved in this project are JAVACC JAVA, GOLANG or RUST ,JAVA SCRIPT and ANGULAR
 
 ### Programming tools / Tech stack
 
 > Describe the compiler, database, web server, etc., and any other software tools you plan to use.
 We plan to use javacc to create the programming language. Javacc will allow us to build the compiler needed to create our
-new programming language. We plan to use C++ to build our debugger for our new language. 
+new programming language. We plan to use GOLANG or RUST to build our debugger for our new language. 
 
 ### Hardware
 
@@ -86,8 +92,13 @@ There will not be any hardware required for this project.
 ### Learning Challenges
 
 > List the main new things (technologies, languages, tools, etc) that you will have to learn.
-The main challenges would be to create a programming language as neither of us have done this before using the javacc language.
-Another challenge would be to create a debugger in C++ which we both have a limited ability in. 
+
+1. Creating and designing our grammar for our programming language.
+2. Connecting the front end with the back end for with the api contracts
+3. Designing and implementing a debugger using Golang or Rust
+4. Creating a Web Application using javascript and AngularJS
+5. Integrating the linux virtual machine in our server
+
 
 ### Breakdown of work
 
@@ -96,17 +107,20 @@ Another challenge would be to create a debugger in C++ which we both have a limi
 > It must be clear from the explanation of this breakdown of work both that each student is responsible for
 > separate, clearly-defined tasks, and that those responsibilities substantially cover all of the work required
 > for the project.
-> We plan on working on each task concurrently we will be using agile development to create tasks and active sprints.
-> The breakdown of the research below will give both students a comprehensive understanding of the overall project.
+> The main tasks for this project would be designing the programming language, the back end server with the linux virtual machine
+and the front end with the online editor and the debugger. 
+>
 
 #### Student 1
 
 > *Student 1 should complete this section.*
-> Student 1 for the time being will be incharge of the research on debuggers and to inform student 2 on the information gathered.
+> Student 1 will be tasked with doing the back end of the web app and a collaboration with student number 2 on the design and the
+making of the programming language
 
 #### Student 2
 
 > *Student 2 should complete this section.*
-> Student 2 for the time being will be incharge of the research on Compilers and to inform student 1 on the information gathered.
+> Student 2 will be tasked with doing the front end of the web app and a collaboration with student number 1 on the design and the
+making of the programming language
 
 
