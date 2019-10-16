@@ -109,20 +109,37 @@ There will not be any hardware required for this project.
 > It must be clear from the explanation of this breakdown of work both that each student is responsible for
 > separate, clearly-defined tasks, and that those responsibilities substantially cover all of the work required
 > for the project.
-> The main tasks for this project would be designing the programming language, the back end server with the linux virtual machine
-and the front end with the online editor and the debugger. 
->
+
+The main tasks for this project would be: 
+1. Creating the grammar for the programming language 1
+2. Lexical analysis 2
+3. Syntax analysis 1
+4. Semantic analysis 2
+5. Debugger : Resume 1
+6. Debugger : Step Over 2
+7. Debugger : Step into 1
+8. Debugger : Step out 2
+9. UI Design for the web application 1
+10. Connecting AWS virtual machine to the api calls 1+2
+11. Making the API 2
+12. Making the IDE on the web app for the programming language 1
+
 
 #### Student 1
 
 > *Student 1 should complete this section.*
-> Student 1 will be tasked with doing the back end of the web app and a collaboration with student number 2 on the design and the
-making of the programming language
+
+Student 1 will be tasked creating the grammar for the programming language, syntax analysis for the language, the Resume and Step into button on the debugger,
+the design for the UI on the web application, making the IDE on the Web Application. And student 1 will work with student 2 on connecting the api to the
+linux virtual machine on aws
 
 #### Student 2
 
 > *Student 2 should complete this section.*
-> Student 2 will be tasked with doing the front end of the web app and a collaboration with student number 1 on the design and the
-making of the programming language
+
+Student 2 will be tasked with doing the lexical analysis, the semantic analysis, the Step Over and Step Out button on the debugger,
+making the api and making the virtual machine work on the aws server. And student 2 will work with student 1 on connecting the api to the
+linux virtual machine on aws
+
 
 
