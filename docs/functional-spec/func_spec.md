@@ -80,6 +80,7 @@ It is important to remember the capabilities of our target audience, and how our
 
 ## 1.3 Glossary
 Acronym | Meaning
+----|----
 **JAVACC** | JAVA Compiler Compiler (JAVACC ) is a parser generator, JAVACC could be downloaded from the official Javacc website.
 **AWS** | Amazon Web Services is a subsidiary of Amazon that provides on-demand cloud computing platforms and APIs to individuals. 
 **Mona** | The name of our programing language inspired by the painting Mona Lisa by Leonardo Di Vinci, We decided on this name because Leonardo Di Vinci was a polymath with work that will last decades,The name is also  short and unique, this is similar to how Guido van Rossum derived the name python from “Monty Python's Flying Cir
