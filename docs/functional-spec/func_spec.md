@@ -64,4 +64,10 @@ Program debugging can often be the most tiresome, expensive and unpredictable ph
 
 The target of Our programming language is simplicity in the design of the language. A complicated language design has many side effects , as we complicate the design we cannot evaluate the consequences of our design decisions. But the main beneficiary of simplicity is the target user of the language.
 While our goal is simplicity we have to take into account that our intentions are to provide a programming platform that will introduce a novice to programming. 
+
+Designing a language that has simple syntax for example python can negatively impact the programmer transitioning into a more complex designed language. 
+It can be argued that a novice who learns to program in c++ will have little difficulty coming into java or any other language.
+It is also unreasonable for a novice programmer to learn languages that are designed for commercial use by experienced commercial programmers.
+The development environments that they use often designed for commercial programming and contain features beyond a novices comprehension.
+
  
