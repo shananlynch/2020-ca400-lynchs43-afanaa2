@@ -76,5 +76,4 @@ Our programming design will be highly influenced by the design of python, java, 
 Tony Jenkins)
 
 _Accessibility_
-
 It is important to remember the capabilities of our target audience, and how our platform can be accessed. Taking this into account we decided to tackle the compilation of the language through a web application. With this approach the novice programmer (the target audience) will be able to start programming out of the box. This means the user will not be required to follow a step by step guide on how to install the language on their computer. As long as the user has access to a browser they will be able to program. Since the user will be programming on this web application we will have a debugger to accompany the compiler. This debugger will allow to programmer to step through their code and see how the code works. We feel that this will be a critical part of the project. As our target audience are novice programmers, giving them the ability to see the flow of how the program works will be vital to speed of which the programmers will learn.
