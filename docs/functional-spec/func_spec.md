@@ -77,3 +77,9 @@ Tony Jenkins)
 
 __Accessibility__
 It is important to remember the capabilities of our target audience, and how our platform can be accessed. Taking this into account we decided to tackle the compilation of the language through a web application. With this approach the novice programmer (the target audience) will be able to start programming out of the box. This means the user will not be required to follow a step by step guide on how to install the language on their computer. As long as the user has access to a browser they will be able to program. Since the user will be programming on this web application we will have a debugger to accompany the compiler. This debugger will allow to programmer to step through their code and see how the code works. We feel that this will be a critical part of the project. As our target audience are novice programmers, giving them the ability to see the flow of how the program works will be vital to speed of which the programmers will learn.
+
+## 1.3 Glossary
+Acronym | Meaning
+**JAVACC** | JAVA Compiler Compiler (JAVACC ) is a parser generator, JAVACC could be downloaded from the official Javacc website.
+**AWS** | Amazon Web Services is a subsidiary of Amazon that provides on-demand cloud computing platforms and APIs to individuals. 
+**Mona** | The name of our programing language inspired by the painting Mona Lisa by Leonardo Di Vinci, We decided on this name because Leonardo Di Vinci was a polymath with work that will last decades,The name is also  short and unique, this is similar to how Guido van Rossum derived the name python from “Monty Python's Flying Cir
