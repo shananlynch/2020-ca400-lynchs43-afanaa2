@@ -116,5 +116,5 @@ The Objective of the software is to introduce the user to, programming , debuggi
 
 *__Return Error__: Stands for the possibility that an error can return from the running of the code.*
 
-<img style="margin: 0 auto;" src="Images/UseCaseDiagram.png">
+<img style="margin: 100 auto;" src="Images/UseCaseDiagram.png">
 
