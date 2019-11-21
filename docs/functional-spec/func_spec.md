@@ -100,7 +100,7 @@ The software will provide the users an easy to access programming environment wh
 The Objective of the software is to introduce the user to, programming , debugging, and IDEs.
 
 ## 2.3 operational scenarios
-__Click on Documentation__: This allows the user to download the documentation for the manual and of the editor / debugger. And also the documentation on the programming language Mona.
+*__Click on Documentation__: This allows the user to download the documentation for the manual and of the editor / debugger. And also the documentation on the programming language Mona.*
 __Click Run__: This will run the code that is currently displayed on the editor.
 __Step Over__: This will step over to the next line and over loops to run the current lines while stopping on the next one.
 __Step Into__: This will step into a loop/function/class to see what the data structures are doing and stop on the next line
