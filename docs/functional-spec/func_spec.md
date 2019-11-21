@@ -72,3 +72,5 @@ The development environments that they use often designed for commercial program
 
 <img style="margin: 0 auto;" src="Images/difference.jpg">
  
+Our programming design will be highly influenced by the design of python, java, c and c++ , by taking features from each of them we can design a first programming language that can be easily transitioned to and from any language.(The First Language - A Case for Python?
+Tony Jenkins)
