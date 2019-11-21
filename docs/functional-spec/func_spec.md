@@ -70,5 +70,5 @@ It can be argued that a novice who learns to program in c++ will have little dif
 It is also unreasonable for a novice programmer to learn languages that are designed for commercial use by experienced commercial programmers.
 The development environments that they use often designed for commercial programming and contain features beyond a novices comprehension.
 
-<img style="margin: 0 auto;" src="images/diffrence.jpg">
+<img style="margin: 0 auto;" src="Images/diffrence.jpg">
  
