@@ -93,5 +93,5 @@ Acronym | Meaning
 ## 2.1 	product system functions
 The functionality of this product will be to give an alternative programming language to novice programmers. The way in which our product does this is to provide the user with an online editor and debugger to use Mona. The user will be able to create programmes in this web application interface to learn the various basic concepts that are included in a programming language. The functions this web application will be able to do is compile the Mona programming language, and be able to debug the code using the debugger on this application.
 ## 2.2 user characteristics and objectives
-<img style="margin: 0 auto;" src="Images/Population.jpg">
+<img style="margin: 0 auto;" src="Images/Population.png">
 
