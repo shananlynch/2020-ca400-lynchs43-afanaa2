@@ -95,3 +95,8 @@ The functionality of this product will be to give an alternative programming lan
 ## 2.2 user characteristics and objectives
 <img style="margin: 0 auto;" src="Images/Population.png">
 
+The user community consists of a wide demographic audience. The United States has the largest population of  software developers in the world it is estimated that india will overtake the US in 2023. China also has the highest growth rate at 6 %. This illustrates the importance of programing languages. It is safe to say that the user community will have a basic understanding in software technology, users must know how to use a computer and surf the web.
+The software will provide the users an easy to access programming environment which will allow them to learn and develop code, It will also allow them to transition into commercial based programming languages such as c++ and Java.
+The Objective of the software is to introduce the user to, programming , debugging, and IDEs.
+
+
