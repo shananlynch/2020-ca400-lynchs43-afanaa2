@@ -13,7 +13,11 @@ __
 * [1. Introduction](#1-introduction)
   * [1.1 Overview](#11-overview)
   * [1.2 Glossary](#13-glossary)
-
+* [2. General description](#2-General-description)
+  * [2.1 Product system functions](#21-product-system-functions)
+  * [2.2 User characteristics and objectives](#22-user-characteristics-and-objectives)
+  * [2.3 Operational scenarios ](#23-operational-scenarios)
+  * [2.4 Constraints](#24-constraints)
 
 
 
@@ -83,4 +87,9 @@ Acronym | Meaning
 ----|----
 **JAVACC** | JAVA Compiler Compiler (JAVACC ) is a parser generator, JAVACC could be downloaded from the official Javacc website.
 **AWS** | Amazon Web Services is a subsidiary of Amazon that provides on-demand cloud computing platforms and APIs to individuals. 
-**Mona** | The name of our programing language inspired by the painting Mona Lisa by Leonardo Di Vinci, We decided on this name because Leonardo Di Vinci was a polymath with work that will last decades,The name is also  short and unique, this is similar to how Guido van Rossum derived the name python from “Monty Python's Flying Cir
+**Mona** | The name of our programing language inspired by the painting Mona Lisa by Leonardo Di Vinci, We decided on this name because Leonardo Di Vinci was a polymath with work that will last decades,The name is also  short and unique, this is similar to how Guido van Rossum derived the name python from “Monty Python's Flying Circus"
+
+## 2 General description
+## 2.1 	product system functions
+The functionality of this product will be to give an alternative programming language to novice programmers. The way in which our product does this is to provide the user with an online editor and debugger to use Mona. The user will be able to create programmes in this web application interface to learn the various basic concepts that are included in a programming language. The functions this web application will be able to do is compile the Mona programming language, and be able to debug the code using the debugger on this application.
+
