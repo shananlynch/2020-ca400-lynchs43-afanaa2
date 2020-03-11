@@ -1,0 +1,342 @@
+/*******************************
+***** SECTION 1 - OPTIONS *****
+*******************************/
+
+options { JAVA_UNICODE_ESCAPE = true; }
+
+/*********************************
+***** SECTION 2 - USER CODE *****
+*********************************/
+
+PARSER_BEGIN(mona)
+
+public class mona{
+
+        public static void main(String args []){
+
+                mona mona_parser;
+                if(args.length == 0){
+                        // reading input from the command line (used for testing purposes)
+                        System.out.println("Reading from standard input . . .");
+                        mona_parser = new mona(System.in);
+                }
+                else if(args.length == 1){
+                        // taking in mona file as an argument as per assignment specification
+                        try{
+                                mona_parser = new mona(new java.io.FileInputStream(args[0]));
+                        }
+                        catch(java.io.FileNotFoundException e){
+                                System.err.println("File " + args[0] + " not found.");
+				return;
+                        }
+                }
+
+                else{
+                        System.out.println("mona:  Usage is one of:");
+			System.out.println("java mona < inputfile");
+			System.out.println("OR");
+			System.out.println("java mona inputfile");
+			return;
+                }
+
+                try{
+                        mona_parser.program(); // monaling the parser on start state
+                        int i = 1;
+                        while(getNextToken().kind  != EOF){
+                        System.out.println("TOKEN parsed successfully TOKEN =" +getToken(0).image); // success message
+                        i++;
+                   }
+                   System.out.println("mona Parser: mona program parsed successfully."); // success message
+
+
+
+                } catch (ParseException e){
+                        System.out.println(e.getMessage()); // catching error
+                        System.out.println("mona Parser:  Encountered errors during parse."); // failure message
+                }
+
+
+        }
+}
+
+PARSER_END(mona)
+
+
+/*****************************************
+***** SECTION 3 - TOKEN DEFINITIONS *****
+*****************************************/
+
+TOKEN_MGR_DECLS :
+{
+     static int commentNesting = 0;
+}
+SKIP : /*** Ignoring spaces/tabs/newlines ***/
+{
+     " "
+     | "\t"
+     | "\n"
+     | "\r"
+     | "\f"
+}
+SKIP : /* COMMENTS */
+{
+     "/*" { commentNesting++; } : IN_COMMENT
+     |< "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n") >
+}
+
+<IN_COMMENT> SKIP :
+{
+     "/*" { commentNesting++; }
+     | "*/" { commentNesting--;
+          if (commentNesting == 0)
+               SwitchTo(DEFAULT);
+          }
+     | <~[]>
+}
+
+TOKEN [IGNORE_CASE] : /* Reserved Words */
+{ // TOKENS FOR NOW
+     < VAR : "var" >
+     | < CONST : "const" >
+     | < RETURN : "return" >
+     | < CLASS : "class" >
+     | < INT : "int" >
+     | < BOOL : "bool" >
+     | < VOID : "void" >
+     | < MAIN : "main" >
+     | < BREAK : "break" >
+     | < IF : "if" >
+     | < ELSE : "else" >
+     | < ELSEIF : "else_if" >
+     | < EXCEPT : "except" >
+     | < NOT : "not" >
+     | < print : "print" >
+     | < IN : "in" >
+     | < TRUE : "true" >
+     | < FALSE : "false" >
+     | < WHILE : "while" >
+     | < FOR : "for" >
+     | < STRING : "string" >
+     | < SKIP_mona : "skip" >
+}
+TOKEN: /*Punctuation*/
+{
+     < COMMA : "," >
+     | < SEMIC : ";" >
+     | < COLON : ":" >
+     | < LCBR : "{" >
+     | < RCBR : "}" >
+     | < LBR : "(" >
+     | < RBR : ")" >
+     | < LSBR : "[" >
+     | < RSBR : "]" >
+}
+
+
+TOKEN: /*Operators */
+{
+     < ASSIGN : "=" >
+     | < PLUS_SIGN :  "+" >
+     | < MINUS_SIGN : "-" >
+     | < LOG_NEG : "~" >
+     | < OR : "||" >
+     | < AND : "&&" >
+     | < EQUAL : "==" >
+     | < NOT_EQUAL : "!=" >
+     | < LESS_THAN : "<" >
+     | < LESS_THAN_OR_EQUAL : "<=" >
+     | < GREATER_THAN : ">" >
+     | < GREATER_THAN_OR_EQUAL : ">=" >
+}
+
+TOKEN: /* integers and identifiers */
+{
+      <#DIGIT: ["0"-"9"] >
+     | <#CHAR: ["a"-"z"]|["A"-"Z"] >
+     | < NUM : ( <MINUS_SIGN> )?(( ["1"-"9"])+( <DIGIT> )*|"0") >
+     | < FLOAT : <NUM> "." (<DIGIT>)* | "." (<DIGIT>)+ >
+     |<IDENTIFIER: (<CHAR>|"_") ( <CHAR>|"_"|<DIGIT> )* >
+}
+/*TOKEN: { <OPEN_STRING: "\"">: STRING }
+<STRING> TOKEN: { <STRING_BODY: ("\\\\" | "\\\"" | ~["\"", "\\"])+> }
+<STRING> TOKEN: { <CLOSE_STRING: "\"">: DEFAULT }*/
+TOKEN: { <QUOTED_STRING: "\"" (~["\"", "\\"] | "\\\"" | "\\\\")* "\"" > }
+
+
+
+
+
+
+
+/**********************************************
+* SECTION 4 - THE GRAMMAR & PRODUCTION RULES *
+***********************************************/
+
+
+void program() : {}
+{
+     decl_list() function_list() main()
+}
+
+void decl_list() : {}
+{
+     (decl() <SEMIC> decl_list()
+     | {})
+}
+
+void decl() : {}
+{
+     var_decl() | const_decl()
+}
+
+void var_decl() : {}
+{
+      type() <IDENTIFIER> (<ASSIGN> expression() | {})
+}
+
+void const_decl() : {}
+{
+     <CONST> type() <ASSIGN> expression()
+}
+
+void function_list() : {}
+{
+     function() function_list() | {}
+}
+
+void function() : {}
+{
+     type() <IDENTIFIER> <LBR> parameter_list() <RBR>
+     <LCBR>
+     decl_list()
+     statement_block()
+     <RETURN> <LBR> (expression() | {}) <RBR> <SEMIC>
+     <RCBR>
+}
+
+void type() : {}
+{
+     <INT> | <BOOL> | <VOID> | <STRING> | <LSBR> type() <RSBR> | <FLOAT>
+}
+
+void parameter_list() : {}
+{
+     nemp_parameter_list() | {}
+}
+
+void nemp_parameter_list() : {}
+{
+     <IDENTIFIER> <COLON> type() (<COMMA> nemp_parameter_list() | {}  )
+}
+
+void main() :{}
+{
+     <MAIN> <LCBR>
+     decl_list()
+     statement_block()
+     <RCBR>
+}
+
+void statement_block() : {}
+{
+     statement() statement_block() | {}
+}
+
+void statement() : {}
+{
+     <IDENTIFIER> statement_Left_factor_IDENTIFIER()
+     | <LCBR> statement_block() <RCBR>
+     | <IF> condition() <LCBR> statement_block() <RCBR>
+     <ELSE> <LCBR> statement_block() <RCBR>
+     | <WHILE> condition() <LCBR> statement_block() <RCBR>
+     |<SKIP_mona> <SEMIC>
+}
+
+void statement_Left_factor_IDENTIFIER() : {}
+{
+    <ASSIGN> expression() <SEMIC> |  <LBR> arg_list() <RBR> <SEMIC>
+}
+
+
+void expression() : {}
+{
+     fragment() (binary_arith_op() fragment() | {})
+     | <LBR> expression() <RBR> | array() | dictionary()
+}
+
+void binary_arith_op() : {}
+{
+     <PLUS_SIGN> | <MINUS_SIGN>
+}
+
+
+void fragment() : {}
+{
+     (
+          (<MINUS_SIGN> | {} ) <IDENTIFIER> ( <LBR> arg_list() <RBR> | {} )
+          | <NUM> | <TRUE> | <FALSE>
+     )
+     fragmentPrime()
+}
+
+void fragmentPrime() : {}
+{
+     binary_arith_op() expression() fragmentPrime() | {}
+}
+void condition() : {}
+{
+     (
+          <LOG_NEG> condition()
+          |  <LBR> condition() <RBR>
+          | fragment() comp_op() expression()
+     )
+     conditionPrime()
+}
+
+void conditionPrime() : {}
+{
+    (<AND> | <OR>) condition() conditionPrime() | {}
+}
+
+
+void comp_op() : {}
+{
+     <EQUAL> | <NOT_EQUAL> | <LESS_THAN>
+     | <LESS_THAN_OR_EQUAL> | <GREATER_THAN>
+     | <GREATER_THAN_OR_EQUAL>
+}
+
+void arg_list() : {}
+{
+     nemp_arg_list() | {}
+}
+
+void nemp_arg_list() : {}
+{
+      <IDENTIFIER> (<COMMA> nemp_arg_list() | {})
+}
+
+
+void array () : {} {
+    <LSBR> (element() | {}) <RSBR>
+}
+
+void element () : {}{
+    ( < QUOTED_STRING > | <NUM> )(<COMMA> element() | {} )
+}
+
+void dictionary () : {} {
+    <LCBR>d_structure()<RCBR>
+}
+
+void values() : {} {
+    (<IDENTIFIER> | <FLOAT> | <QUOTED_STRING> | <NUM> )
+}
+
+void d_structure () : {} {
+    (values() <COLON> (values() | array() )) (<COMMA> d_structure() | {} )
+}
+
+void class_deff () : {} {
+    <CLASS> <IDENTIFIER> <LCBR> decl_list()  function_list() <RCBR>
+}
