@@ -1,0 +1,7 @@
+dict dict_test(dict a){
+    a = {"a" : "b" , 1 : "a", 1.2 : [1,2,3,4] } ;
+    return(a);
+}
+main{
+    array_test({"a" : "b" , 1 : "a" });
+}

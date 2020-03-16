@@ -61,7 +61,6 @@ public class mona implements monaConstants {
     case VAR:
     case CONST:
       decl();
-      jj_consume_token(SEMIC);
       decl_list();
       break;
     default:
@@ -98,13 +97,16 @@ public class mona implements monaConstants {
       jj_la1[2] = jj_gen;
 
     }
+    jj_consume_token(SEMIC);
   }
 
   static final public void const_decl() throws ParseException {
     jj_consume_token(CONST);
     type();
+    jj_consume_token(IDENTIFIER);
     jj_consume_token(ASSIGN);
     expression();
+    jj_consume_token(SEMIC);
   }
 
   static final public void function_list() throws ParseException {
@@ -134,27 +136,16 @@ public class mona implements monaConstants {
     jj_consume_token(LCBR);
     decl_list();
     statement_block();
+    return_();
+    jj_consume_token(RCBR);
+  }
+
+  static final public void return_() throws ParseException {
     jj_consume_token(RETURN);
     jj_consume_token(LBR);
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case TRUE:
-    case FALSE:
-    case LCBR:
-    case LBR:
-    case LSBR:
-    case MINUS_SIGN:
-    case NUM:
-    case IDENTIFIER:
-    case QUOTED_STRING:
-      return_list();
-      break;
-    default:
-      jj_la1[4] = jj_gen;
-
-    }
+    return_list();
     jj_consume_token(RBR);
     jj_consume_token(SEMIC);
-    jj_consume_token(RCBR);
   }
 
   static final public void return_list() throws ParseException {
@@ -165,7 +156,7 @@ public class mona implements monaConstants {
       return_list();
       break;
     default:
-      jj_la1[5] = jj_gen;
+      jj_la1[4] = jj_gen;
 
     }
   }
@@ -196,7 +187,7 @@ public class mona implements monaConstants {
       jj_consume_token(DICT);
       break;
     default:
-      jj_la1[6] = jj_gen;
+      jj_la1[5] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -216,7 +207,7 @@ public class mona implements monaConstants {
       nemp_parameter_list();
       break;
     default:
-      jj_la1[7] = jj_gen;
+      jj_la1[6] = jj_gen;
 
     }
   }
@@ -240,7 +231,7 @@ public class mona implements monaConstants {
       jj_consume_token(QUOTED_STRING);
       break;
     default:
-      jj_la1[8] = jj_gen;
+      jj_la1[7] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -250,7 +241,7 @@ public class mona implements monaConstants {
       nemp_parameter_list();
       break;
     default:
-      jj_la1[9] = jj_gen;
+      jj_la1[8] = jj_gen;
 
     }
   }
@@ -265,8 +256,12 @@ public class mona implements monaConstants {
 
   static final public void statement_block() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case VAR:
+    case CONST:
+    case BREAK:
     case IF:
     case WHILE:
+    case FOR:
     case SKIP_mona:
     case LCBR:
     case IDENTIFIER:
@@ -274,7 +269,7 @@ public class mona implements monaConstants {
       statement_block();
       break;
     default:
-      jj_la1[10] = jj_gen;
+      jj_la1[9] = jj_gen;
 
     }
   }
@@ -295,11 +290,35 @@ public class mona implements monaConstants {
       condition();
       jj_consume_token(LCBR);
       statement_block();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case RETURN:
+        return_();
+        break;
+      default:
+        jj_la1[10] = jj_gen;
+
+      }
       jj_consume_token(RCBR);
-      jj_consume_token(ELSE);
-      jj_consume_token(LCBR);
-      statement_block();
-      jj_consume_token(RCBR);
+      else_if_list();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case ELSE:
+        jj_consume_token(ELSE);
+        jj_consume_token(LCBR);
+        statement_block();
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case RETURN:
+          return_();
+          break;
+        default:
+          jj_la1[11] = jj_gen;
+
+        }
+        jj_consume_token(RCBR);
+        break;
+      default:
+        jj_la1[12] = jj_gen;
+
+      }
       break;
     case WHILE:
       jj_consume_token(WHILE);
@@ -308,14 +327,82 @@ public class mona implements monaConstants {
       statement_block();
       jj_consume_token(RCBR);
       break;
+    case FOR:
+      jj_consume_token(FOR);
+      jj_consume_token(LBR);
+      jj_consume_token(IDENTIFIER);
+      jj_consume_token(IN);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case NUM:
+      case FLOAT:
+      case IDENTIFIER:
+      case QUOTED_STRING:
+        values();
+        break;
+      case LCBR:
+        dictionary();
+        break;
+      case LSBR:
+        array();
+        break;
+      default:
+        jj_la1[13] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      jj_consume_token(RBR);
+      jj_consume_token(LCBR);
+      statement_block();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case RETURN:
+        return_();
+        break;
+      default:
+        jj_la1[14] = jj_gen;
+
+      }
+      jj_consume_token(RCBR);
+      break;
     case SKIP_mona:
       jj_consume_token(SKIP_mona);
       jj_consume_token(SEMIC);
       break;
+    case VAR:
+    case CONST:
+      decl();
+      break;
+    case BREAK:
+      jj_consume_token(BREAK);
+      jj_consume_token(SEMIC);
+      break;
     default:
-      jj_la1[11] = jj_gen;
+      jj_la1[15] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
+    }
+  }
+
+  static final public void else_if_list() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ELSEIF:
+      jj_consume_token(ELSEIF);
+      condition();
+      jj_consume_token(LCBR);
+      statement_block();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case RETURN:
+        return_();
+        break;
+      default:
+        jj_la1[16] = jj_gen;
+
+      }
+      jj_consume_token(RCBR);
+      else_if_list();
+      break;
+    default:
+      jj_la1[17] = jj_gen;
+
     }
   }
 
@@ -333,7 +420,7 @@ public class mona implements monaConstants {
       jj_consume_token(SEMIC);
       break;
     default:
-      jj_la1[12] = jj_gen;
+      jj_la1[18] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -359,7 +446,7 @@ public class mona implements monaConstants {
         fragment();
         break;
       default:
-        jj_la1[13] = jj_gen;
+        jj_la1[19] = jj_gen;
 
       }
       break;
@@ -375,7 +462,7 @@ public class mona implements monaConstants {
       dictionary();
       break;
     default:
-      jj_la1[14] = jj_gen;
+      jj_la1[20] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -402,7 +489,7 @@ public class mona implements monaConstants {
       jj_consume_token(MOD);
       break;
     default:
-      jj_la1[15] = jj_gen;
+      jj_la1[21] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -417,7 +504,7 @@ public class mona implements monaConstants {
         jj_consume_token(MINUS_SIGN);
         break;
       default:
-        jj_la1[16] = jj_gen;
+        jj_la1[22] = jj_gen;
 
       }
       jj_consume_token(IDENTIFIER);
@@ -428,7 +515,7 @@ public class mona implements monaConstants {
         jj_consume_token(RBR);
         break;
       default:
-        jj_la1[17] = jj_gen;
+        jj_la1[23] = jj_gen;
 
       }
       break;
@@ -445,7 +532,7 @@ public class mona implements monaConstants {
       jj_consume_token(QUOTED_STRING);
       break;
     default:
-      jj_la1[18] = jj_gen;
+      jj_la1[24] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -465,7 +552,7 @@ public class mona implements monaConstants {
       fragmentPrime();
       break;
     default:
-      jj_la1[19] = jj_gen;
+      jj_la1[25] = jj_gen;
 
     }
   }
@@ -492,7 +579,7 @@ public class mona implements monaConstants {
       expression();
       break;
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[26] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -511,7 +598,7 @@ public class mona implements monaConstants {
         jj_consume_token(OR);
         break;
       default:
-        jj_la1[21] = jj_gen;
+        jj_la1[27] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -519,7 +606,7 @@ public class mona implements monaConstants {
       conditionPrime();
       break;
     default:
-      jj_la1[22] = jj_gen;
+      jj_la1[28] = jj_gen;
 
     }
   }
@@ -545,7 +632,7 @@ public class mona implements monaConstants {
       jj_consume_token(GREATER_THAN_OR_EQUAL);
       break;
     default:
-      jj_la1[23] = jj_gen;
+      jj_la1[29] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -553,6 +640,7 @@ public class mona implements monaConstants {
 
   static final public void arg_list() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case LCBR:
     case LSBR:
     case NUM:
     case IDENTIFIER:
@@ -560,7 +648,7 @@ public class mona implements monaConstants {
       nemp_arg_list();
       break;
     default:
-      jj_la1[24] = jj_gen;
+      jj_la1[30] = jj_gen;
 
     }
   }
@@ -579,8 +667,11 @@ public class mona implements monaConstants {
     case LSBR:
       array();
       break;
+    case LCBR:
+      dictionary();
+      break;
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[31] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -590,7 +681,7 @@ public class mona implements monaConstants {
       nemp_arg_list();
       break;
     default:
-      jj_la1[26] = jj_gen;
+      jj_la1[32] = jj_gen;
 
     }
   }
@@ -603,7 +694,7 @@ public class mona implements monaConstants {
       element();
       break;
     default:
-      jj_la1[27] = jj_gen;
+      jj_la1[33] = jj_gen;
 
     }
     jj_consume_token(RSBR);
@@ -618,7 +709,7 @@ public class mona implements monaConstants {
       jj_consume_token(NUM);
       break;
     default:
-      jj_la1[28] = jj_gen;
+      jj_la1[34] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -628,7 +719,7 @@ public class mona implements monaConstants {
       element();
       break;
     default:
-      jj_la1[29] = jj_gen;
+      jj_la1[35] = jj_gen;
 
     }
   }
@@ -654,7 +745,7 @@ public class mona implements monaConstants {
       jj_consume_token(NUM);
       break;
     default:
-      jj_la1[30] = jj_gen;
+      jj_la1[36] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -674,7 +765,7 @@ public class mona implements monaConstants {
       array();
       break;
     default:
-      jj_la1[31] = jj_gen;
+      jj_la1[37] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -684,7 +775,7 @@ public class mona implements monaConstants {
       d_structure();
       break;
     default:
-      jj_la1[32] = jj_gen;
+      jj_la1[38] = jj_gen;
 
     }
   }
@@ -708,7 +799,7 @@ public class mona implements monaConstants {
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[33];
+  static final private int[] jj_la1 = new int[39];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -718,13 +809,13 @@ public class mona implements monaConstants {
       jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x1800,0x1800,0x0,0x138000,0x30000000,0x0,0x138000,0x138000,0x138000,0x0,0x40200000,0x40200000,0x0,0x0,0x30000000,0x0,0x0,0x0,0x30000000,0x0,0x30000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_0 = new int[] {0x1800,0x1800,0x0,0x138000,0x0,0x138000,0x138000,0x138000,0x0,0xc0281800,0x2000,0x2000,0x400000,0x0,0x2000,0xc0281800,0x2000,0x800000,0x0,0x0,0x30000000,0x0,0x0,0x0,0x30000000,0x0,0x30000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x800,0x40000201,0xa00022a0,0x4,0x40000201,0x60000201,0x60000201,0x4,0x80000022,0x80000022,0x880,0x3f000,0xa00022a0,0x3f000,0x2000,0x80,0xa0002000,0x3f000,0xa0042080,0x180000,0x180000,0x7e00000,0xa0000200,0xa0000200,0x4,0x20000000,0x20000000,0x4,0xe0000000,0xe0000200,0x4,};
+      jj_la1_1 = new int[] {0x0,0x0,0x800,0x40000201,0x4,0x40000201,0x60000201,0x60000201,0x4,0x80000022,0x0,0x0,0x0,0xe0000220,0x0,0x80000022,0x0,0x0,0x880,0x3f000,0xa00022a0,0x3f000,0x2000,0x80,0xa0002000,0x3f000,0xa0042080,0x180000,0x180000,0x7e00000,0xa0000220,0xa0000220,0x4,0x20000000,0x20000000,0x4,0xe0000000,0xe0000200,0x4,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x1,0x1,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x1,0x0,0x1,0x0,0x0,0x0,0x1,0x1,0x0,0x1,0x1,0x0,0x1,0x1,0x0,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x1,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x1,0x0,0x1,0x0,0x0,0x0,0x1,0x1,0x0,0x1,0x1,0x0,0x1,0x1,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -745,7 +836,7 @@ public class mona implements monaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -759,7 +850,7 @@ public class mona implements monaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -776,7 +867,7 @@ public class mona implements monaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -786,7 +877,7 @@ public class mona implements monaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -802,7 +893,7 @@ public class mona implements monaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -811,7 +902,7 @@ public class mona implements monaConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 39; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -867,7 +958,7 @@ public class mona implements monaConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 33; i++) {
+    for (int i = 0; i < 39; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

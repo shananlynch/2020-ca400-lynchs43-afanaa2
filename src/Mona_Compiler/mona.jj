@@ -185,7 +185,7 @@ void program() : {}
 
 void decl_list() : {}
 {
-     (decl()  decl_list()
+     (decl() <SEMIC> decl_list()
      | {})
 }
 
@@ -196,12 +196,12 @@ void decl() : {}
 
 void var_decl() : {}
 {
-      <VAR> type() <IDENTIFIER> (<ASSIGN> expression() | {}) <SEMIC>
+      <VAR> type() <IDENTIFIER> (<ASSIGN> expression() | {})
 }
 
 void const_decl() : {}
 {
-     <CONST> type() <IDENTIFIER> <ASSIGN> expression() <SEMIC>
+     <CONST> type() <ASSIGN> expression()
 }
 
 void function_list() : {}
@@ -215,14 +215,9 @@ void function() : {}
      <LCBR>
      decl_list()
      statement_block()
-     return_()
+     <RETURN> <LBR>(return_list() | {}) <RBR> <SEMIC>
      <RCBR>
 }
-
-void return_ () : {} {
-     <RETURN> <LBR> return_list()  <RBR> <SEMIC>
-}
-
 
 void return_list() : {} {
     expression() ( <COMMA> return_list() | {} )
@@ -259,24 +254,12 @@ void statement_block() : {}
 
 void statement() : {}
 {
-
      <IDENTIFIER> statement_Left_factor_IDENTIFIER()
      | <LCBR> statement_block() <RCBR>
-     | <IF> condition() <LCBR> statement_block() (return_() | {}) <RCBR>
-     (else_if_list())
-     (<ELSE> <LCBR>
-      statement_block() (return_() | {}) <RCBR> | {} )
+     | <IF> condition() <LCBR> statement_block() <RCBR>
+     <ELSE> <LCBR> statement_block() <RCBR>
      | <WHILE> condition() <LCBR> statement_block() <RCBR>
-     |<FOR> <LBR> <IDENTIFIER> <IN> (values()|dictionary()|array()) <RBR>
-       <LCBR> statement_block() (return_() | {})  <RCBR>
      |<SKIP_mona> <SEMIC>
-     | decl()
-     | <BREAK> <SEMIC>
-}
-
-void else_if_list() : {} {
-    <ELSEIF> condition() <LCBR> statement_block() (return_() | {}) <RCBR>
-    else_if_list() | {}
 }
 
 void statement_Left_factor_IDENTIFIER() : {}
