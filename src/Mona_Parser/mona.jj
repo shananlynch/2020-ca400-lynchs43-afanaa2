@@ -80,14 +80,14 @@ SKIP : /*** Ignoring spaces/tabs/newlines ***/
 }
 SKIP : /* COMMENTS */
 {
-     "/*" { commentNesting++; } : IN_COMMENT
+     "//" { commentNesting++; } : IN_COMMENT
      |< "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n") >
 }
 
 <IN_COMMENT> SKIP :
 {
-     "/*" { commentNesting++; }
-     | "*/" { commentNesting--;
+     "/#" { commentNesting++; }
+     | "#/" { commentNesting--;
           if (commentNesting == 0)
                SwitchTo(DEFAULT);
           }
@@ -105,6 +105,7 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < VOID : "void" >
      | < MAIN : "main" >
      | < BREAK : "break" >
+     | < DICT  : "dict" >
      | < IF : "if" >
      | < ELSE : "else" >
      | < ELSEIF : "else_if" >
@@ -138,6 +139,10 @@ TOKEN: /*Operators */
      < ASSIGN : "=" >
      | < PLUS_SIGN :  "+" >
      | < MINUS_SIGN : "-" >
+     | < MUL : "*" >
+     | < DIV : "/" >
+     | < POW : "^" >
+     | < MOD : "%" >
      | < LOG_NEG : "~" >
      | < OR : "||" >
      | < AND : "&&" >
@@ -191,7 +196,7 @@ void decl() : {}
 
 void var_decl() : {}
 {
-      type() <IDENTIFIER> (<ASSIGN> expression() | {})
+      <VAR> type() <IDENTIFIER> (<ASSIGN> expression() | {})
 }
 
 void const_decl() : {}
@@ -210,13 +215,18 @@ void function() : {}
      <LCBR>
      decl_list()
      statement_block()
-     <RETURN> <LBR> (expression() | {}) <RBR> <SEMIC>
+     <RETURN> <LBR>(return_list() | {}) <RBR> <SEMIC>
      <RCBR>
+}
+
+void return_list() : {} {
+    expression() ( <COMMA> return_list() | {} )
+
 }
 
 void type() : {}
 {
-     <INT> | <BOOL> | <VOID> | <STRING> | <LSBR> type() <RSBR> | <FLOAT>
+     <INT> | <BOOL> | <VOID> | <STRING> | <LSBR> type() <RSBR> | <FLOAT> | <DICT>
 }
 
 void parameter_list() : {}
@@ -226,7 +236,7 @@ void parameter_list() : {}
 
 void nemp_parameter_list() : {}
 {
-     <IDENTIFIER> <COLON> type() (<COMMA> nemp_parameter_list() | {}  )
+     (type() <IDENTIFIER> | <NUM> | <QUOTED_STRING> ) (<COMMA> nemp_parameter_list() | {}  )
 }
 
 void main() :{}
@@ -260,13 +270,13 @@ void statement_Left_factor_IDENTIFIER() : {}
 
 void expression() : {}
 {
-     fragment() (binary_arith_op() fragment() | {})
+     fragment() (arith_op() fragment() | {})
      | <LBR> expression() <RBR> | array() | dictionary()
 }
 
-void binary_arith_op() : {}
+void arith_op() : {}
 {
-     <PLUS_SIGN> | <MINUS_SIGN>
+     <PLUS_SIGN> | <MINUS_SIGN> | <MUL> | <DIV> | <POW> | <MOD>
 }
 
 
@@ -274,14 +284,14 @@ void fragment() : {}
 {
      (
           (<MINUS_SIGN> | {} ) <IDENTIFIER> ( <LBR> arg_list() <RBR> | {} )
-          | <NUM> | <TRUE> | <FALSE>
+          | <NUM> | <TRUE> | <FALSE> |< QUOTED_STRING >
      )
      fragmentPrime()
 }
 
 void fragmentPrime() : {}
 {
-     binary_arith_op() expression() fragmentPrime() | {}
+     arith_op() expression() fragmentPrime() | {}
 }
 void condition() : {}
 {
@@ -313,7 +323,7 @@ void arg_list() : {}
 
 void nemp_arg_list() : {}
 {
-      <IDENTIFIER> (<COMMA> nemp_arg_list() | {})
+      (<IDENTIFIER> | <NUM> | <QUOTED_STRING> | array() | dictionary()) (<COMMA> nemp_arg_list() | {})
 }
 
 

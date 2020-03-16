@@ -1,0 +1,13 @@
+// tests for declaring variables and function parameters
+var int i;
+int test_fn(int x)
+{ var int i;
+i=2;
+return(x);
+}
+
+main{
+var int i;
+i=1;
+i=test_fn(i);
+}

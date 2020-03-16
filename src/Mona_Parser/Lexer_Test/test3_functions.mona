@@ -1,0 +1,7 @@
+//tests grammer for functions
+void func () {
+    return () ;
+}
+main{
+    func();
+}

@@ -1,0 +1,10 @@
+// test for arrays as input assignment and as argument lists
+[int] array_test([int] a, [string] b ){
+    a = [1,2,3,4,5];
+    b = ["this","array","contains","strings"] ;
+    // MULTIPLE RETURN TEST
+    return(a,b);
+}
+main{
+    array_test([1,2,3],["1","2"]);
+}
