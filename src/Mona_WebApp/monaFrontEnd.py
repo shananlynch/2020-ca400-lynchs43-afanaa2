@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, flash, redirect
 from forms import CodeCompilerForm
 app = Flask(__name__)
 
@@ -28,9 +28,11 @@ def home():
 def about():
     return render_template('about.html',title='About')
 
-@app.route("/compiler")
+@app.route("/compiler", methods=['GET','POST'])
 def compiler():
     form = CodeCompilerForm()
+    if form.validate_on_submit():
+        flash(f'Code is valid {form.validateCode.data}!', 'success')
     return render_template('compiler.html',title='Mona Compiler', form=form)
 
 

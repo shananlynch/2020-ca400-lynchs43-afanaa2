@@ -7,7 +7,16 @@
                 <legend class="border-bottom mb-4"> Mona Compiler </legend>
                 <div class="form-group">
                     {{ form.validateCode.label(class="form-control-label") }}
-                    {{ form.validateCode(class="form-control form-control-lg") }}
+                    {% if form.validateCode.errors %}
+                        {{ form.validateCode(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.validateCode.errors %}
+                                <span> {{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.validateCode(class="form-control form-control-lg") }}
+                    {% endif %}
                 </div>
             </fieldset>
             <div class="form-group">
