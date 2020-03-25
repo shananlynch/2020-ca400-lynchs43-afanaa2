@@ -1,17 +1,17 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="content-section">
-        <form method="POST" action="#">
+        <form method="POST" action="">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4"> Compile Now </legend>
+                <legend class="border-bottom mb-4"> Mona Compiler </legend>
                 <div class="form-group">
                     {{ form.validateCode.label(class="form-control-label") }}
                     {{ form.validateCode(class="form-control form-control-lg") }}
                 </div>
             </fieldset>
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+                {{ form.compileCode(class="btn btn-outline-info") }}
             </div>
         </form>
     </div>

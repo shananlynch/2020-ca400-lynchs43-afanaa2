@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField, SubmitField
+from wtforms import TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Length
 
 class CodeCompilerForm(FlaskForm):
-    validateCode = SelectField(
-        'Enter Code', validators=[DataRequired(), Length(min=3)])
+    validateCode = TextAreaField(
+        'Enter Code', validators=[DataRequired(), Length(max=1000)])
     compileCode = SubmitField('Compile')
