@@ -1,0 +1,9 @@
+// while and for loop test
+main{
+for(a in [1,2,3,4,5,6]){
+    a = 10;
+}
+while(i <= 10){
+    i = 10;
+}
+}

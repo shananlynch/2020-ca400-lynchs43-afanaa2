@@ -1,0 +1,3 @@
+jjtree mona.jjt
+javacc mona.jj
+javac *.java
