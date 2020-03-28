@@ -2,7 +2,13 @@
 ***** SECTION 1 - OPTIONS *****
 *******************************/
 
-options { JAVA_UNICODE_ESCAPE = true; }
+options {
+    IGNORE_CASE = true;
+    MULTI = true; //
+    visitor = true;
+    NODE_DEFAULT_VOID=true;
+    DEBUG_TOKEN_MANAGER = false;
+}
 
 /*********************************
 ***** SECTION 2 - USER CODE *****
@@ -11,9 +17,8 @@ options { JAVA_UNICODE_ESCAPE = true; }
 PARSER_BEGIN(mona)
 
 public class mona{
-
+        public static String scope = "global";
         public static void main(String args []){
-
                 mona mona_parser;
                 if(args.length == 0){
                         // reading input from the command line (used for testing purposes)
@@ -40,12 +45,9 @@ public class mona{
                 }
 
                 try{
-                        mona_parser.program(); // monaling the parser on start state
-                        int i = 1;
-                        while(getNextToken().kind  != EOF){
-                        System.out.println("TOKEN parsed successfully TOKEN =" +getToken(0).image); // success message
-                        i++;
-                   }
+                    SimpleNode root =     mona_parser.program();
+                    System.out.println("----------------------Abstract Syntax tree ----------------------");
+                    root.dump("");
                    System.out.println("mona Parser: mona program parsed successfully."); // success message
 
 
@@ -176,17 +178,16 @@ TOKEN: { <QUOTED_STRING: "\"" (~["\"", "\\"] | "\\\"" | "\\\\")* "\"" > }
 /**********************************************
 * SECTION 4 - THE GRAMMAR & PRODUCTION RULES *
 ***********************************************/
-
-
-void program() : {}
+SimpleNode program() #Program : {}
 {
-     class_list() decl_list() function_list() main()
+     class_list() decl_list() function_list() main() {
+     return jjtThis; }
 }
 
 void decl_list() : {}
 {
-     (decl()  decl_list()
-     | {})
+     decl()  decl_list()
+     | {}
 }
 
 void decl() : {}
@@ -194,14 +195,16 @@ void decl() : {}
      var_decl() | const_decl()
 }
 
-void var_decl() : {}
+void var_decl() #VariableDeclaration  : {Token t;}
 {
-      <VAR> type() <IDENTIFIER> (<ASSIGN> expression() | {}) <SEMIC>
+       t = <VAR> type() identifier() (assign() expression() | {}) <SEMIC>
+      {      jjtThis.value = t.image;
+      }
 }
 
-void const_decl() : {}
+void const_decl()  #ConstantDeclaration : {Token t;}
 {
-     <CONST> type() <IDENTIFIER> <ASSIGN> expression() <SEMIC>
+    t = <CONST> type() identifier() assign() (expression() | {} ) <SEMIC>
 }
 
 void function_list() : {}
@@ -209,9 +212,9 @@ void function_list() : {}
      function() function_list() | {}
 }
 
-void function() : {}
+void function() #function : {Token t ; String id;}
 {
-     type() <IDENTIFIER> <LBR> parameter_list() <RBR>
+     type() id = identifier(){ jjtThis.value = id;} <LBR> parameter_list() <RBR>
      <LCBR>
      decl_list()
      statement_block()
@@ -219,7 +222,7 @@ void function() : {}
      <RCBR>
 }
 
-void return_ () : {} {
+void return_ ()#return_ : {} {
      <RETURN> <LBR> return_list()  <RBR> <SEMIC>
 }
 
@@ -229,22 +232,24 @@ void return_list() : {} {
 
 }
 
-void type() : {}
+String type() #Type : {Token t;}
 {
-     <INT> | <BOOL> | <VOID> | <STRING> | <LSBR> type() <RSBR> | <FLOAT> | <DICT>
+    (t = <INT> | t = <BOOL> | t = <VOID> | t = <STRING> | t = <LSBR> type() <RSBR> | t = <FLOAT> | t = <DICT>)
+     {jjtThis.value = t.image;
+    return t.image;}
 }
 
-void parameter_list() : {}
+void parameter_list() #parameter_list : {}
 {
      nemp_parameter_list() | {}
 }
 
 void nemp_parameter_list() : {}
 {
-     (type() <IDENTIFIER> | <NUM> | <QUOTED_STRING> ) (<COMMA> nemp_parameter_list() | {}  )
+     (type() identifier() | number() | string() ) (<COMMA> nemp_parameter_list() | {}  )
 }
 
-void main() :{}
+void main()#main :{}
 {
      <MAIN> <LCBR>
      decl_list()
@@ -257,100 +262,131 @@ void statement_block() : {}
      statement() statement_block() | {}
 }
 
-void statement() : {}
-{
-
-     <IDENTIFIER> statement_Left_factor_IDENTIFIER()
+void statement() #statement : {Token t ;} {
+    identifier() statement_Left_factor_IDENTIFIER()
      | <LCBR> statement_block() <RCBR>
-     | <IF> condition() <LCBR> statement_block() (return_() | {}) <RCBR>
+     | t = <IF> condition() <LCBR> statement_block() (return_() | {}) <RCBR>
      (else_if_list())
      (<ELSE> <LCBR>
-      statement_block() (return_() | {}) <RCBR> | {} )
-     | <WHILE> condition() <LCBR> statement_block() <RCBR>
-     |<FOR> <LBR> <IDENTIFIER> <IN> (values()|dictionary()|array()) <RBR>
-       <LCBR> statement_block() (return_() | {})  <RCBR>
+      statement_block() (return_() | {}) <RCBR> | {} ){ jjtThis.value = t.image;}
+     | t = <WHILE> condition() <LCBR> statement_block() <RCBR> { jjtThis.value = t.image;}
+     | t = <FOR> <LBR> identifier() <IN> (values()|dictionary()|array()) <RBR>
+       <LCBR> statement_block() (return_() | {})  <RCBR> { jjtThis.value = t.image;}
      |<SKIP_mona> <SEMIC>
      | decl()
-     | <BREAK> <SEMIC>
+     | break_() <SEMIC>
 
 }
 
 void else_if_list() : {} {
-    <ELSEIF> condition() <LCBR> statement_block() (return_() | {}) <RCBR>
+    else_if() condition() <LCBR> statement_block() (return_() | {}) <RCBR>
     else_if_list() | {}
+}
+
+void else_if() #else_ : {Token t ;} {
+    t = <ELSEIF> {jjtThis.value = t.image;}
 }
 
 void statement_Left_factor_IDENTIFIER() : {}
 {
-    <ASSIGN> expression() <SEMIC> |  <LBR> arg_list() <RBR> <SEMIC>
+    assign() expression() <SEMIC> #assignment(3) |  (<LBR> arg_list())#functionCall(2) <RBR> <SEMIC>
 }
 
 
 void expression() : {}
 {
-     fragment() (arith_op() fragment() | {})
-     | <LBR> expression() <RBR> | array() | dictionary()
+    ( fragment() arith_op())
+     | <LBR> expression() <RBR> arith_op() | array() | dictionary()
 }
 
-void arith_op() : {}
+void arith_op() : {Token t ;}
 {
-     <PLUS_SIGN> | <MINUS_SIGN> | <MUL> | <DIV> | <POW> | <MOD>
+     ( t = <PLUS_SIGN> expression()
+     {
+         jjtThis.value = t.image;
+     }
+     | t =  <MINUS_SIGN>
+     {
+     jjtThis.value = t.image;
+     }
+     | t = <MUL> expression()
+     {
+     jjtThis.value = t.image;
+     }
+     |  t = <DIV> expression()
+     {
+     jjtThis.value = t.image;
+     }
+     |  t = <POW> expression()
+     {
+     jjtThis.value = t.image;
+     }
+     | t = <MOD> expression() {
+      jjtThis.value = t.image;
+  }) #arith_op(2)
+  |{}
 }
 
 
 void fragment() : {}
 {
      (
-          (<MINUS_SIGN> | {} ) <IDENTIFIER> ( <LBR> arg_list() <RBR> | {} )
-          | <NUM> | <TRUE> | <FALSE> |< QUOTED_STRING >
+          (<MINUS_SIGN> | {} ) identifier() ( (<LBR> arg_list() <RBR>)#functionCall(2) | {} )
+          | number() |bool() |string()
      )
-     fragmentPrime()
 }
 
 void fragmentPrime() : {}
 {
      arith_op() expression() fragmentPrime() | {}
 }
-void condition() : {}
+void condition()  : {Token t;String image;}
 {
      (
           <LOG_NEG> condition()
           |  <LBR> condition() <RBR>
-          | fragment() comp_op() expression()
+          | fragment() image = comp_op() expression(){jjtThis.value = image;}#comp_op(2)
      )
      conditionPrime()
 }
 
-void conditionPrime() : {}
+void conditionPrime() : {Token t;}
 {
-    (<AND> | <OR>) condition() conditionPrime() | {}
+    ( t = <AND>  {jjtThis.value = t.image;} condition())#andCondition(2) conditionPrime()
+    | ( t = <OR>  {jjtThis.value = t.image;} condition())#orCondition(2) conditionPrime() | {}
 }
 
 
-void comp_op() : {}
+
+String comp_op() : {Token t ;}
 {
-     <EQUAL> | <NOT_EQUAL> | <LESS_THAN>
-     | <LESS_THAN_OR_EQUAL> | <GREATER_THAN>
-     | <GREATER_THAN_OR_EQUAL>
+      t=<EQUAL>{
+          return t.image;
+      }
+     | t = <NOT_EQUAL> {return t.image;}
+     | t = <LESS_THAN>{ return t.image;}
+     |t= <LESS_THAN_OR_EQUAL>{return t.image;}
+     | t = <GREATER_THAN>{return t.image;}
+     | t = <GREATER_THAN_OR_EQUAL>{return t.image ;}
 }
 
-void arg_list() : {}
+void arg_list() #argumentList : {}
 {
      nemp_arg_list() | {}
 }
 
 void nemp_arg_list() : {}
 {
-      (<IDENTIFIER> | <NUM> | <QUOTED_STRING> | array() | dictionary()) (<COMMA> nemp_arg_list() | {})
+      (identifier() | number() | string() | array() | dictionary()) (<COMMA> nemp_arg_list() | {})
 }
 
 
-void array () : {} {
+void array () #array : {} {
     <LSBR> (element() | {}) <RSBR>
 }
 
 void element () : {}{
-    ( < QUOTED_STRING > | <NUM> )(<COMMA> element() | {} )
+    ( string()| number() )(<COMMA> element() | {} )
 }
 
 void dictionary () : {} {
@@ -358,18 +394,56 @@ void dictionary () : {} {
 }
 
 void values() : {} {
-    (<IDENTIFIER> | <FLOAT> | <QUOTED_STRING> | <NUM> )
+    (<IDENTIFIER> | <FLOAT> | string() | number() )
 }
 
 void d_structure () : {} {
     (values() <COLON> (values() | array() )) (<COMMA> d_structure() | {} )
 }
 
-void class_def () : {} {
-    <CLASS> <IDENTIFIER> <LCBR> decl_list()  function_list() <RCBR>
+void class_def () #class_ : {String c;} {
+    <CLASS>  c = identifier(){jjtThis.value=c;}<LCBR> decl_list()#decl_list  function_list() <RCBR>
 }
 
 void class_list() : {}
 {
      class_def() class_list() | {}
+}
+
+String identifier() #Identifier : {Token t;} {
+    (t = <IDENTIFIER> {
+      jjtThis.value = t.image;
+      return t.image;
+    })
+}
+
+String break_() #break_ : {Token t;} {
+    (t = <BREAK> {
+      jjtThis.value = t.image;
+      return t.image;
+    })
+}
+
+String assign()  : {Token t;} {
+    (t = <ASSIGN> {
+      jjtThis.value = t.image;
+      return t.image;
+  })#assigns()
+}
+
+void number() #Number : {Token t;} {
+    (t = <NUM> {
+      jjtThis.value = t.image;
+    })
+}
+void string() #String : {Token t;} {
+    (t = <QUOTED_STRING> {
+      jjtThis.value = t.image;
+    })
+}
+
+void bool() #Boolean : {Token t;} {
+  ((t = <TRUE> | t = <FALSE>) {
+    jjtThis.value = t.image;
+  })
 }

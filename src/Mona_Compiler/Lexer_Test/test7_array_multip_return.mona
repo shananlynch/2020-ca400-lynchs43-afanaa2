@@ -3,8 +3,7 @@
     a = [1,2,3,4,5];
     b = ["this","array","contains","strings"] ;
     // MULTIPLE RETURN TEST
-    return(a,b);
+    return(a);
 }
 main{
-    array_test([1,2,3],["1","2"]);
 }
