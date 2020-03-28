@@ -14,20 +14,21 @@ public interface monaTreeConstants
   public int JJTELSE_ = 10;
   public int JJTASSIGNMENT = 11;
   public int JJTFUNCTIONCALL = 12;
-  public int JJTARITH_OP = 13;
-  public int JJTCOMP_OP = 14;
-  public int JJTANDCONDITION = 15;
-  public int JJTORCONDITION = 16;
-  public int JJTARGUMENTLIST = 17;
-  public int JJTARRAY = 18;
-  public int JJTCLASS_ = 19;
-  public int JJTDECL_LIST = 20;
-  public int JJTIDENTIFIER = 21;
-  public int JJTBREAK_ = 22;
-  public int JJTASSIGNS = 23;
-  public int JJTNUMBER = 24;
-  public int JJTSTRING = 25;
-  public int JJTBOOLEAN = 26;
+  public int JJTCLASS_CALL = 13;
+  public int JJTARITH_OP = 14;
+  public int JJTCOMP_OP = 15;
+  public int JJTANDCONDITION = 16;
+  public int JJTORCONDITION = 17;
+  public int JJTARGUMENTLIST = 18;
+  public int JJTARRAY = 19;
+  public int JJTCLASS_ = 20;
+  public int JJTDECL_LIST = 21;
+  public int JJTIDENTIFIER = 22;
+  public int JJTBREAK_ = 23;
+  public int JJTASSIGNS = 24;
+  public int JJTNUMBER = 25;
+  public int JJTSTRING = 26;
+  public int JJTBOOLEAN = 27;
 
 
   public String[] jjtNodeName = {
@@ -44,6 +45,7 @@ public interface monaTreeConstants
     "else_",
     "assignment",
     "functionCall",
+    "class_call",
     "arith_op",
     "comp_op",
     "andCondition",
@@ -60,4 +62,4 @@ public interface monaTreeConstants
     "Boolean",
   };
 }
-/* JavaCC - OriginalChecksum=a1b1068b4cc20eff03b915196267632e (do not edit this line) */
+/* JavaCC - OriginalChecksum=75de67db7453beeb56a4ed3f5ffb04dc (do not edit this line) */

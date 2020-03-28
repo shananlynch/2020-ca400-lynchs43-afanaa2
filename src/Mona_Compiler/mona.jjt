@@ -17,7 +17,9 @@ options {
 PARSER_BEGIN(mona)
 
 public class mona{
+        public static STC ST = new STC();
         public static String scope = "global";
+        public static String classScope = "";
         public static void main(String args []){
                 mona mona_parser;
                 if(args.length == 0){
@@ -48,7 +50,9 @@ public class mona{
                     SimpleNode root =     mona_parser.program();
                     System.out.println("----------------------Abstract Syntax tree ----------------------");
                     root.dump("");
-                   System.out.println("mona Parser: mona program parsed successfully."); // success message
+                    System.out.println("mona Parser: mona program parsed successfully."); // success message
+                    System.out.println("----------------------Symbol Table----------------------");
+                    ST.print();
 
 
 
@@ -133,6 +137,7 @@ TOKEN: /*Punctuation*/
      | < RBR : ")" >
      | < LSBR : "[" >
      | < RSBR : "]" >
+     | < DOT : "." >
 }
 
 
@@ -180,7 +185,7 @@ TOKEN: { <QUOTED_STRING: "\"" (~["\"", "\\"] | "\\\"" | "\\\\")* "\"" > }
 ***********************************************/
 SimpleNode program() #Program : {}
 {
-     class_list() decl_list() function_list() main() {
+    decl_list() function_list() class_list() main() {
      return jjtThis; }
 }
 
@@ -195,16 +200,21 @@ void decl() : {}
      var_decl() | const_decl()
 }
 
-void var_decl() #VariableDeclaration  : {Token t;}
+void var_decl() #VariableDeclaration  : {Token t; String id; String type;}
 {
-       t = <VAR> type() identifier() (assign() expression() | {}) <SEMIC>
+       t = <VAR> type = type() id = identifier() (assign() expression() | {}) <SEMIC>
       {      jjtThis.value = t.image;
+             ST.insert(id, type, "variable", classScope+scope);
+
       }
 }
 
-void const_decl()  #ConstantDeclaration : {Token t;}
+void const_decl()  #ConstantDeclaration : {Token t; String id ; String type ;}
 {
-    t = <CONST> type() identifier() assign() (expression() | {} ) <SEMIC>
+    t = <CONST> type = type() id = identifier() assign() (expression() | {} ) <SEMIC>
+    {      jjtThis.value = t.image;
+           ST.insert(id, type, "variable",classScope + scope);
+    }
 }
 
 void function_list() : {}
@@ -212,14 +222,19 @@ void function_list() : {}
      function() function_list() | {}
 }
 
-void function() #function : {Token t ; String id;}
+void function() #function : {Token t ; String id; String type;}
 {
-     type() id = identifier(){ jjtThis.value = id;} <LBR> parameter_list() <RBR>
+     type = type() id = identifier(){
+         jjtThis.value = id;
+         ST.insert(id,type,"function",scope);
+         scope = id ;
+
+     } <LBR> parameter_list() <RBR>
      <LCBR>
      decl_list()
      statement_block()
      return_()
-     <RCBR>
+     <RCBR>{scope = "global";}
 }
 
 void return_ ()#return_ : {} {
@@ -236,7 +251,7 @@ String type() #Type : {Token t;}
 {
     (t = <INT> | t = <BOOL> | t = <VOID> | t = <STRING> | t = <LSBR> type() <RSBR> | t = <FLOAT> | t = <DICT>)
      {jjtThis.value = t.image;
-    return t.image;}
+     return t.image;}
 }
 
 void parameter_list() #parameter_list : {}
@@ -244,13 +259,17 @@ void parameter_list() #parameter_list : {}
      nemp_parameter_list() | {}
 }
 
-void nemp_parameter_list() : {}
+void nemp_parameter_list() : { String id; String type ; }
 {
-     (type() identifier() | number() | string() ) (<COMMA> nemp_parameter_list() | {}  )
+     type = type() id = identifier() (<COMMA> nemp_parameter_list() | {}  )
+     {
+      ST.insert(id, type, "parameter", classScope + scope);
+    }
 }
 
 void main()#main :{}
 {
+      {scope ="main";}
      <MAIN> <LCBR>
      decl_list()
      statement_block()
@@ -278,6 +297,9 @@ void statement() #statement : {Token t ;} {
 
 }
 
+
+
+
 void else_if_list() : {} {
     else_if() condition() <LCBR> statement_block() (return_() | {}) <RCBR>
     else_if_list() | {}
@@ -290,6 +312,7 @@ void else_if() #else_ : {Token t ;} {
 void statement_Left_factor_IDENTIFIER() : {}
 {
     assign() expression() <SEMIC> #assignment(3) |  (<LBR> arg_list())#functionCall(2) <RBR> <SEMIC>
+    | (<DOT>identifier() (<LBR> arg_list()<RBR> <SEMIC>)#functionCall(2))#class_call(2)
 }
 
 
@@ -401,8 +424,14 @@ void d_structure () : {} {
     (values() <COLON> (values() | array() )) (<COMMA> d_structure() | {} )
 }
 
-void class_def () #class_ : {String c;} {
-    <CLASS>  c = identifier(){jjtThis.value=c;}<LCBR> decl_list()#decl_list  function_list() <RCBR>
+void class_def () #class_ : {String id;} {
+    <CLASS>  id = identifier(){
+        jjtThis.value=id;
+        ST.insert(id,"class","class",scope);
+        scope = id;
+        classScope = id + " ";
+    }<LCBR> decl_list()#decl_list  function_list() <RCBR>{
+        scope = "global";}
 }
 
 void class_list() : {}
@@ -431,14 +460,16 @@ String assign()  : {Token t;} {
   })#assigns()
 }
 
-void number() #Number : {Token t;} {
+String number() #Number : {Token t;} {
     (t = <NUM> {
       jjtThis.value = t.image;
+      return t.image;
     })
 }
-void string() #String : {Token t;} {
+String string() #String : {Token t;} {
     (t = <QUOTED_STRING> {
       jjtThis.value = t.image;
+      return t.image;
     })
 }
 

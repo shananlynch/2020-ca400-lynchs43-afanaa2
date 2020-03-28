@@ -1,0 +1,9 @@
+class test{
+    int test(){
+    return(a);
+    }
+}
+main{
+    test.test(a);
+    test1(a);
+    }

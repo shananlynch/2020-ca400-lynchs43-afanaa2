@@ -73,49 +73,51 @@ public interface monaConstants {
   /** RegularExpression Id. */
   int RSBR = 42;
   /** RegularExpression Id. */
-  int ASSIGN = 43;
+  int DOT = 43;
   /** RegularExpression Id. */
-  int PLUS_SIGN = 44;
+  int ASSIGN = 44;
   /** RegularExpression Id. */
-  int MINUS_SIGN = 45;
+  int PLUS_SIGN = 45;
   /** RegularExpression Id. */
-  int MUL = 46;
+  int MINUS_SIGN = 46;
   /** RegularExpression Id. */
-  int DIV = 47;
+  int MUL = 47;
   /** RegularExpression Id. */
-  int POW = 48;
+  int DIV = 48;
   /** RegularExpression Id. */
-  int MOD = 49;
+  int POW = 49;
   /** RegularExpression Id. */
-  int LOG_NEG = 50;
+  int MOD = 50;
   /** RegularExpression Id. */
-  int OR = 51;
+  int LOG_NEG = 51;
   /** RegularExpression Id. */
-  int AND = 52;
+  int OR = 52;
   /** RegularExpression Id. */
-  int EQUAL = 53;
+  int AND = 53;
   /** RegularExpression Id. */
-  int NOT_EQUAL = 54;
+  int EQUAL = 54;
   /** RegularExpression Id. */
-  int LESS_THAN = 55;
+  int NOT_EQUAL = 55;
   /** RegularExpression Id. */
-  int LESS_THAN_OR_EQUAL = 56;
+  int LESS_THAN = 56;
   /** RegularExpression Id. */
-  int GREATER_THAN = 57;
+  int LESS_THAN_OR_EQUAL = 57;
   /** RegularExpression Id. */
-  int GREATER_THAN_OR_EQUAL = 58;
+  int GREATER_THAN = 58;
   /** RegularExpression Id. */
-  int DIGIT = 59;
+  int GREATER_THAN_OR_EQUAL = 59;
   /** RegularExpression Id. */
-  int CHAR = 60;
+  int DIGIT = 60;
   /** RegularExpression Id. */
-  int NUM = 61;
+  int CHAR = 61;
   /** RegularExpression Id. */
-  int FLOAT = 62;
+  int NUM = 62;
   /** RegularExpression Id. */
-  int IDENTIFIER = 63;
+  int FLOAT = 63;
   /** RegularExpression Id. */
-  int QUOTED_STRING = 64;
+  int IDENTIFIER = 64;
+  /** RegularExpression Id. */
+  int QUOTED_STRING = 65;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -167,6 +169,7 @@ public interface monaConstants {
     "\")\"",
     "\"[\"",
     "\"]\"",
+    "\".\"",
     "\"=\"",
     "\"+\"",
     "\"-\"",
