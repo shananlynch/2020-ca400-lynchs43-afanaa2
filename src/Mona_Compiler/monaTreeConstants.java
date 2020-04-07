@@ -4,28 +4,28 @@ public interface monaTreeConstants
   public int JJTPROGRAM = 0;
   public int JJTVOID = 1;
   public int JJTVARIABLEDECLARATION = 2;
-  public int JJTCONSTANTDECLARATION = 3;
-  public int JJTFUNCTION = 4;
-  public int JJTRETURN_ = 5;
-  public int JJTTYPE = 6;
-  public int JJTPARAMETER_LIST = 7;
-  public int JJTMAIN = 8;
-  public int JJTSTATEMENT = 9;
-  public int JJTELSE_ = 10;
-  public int JJTASSIGNMENT = 11;
-  public int JJTFUNCTIONCALL = 12;
-  public int JJTCLASS_CALL = 13;
-  public int JJTARITH_OP = 14;
-  public int JJTCOMP_OP = 15;
-  public int JJTANDCONDITION = 16;
-  public int JJTORCONDITION = 17;
-  public int JJTARGUMENTLIST = 18;
-  public int JJTARRAY = 19;
-  public int JJTCLASS_ = 20;
-  public int JJTDECL_LIST = 21;
-  public int JJTIDENTIFIER = 22;
-  public int JJTBREAK_ = 23;
-  public int JJTASSIGNS = 24;
+  public int JJTASSIGNS = 3;
+  public int JJTCONSTANTDECLARATION = 4;
+  public int JJTFUNCTION = 5;
+  public int JJTRETURN_ = 6;
+  public int JJTTYPE = 7;
+  public int JJTPARAMETER_LIST = 8;
+  public int JJTMAIN = 9;
+  public int JJTSTATEMENT = 10;
+  public int JJTELSE_ = 11;
+  public int JJTASSIGNMENT = 12;
+  public int JJTFUNCTIONCALL = 13;
+  public int JJTCLASS_CALL = 14;
+  public int JJTARITH_OP = 15;
+  public int JJTCOMP_OP = 16;
+  public int JJTANDCONDITION = 17;
+  public int JJTORCONDITION = 18;
+  public int JJTARGUMENTLIST = 19;
+  public int JJTARRAY = 20;
+  public int JJTCLASS_ = 21;
+  public int JJTDECL_LIST = 22;
+  public int JJTIDENTIFIER = 23;
+  public int JJTBREAK_ = 24;
   public int JJTNUMBER = 25;
   public int JJTSTRING = 26;
   public int JJTBOOLEAN = 27;
@@ -35,6 +35,7 @@ public interface monaTreeConstants
     "Program",
     "void",
     "VariableDeclaration",
+    "assigns",
     "ConstantDeclaration",
     "function",
     "return_",
@@ -56,10 +57,9 @@ public interface monaTreeConstants
     "decl_list",
     "Identifier",
     "break_",
-    "assigns",
     "Number",
     "String",
     "Boolean",
   };
 }
-/* JavaCC - OriginalChecksum=75de67db7453beeb56a4ed3f5ffb04dc (do not edit this line) */
+/* JavaCC - OriginalChecksum=6bd4dc118f44b58f86f2e1eade6c2ef9 (do not edit this line) */

@@ -16,7 +16,10 @@ options {
 *********************************/
 
 PARSER_BEGIN(mona)
-
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 public class mona/*@bgen(jjtree)*/implements monaTreeConstants/*@egen*/{/*@bgen(jjtree)*/
   protected static JJTmonaState jjtree = new JJTmonaState();
 
@@ -24,6 +27,7 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants/*@egen*/{/*@bgen(
         public static STC ST = new STC();
         public static String scope = "global";
         public static String classScope = "";
+        public static int line = 1 ;
         public static void main(String args []){
                 mona mona_parser;
                 if(args.length == 0){
@@ -57,7 +61,25 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants/*@egen*/{/*@bgen(
                     System.out.println("mona Parser: mona program parsed successfully."); // success message
                     System.out.println("----------------------Symbol Table----------------------");
                     ST.print();
+                    TypeCheckVisitor tcv = new TypeCheckVisitor();
+                    System.out.println("----------------------Semantic Analysis------------------");
+                    root.jjtAccept(tcv, ST);
 
+
+                    try
+     {
+             BufferedWriter buff = new BufferedWriter (new FileWriter ("irFileName"));
+             IrCodeVisitor irGenerator = new IrCodeVisitor ();
+             root.jjtAccept (irGenerator, buff);
+             buff.flush ();
+
+         }
+     catch (IOException e)
+     {
+             System.out.println ("Failed to write LLVM code to file. Exception: ");
+             e.printStackTrace (System.out);
+         }
+         System.out.println ("LLVM code generated");
 
 
                 } catch (ParseException e){
@@ -84,7 +106,7 @@ SKIP : /*** Ignoring spaces/tabs/newlines ***/
 {
      " "
      | "\t"
-     | "\n"
+     | "\n" {mona.line++;}
      | "\r"
      | "\f"
 }
@@ -92,6 +114,7 @@ SKIP : /* COMMENTS */
 {
      "//" { commentNesting++; } : IN_COMMENT
      |< "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n") >
+     {mona.line++;}
 }
 
 <IN_COMMENT> SKIP :
@@ -121,7 +144,7 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < ELSEIF : "else_if" >
      | < EXCEPT : "except" >
      | < NOT : "not" >
-     | < print : "print" >
+     | < PRINT : "print" >
      | < IN : "in" >
      | < TRUE : "true" >
      | < FALSE : "false" >
@@ -243,7 +266,34 @@ void var_decl()                       : {/*@bgen(jjtree) VariableDeclaration */
 {/*@bgen(jjtree) VariableDeclaration */
        try {
 /*@egen*/
-       t = <VAR> type = type() id = identifier() (assign() expression() | {}) <SEMIC>/*@bgen(jjtree)*/
+       t = <VAR> type = type() id = identifier() (assign()/*@bgen(jjtree) assigns */
+                                                           {
+                                                             ASTassigns jjtn001 = new ASTassigns(JJTASSIGNS);
+                                                             boolean jjtc001 = true;
+                                                             jjtree.openNodeScope(jjtn001);
+                                                           }
+                                                           try {
+/*@egen*/ expression()/*@bgen(jjtree)*/
+                                                           } catch (Throwable jjte001) {
+                                                             if (jjtc001) {
+                                                               jjtree.clearNodeScope(jjtn001);
+                                                               jjtc001 = false;
+                                                             } else {
+                                                               jjtree.popNode();
+                                                             }
+                                                             if (jjte001 instanceof RuntimeException) {
+                                                               throw (RuntimeException)jjte001;
+                                                             }
+                                                             if (jjte001 instanceof ParseException) {
+                                                               throw (ParseException)jjte001;
+                                                             }
+                                                             throw (Error)jjte001;
+                                                           } finally {
+                                                             if (jjtc001) {
+                                                               jjtree.closeNodeScope(jjtn001, true);
+                                                             }
+                                                           }
+/*@egen*/        {} | {}) <SEMIC>/*@bgen(jjtree)*/
       {
         jjtree.closeNodeScope(jjtn000, true);
         jjtc000 = false;
@@ -251,7 +301,6 @@ void var_decl()                       : {/*@bgen(jjtree) VariableDeclaration */
 /*@egen*/
       {      jjtn000.value = t.image;
              ST.insert(id, type, "variable", classScope+scope);
-
       }/*@bgen(jjtree)*/
        } catch (Throwable jjte000) {
          if (jjtc000) {
@@ -283,7 +332,7 @@ void const_decl()                       : {/*@bgen(jjtree) ConstantDeclaration *
 {/*@bgen(jjtree) ConstantDeclaration */
     try {
 /*@egen*/
-    t = <CONST> type = type() id = identifier() assign() (expression() | {} ) <SEMIC>/*@bgen(jjtree)*/
+    t = <CONST> type = type() id = identifier() (assign() expression() | {} ) <SEMIC>/*@bgen(jjtree)*/
     {
       jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
@@ -556,6 +605,12 @@ void statement()            : {/*@bgen(jjtree) statement */
 /*@egen*/ { jjtn000.value = t.image;}
      |<SKIP_mona> <SEMIC>
      | decl()
+     | t =  <PRINT> identifier() <SEMIC>/*@bgen(jjtree)*/
+                                         {
+                                           jjtree.closeNodeScope(jjtn000, true);
+                                           jjtc000 = false;
+                                         }
+/*@egen*/ { jjtn000.value = t.image;}
      | break_() <SEMIC>/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
@@ -611,7 +666,7 @@ void else_if()        : {/*@bgen(jjtree) else_ */
 
 void statement_Left_factor_IDENTIFIER() : {}
 {
-    assign() expression()/*@bgen(jjtree) #assignment( 3) */
+    assign() expression()/*@bgen(jjtree) #assignment( 2) */
                           {
                             ASTassignment jjtn001 = new ASTassignment(JJTASSIGNMENT);
                             boolean jjtc001 = true;
@@ -621,7 +676,7 @@ void statement_Left_factor_IDENTIFIER() : {}
 /*@egen*/ <SEMIC>/*@bgen(jjtree)*/
                           } finally {
                             if (jjtc001) {
-                              jjtree.closeNodeScope(jjtn001,  3);
+                              jjtree.closeNodeScope(jjtn001,  2);
                             }
                           }
 /*@egen*/                |/*@bgen(jjtree) #functionCall( 2) */
@@ -734,7 +789,7 @@ void arith_op() : {Token t ;}
      {
          jjtn001.value = t.image;
      }
-     | t =  <MINUS_SIGN>/*@bgen(jjtree)*/
+     | t =  <MINUS_SIGN> expression()/*@bgen(jjtree)*/
      {
        jjtree.closeNodeScope(jjtn001,  2);
        jjtc001 = false;
@@ -833,7 +888,7 @@ void fragment() : {}
                                                 }
                                               }
 /*@egen*/                 | {} )
-          | number() |bool() |string()
+          | number() |bool() |string() | float_()
      )
 }
 
@@ -1152,29 +1207,10 @@ String break_()         : {/*@bgen(jjtree) break_ */
 /*@egen*/
 }
 
-String assign()  : {Token t;} {/*@bgen(jjtree) #assigns(true) */
-    {
-      ASTassigns jjtn001 = new ASTassigns(JJTASSIGNS);
-      boolean jjtc001 = true;
-      jjtree.openNodeScope(jjtn001);
-    }
-    try {
-/*@egen*/
-    (t = <ASSIGN>/*@bgen(jjtree)*/
-                  {
-                    jjtree.closeNodeScope(jjtn001, true);
-                    jjtc001 = false;
-                  }
-/*@egen*/ {
-      jjtn001.value = t.image;
+String assign()  : {Token t;} {
+    (t = <ASSIGN> {
       return t.image;
-  })/*@bgen(jjtree)*/
-    } finally {
-      if (jjtc001) {
-        jjtree.closeNodeScope(jjtn001, true);
-      }
-    }
-/*@egen*/          
+  })
 }
 
 String number()         : {/*@bgen(jjtree) Number */
@@ -1189,6 +1225,29 @@ String number()         : {/*@bgen(jjtree) Number */
                  jjtree.closeNodeScope(jjtn000, true);
                  jjtc000 = false;
                }
+/*@egen*/ {
+      jjtn000.value = t.image;
+      return t.image;
+    })/*@bgen(jjtree)*/
+    } finally {
+      if (jjtc000) {
+        jjtree.closeNodeScope(jjtn000, true);
+      }
+    }
+/*@egen*/
+}
+String float_()         : {/*@bgen(jjtree) Number */
+                           ASTNumber jjtn000 = new ASTNumber(JJTNUMBER);
+                           boolean jjtc000 = true;
+                           jjtree.openNodeScope(jjtn000);
+/*@egen*/Token t;} {/*@bgen(jjtree) Number */
+    try {
+/*@egen*/
+    (t = <FLOAT>/*@bgen(jjtree)*/
+                 {
+                   jjtree.closeNodeScope(jjtn000, true);
+                   jjtc000 = false;
+                 }
 /*@egen*/ {
       jjtn000.value = t.image;
       return t.image;

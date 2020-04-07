@@ -39,7 +39,7 @@ public interface monaConstants {
   /** RegularExpression Id. */
   int NOT = 25;
   /** RegularExpression Id. */
-  int print = 26;
+  int PRINT = 26;
   /** RegularExpression Id. */
   int IN = 27;
   /** RegularExpression Id. */

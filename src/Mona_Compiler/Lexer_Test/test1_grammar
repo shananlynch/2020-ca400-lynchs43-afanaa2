@@ -1,0 +1,64 @@
+//variable declared of left right hand is right type;
+class test {
+    void test(int a , int b){
+        // var decl
+        var int b ;
+        //assignment
+        b = 10 + 11;
+        //var decl + assignment
+        var int a = 1;
+        // const decl + assignment
+        const int c = 0;
+        // const decl
+        const int c1 ;
+        //assignment
+        c1 = 10 + 11;
+        //arith_op
+        a = 2 + 2 ;
+        a = 2 * 2 ;
+        a = 2 / 2 ;
+        a = 2 ^ 2 ;
+        a = 2 % 2 ;
+        a = 2 - 2 ;
+        return(a);
+    }
+    bool conditional_statements(bool a){
+        if (i == 1){
+            var int i = 12 ;
+            a = true ;
+            }
+
+        else_if(i == 3){
+            const bool b = false;
+            a = b ;
+                    }
+        else_if(i == 3){
+            const bool b = true;
+            a = b ;
+            if (i <= 2){
+                var [string] s = ["string"] ;
+                a = true;
+            }
+        }
+        else{
+            return(a) ;
+        }
+            return(a) ;
+        }
+        [int] array_test([int] a, [string] b ){
+            a = [1,2,3,4,5];
+            b = ["this","array","contains","strings"] ;
+            // MULTIPLE RETURN TEST
+            //while loop
+            while(i <= 10){
+                i = 10;
+                break;
+            }
+            return(a);
+
+        }
+
+}
+ main{
+    test(1);
+}

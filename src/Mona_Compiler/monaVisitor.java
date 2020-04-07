@@ -4,6 +4,7 @@ public interface monaVisitor
   public Object visit(SimpleNode node, Object data);
   public Object visit(ASTProgram node, Object data);
   public Object visit(ASTVariableDeclaration node, Object data);
+  public Object visit(ASTassigns node, Object data);
   public Object visit(ASTConstantDeclaration node, Object data);
   public Object visit(ASTfunction node, Object data);
   public Object visit(ASTreturn_ node, Object data);
@@ -25,9 +26,8 @@ public interface monaVisitor
   public Object visit(ASTdecl_list node, Object data);
   public Object visit(ASTIdentifier node, Object data);
   public Object visit(ASTbreak_ node, Object data);
-  public Object visit(ASTassigns node, Object data);
   public Object visit(ASTNumber node, Object data);
   public Object visit(ASTString node, Object data);
   public Object visit(ASTBoolean node, Object data);
 }
-/* JavaCC - OriginalChecksum=3fe17e24b89d415a06a631591b63ba39 (do not edit this line) */
+/* JavaCC - OriginalChecksum=b646d73728b5d542f5db8a4ffe036914 (do not edit this line) */

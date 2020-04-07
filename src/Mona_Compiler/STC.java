@@ -14,6 +14,10 @@ public class STC extends Object {
     public void insert(String id, String type, String descr, String scope) {
         LinkedList<String> temp = ST.get(scope);
         if (temp != null) {
+            if(in_scope(id,scope)){
+                System.out.println("Fatal error : variable " + id +
+                " has been declared multiple times in Scope");
+            }
             temp.addFirst(id);
         }
         else {
@@ -23,6 +27,11 @@ public class STC extends Object {
         }
         Type.put(id + scope, type);
         Description.put(id + scope, descr);
+    }
+
+    public boolean in_scope(String element, String scope){
+        LinkedList l = ST.get(scope);
+        return l.contains(element);
     }
 
     public void print() {
@@ -44,4 +53,33 @@ public class STC extends Object {
 
        }
  }
+ public DataType getType (String id, String scope){
+     LinkedList<String> scope_list = ST.get(scope);
+     String type_scope = "" ;
+     if(scope_list != null) {
+       for (String match : scope_list) {
+           if(match.equals(id)) {
+               type_scope = Type.get(id + scope);
+                return(getDType(type_scope));
+           }
+       }
+    }
+    return DataType.TypeUnknown;
+
+}
+ public DataType getDType(String s ){
+    if (s.equals("boolean")) {
+        return DataType.Boolean;
+    }
+    else if (s.equals("int")) {
+        return DataType.Integer;
+    }
+    else if (s.equals("string")) {
+        return DataType.String;
+    }
+    else if (s.equals("void")) {
+        return DataType.TypeVoid;
+    }
+    return DataType.TypeUnknown;
+    }
 }

@@ -15,11 +15,15 @@ options {
 *********************************/
 
 PARSER_BEGIN(mona)
-
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 public class mona{
         public static STC ST = new STC();
         public static String scope = "global";
         public static String classScope = "";
+        public static int line = 1 ;
         public static void main(String args []){
                 mona mona_parser;
                 if(args.length == 0){
@@ -53,7 +57,25 @@ public class mona{
                     System.out.println("mona Parser: mona program parsed successfully."); // success message
                     System.out.println("----------------------Symbol Table----------------------");
                     ST.print();
+                    TypeCheckVisitor tcv = new TypeCheckVisitor();
+                    System.out.println("----------------------Semantic Analysis------------------");
+                    root.jjtAccept(tcv, ST);
 
+
+                    try
+     {
+             BufferedWriter buff = new BufferedWriter (new FileWriter ("irFileName"));
+             IrCodeVisitor irGenerator = new IrCodeVisitor ();
+             root.jjtAccept (irGenerator, buff);
+             buff.flush ();
+
+         }
+     catch (IOException e)
+     {
+             System.out.println ("Failed to write LLVM code to file. Exception: ");
+             e.printStackTrace (System.out);
+         }
+         System.out.println ("LLVM code generated");
 
 
                 } catch (ParseException e){
@@ -80,7 +102,7 @@ SKIP : /*** Ignoring spaces/tabs/newlines ***/
 {
      " "
      | "\t"
-     | "\n"
+     | "\n" {mona.line++;}
      | "\r"
      | "\f"
 }
@@ -88,6 +110,7 @@ SKIP : /* COMMENTS */
 {
      "//" { commentNesting++; } : IN_COMMENT
      |< "//" (~["\n","\r"])* ("\n" | "\r" | "\r\n") >
+     {mona.line++;}
 }
 
 <IN_COMMENT> SKIP :
@@ -117,7 +140,7 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < ELSEIF : "else_if" >
      | < EXCEPT : "except" >
      | < NOT : "not" >
-     | < print : "print" >
+     | < PRINT : "print" >
      | < IN : "in" >
      | < TRUE : "true" >
      | < FALSE : "false" >
@@ -202,16 +225,15 @@ void decl() : {}
 
 void var_decl() #VariableDeclaration  : {Token t; String id; String type;}
 {
-       t = <VAR> type = type() id = identifier() (assign() expression() | {}) <SEMIC>
+       t = <VAR> type = type() id = identifier() (assign() expression()#assigns{} | {}) <SEMIC>
       {      jjtThis.value = t.image;
              ST.insert(id, type, "variable", classScope+scope);
-
       }
 }
 
 void const_decl()  #ConstantDeclaration : {Token t; String id ; String type ;}
 {
-    t = <CONST> type = type() id = identifier() assign() (expression() | {} ) <SEMIC>
+    t = <CONST> type = type() id = identifier() (assign() expression() | {} ) <SEMIC>
     {      jjtThis.value = t.image;
            ST.insert(id, type, "variable",classScope + scope);
     }
@@ -293,6 +315,7 @@ void statement() #statement : {Token t ;} {
        <LCBR> statement_block() (return_() | {})  <RCBR> { jjtThis.value = t.image;}
      |<SKIP_mona> <SEMIC>
      | decl()
+     | t =  <PRINT> identifier() <SEMIC> { jjtThis.value = t.image;}
      | break_() <SEMIC>
 
 }
@@ -311,7 +334,7 @@ void else_if() #else_ : {Token t ;} {
 
 void statement_Left_factor_IDENTIFIER() : {}
 {
-    assign() expression() <SEMIC> #assignment(3) |  (<LBR> arg_list())#functionCall(2) <RBR> <SEMIC>
+    assign() expression() <SEMIC> #assignment(2) |  (<LBR> arg_list())#functionCall(2) <RBR> <SEMIC>
     | (<DOT>identifier() (<LBR> arg_list()<RBR> <SEMIC>)#functionCall(2))#class_call(2)
 }
 
@@ -328,7 +351,7 @@ void arith_op() : {Token t ;}
      {
          jjtThis.value = t.image;
      }
-     | t =  <MINUS_SIGN>
+     | t =  <MINUS_SIGN> expression()
      {
      jjtThis.value = t.image;
      }
@@ -355,7 +378,7 @@ void fragment() : {}
 {
      (
           (<MINUS_SIGN> | {} ) identifier() ( (<LBR> arg_list() <RBR>)#functionCall(2) | {} )
-          | number() |bool() |string()
+          | number() |bool() |string() | float_()
      )
 }
 
@@ -455,13 +478,18 @@ String break_() #break_ : {Token t;} {
 
 String assign()  : {Token t;} {
     (t = <ASSIGN> {
-      jjtThis.value = t.image;
       return t.image;
-  })#assigns()
+  })
 }
 
 String number() #Number : {Token t;} {
     (t = <NUM> {
+      jjtThis.value = t.image;
+      return t.image;
+    })
+}
+String float_() #Number : {Token t;} {
+    (t = <FLOAT> {
       jjtThis.value = t.image;
       return t.image;
     })
