@@ -158,7 +158,7 @@ public interface monaConstants {
     "\"false\"",
     "\"while\"",
     "\"for\"",
-    "\"string\"",
+    "\"String\"",
     "\"skip\"",
     "\",\"",
     "\";\"",

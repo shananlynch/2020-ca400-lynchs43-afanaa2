@@ -66,7 +66,7 @@ public class mona{
      {
              BufferedWriter buff = new BufferedWriter (new FileWriter ("irFileName"));
              IrCodeVisitor irGenerator = new IrCodeVisitor ();
-             root.jjtAccept (irGenerator, buff);
+             root.jjtAccept (irGenerator, ST);
              buff.flush ();
 
          }
@@ -146,7 +146,7 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < FALSE : "false" >
      | < WHILE : "while" >
      | < FOR : "for" >
-     | < STRING : "string" >
+     | < STRING : "String" >
      | < SKIP_mona : "skip" >
 }
 TOKEN: /*Punctuation*/
@@ -218,9 +218,9 @@ void decl_list() : {}
      | {}
 }
 
-void decl() : {}
+String decl() : {}
 {
-     var_decl() | const_decl()
+     (var_decl() | const_decl()){return "decl";}
 }
 
 void var_decl() #VariableDeclaration  : {Token t; String id; String type;}
@@ -303,39 +303,42 @@ void statement_block() : {}
      statement() statement_block() | {}
 }
 
-void statement() #statement : {Token t ;} {
-    identifier() statement_Left_factor_IDENTIFIER()
+void statement() #statement : {Token t; String r ;} {
+    identifier() r = statement_Left_factor_IDENTIFIER(){ jjtThis.value = r;}
      | <LCBR> statement_block() <RCBR>
      | t = <IF> condition() <LCBR> statement_block() (return_() | {}) <RCBR>
      (else_if_list())
-     (<ELSE> <LCBR>
-      statement_block() (return_() | {}) <RCBR> | {} ){ jjtThis.value = t.image;}
+     (else_()){ jjtThis.value = t.image;}
      | t = <WHILE> condition() <LCBR> statement_block() <RCBR> { jjtThis.value = t.image;}
      | t = <FOR> <LBR> identifier() <IN> (values()|dictionary()|array()) <RBR>
        <LCBR> statement_block() (return_() | {})  <RCBR> { jjtThis.value = t.image;}
      |<SKIP_mona> <SEMIC>
-     | decl()
+     | r = decl() { jjtThis.value = r;}
      | t =  <PRINT> identifier() <SEMIC> { jjtThis.value = t.image;}
      | break_() <SEMIC>
 
 }
 
 
+void else_()  : {Token t;} {
+    ( t = <ELSE> {jjtThis.value = t.image;}<LCBR>
+     statement_block() (return_() | {}) <RCBR>) #statement | {}
+}
 
 
 void else_if_list() : {} {
-    else_if() condition() <LCBR> statement_block() (return_() | {}) <RCBR>
+    else_if()
     else_if_list() | {}
 }
 
-void else_if() #else_ : {Token t ;} {
-    t = <ELSEIF> {jjtThis.value = t.image;}
+void else_if() #else_if : {Token t ;} {
+    t = <ELSEIF> condition() <LCBR> statement_block() (return_() | {}) <RCBR> {jjtThis.value = t.image;}
 }
 
-void statement_Left_factor_IDENTIFIER() : {}
+String statement_Left_factor_IDENTIFIER() : {String t ;}
 {
-    assign() expression() <SEMIC> #assignment(2) |  (<LBR> arg_list())#functionCall(2) <RBR> <SEMIC>
-    | (<DOT>identifier() (<LBR> arg_list()<RBR> <SEMIC>)#functionCall(2))#class_call(2)
+    t = assign() expression() <SEMIC>{return t; } #assigns(1) |  (<LBR> arg_list()){return "functionCall";}#functionCall(2) <RBR> <SEMIC>
+    | (<DOT>identifier() (<LBR> arg_list()<RBR> <SEMIC>){return "classF";}#functionCall(2))#class_call(2)
 }
 
 

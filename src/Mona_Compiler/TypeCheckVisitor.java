@@ -47,7 +47,7 @@ public class TypeCheckVisitor implements monaVisitor {
                 return DataType.Integer;
             }
             else if (s.equals("string")) {
-                return DataType.String;
+                return DataType.string;
             }
             else if (s.equals("void")) {
                 return DataType.TypeVoid;
@@ -55,9 +55,10 @@ public class TypeCheckVisitor implements monaVisitor {
             return DataType.TypeUnknown;
         }
     public Object visit(ASTparameter_list node, Object data){ return null;}
-    public Object visit(ASTmain node, Object data){ return null;}
+    public Object visit(ASTmain node, Object data){
+         return null;}
     public Object visit(ASTstatement node, Object data){ return null;}
-    public Object visit(ASTelse_ node, Object data){ return null;}
+    public Object visit(ASTelse_if node, Object data){ return null;}
     public Object visit(ASTassignment node, Object data){ return null;}
     public Object visit(ASTfunctionCall node, Object data){ return null;}
     public Object visit(ASTclass_call node, Object data){ return null;}
@@ -100,7 +101,7 @@ public class TypeCheckVisitor implements monaVisitor {
     }
     public Object visit(ASTNumber node, Object data){
          return DataType.Integer;}
-    public Object visit(ASTString node, Object data){ return DataType.String;}
+    public Object visit(ASTString node, Object data){ return DataType.string;}
     public Object visit(ASTBoolean node, Object data){ return DataType.Boolean;}
 
 }

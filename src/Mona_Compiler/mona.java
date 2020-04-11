@@ -50,7 +50,7 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
      {
              BufferedWriter buff = new BufferedWriter (new FileWriter ("irFileName"));
              IrCodeVisitor irGenerator = new IrCodeVisitor ();
-             root.jjtAccept (irGenerator, buff);
+             root.jjtAccept (irGenerator, ST);
              buff.flush ();
 
          }
@@ -121,7 +121,7 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
     }
   }
 
-  static final public void decl() throws ParseException {
+  static final public String decl() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VAR:
       var_decl();
@@ -134,6 +134,8 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
       jj_consume_token(-1);
       throw new ParseException();
     }
+                                 {if (true) return "decl";}
+    throw new Error("Missing return statement in function");
   }
 
   static final public void var_decl() throws ParseException {
@@ -532,12 +534,15 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
                                /*@bgen(jjtree) statement */
                                ASTstatement jjtn000 = new ASTstatement(JJTSTATEMENT);
                                boolean jjtc000 = true;
-                               jjtree.openNodeScope(jjtn000);Token t ;
+                               jjtree.openNodeScope(jjtn000);Token t; String r ;
     try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IDENTIFIER:
         identifier();
-        statement_Left_factor_IDENTIFIER();
+        r = statement_Left_factor_IDENTIFIER();
+                                                         jjtree.closeNodeScope(jjtn000, true);
+                                                         jjtc000 = false;
+                                                         jjtn000.value = r;
         break;
       case LCBR:
         jj_consume_token(LCBR);
@@ -559,28 +564,10 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
         }
         jj_consume_token(RCBR);
         else_if_list();
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case ELSE:
-          jj_consume_token(ELSE);
-          jj_consume_token(LCBR);
-          statement_block();
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case RETURN:
-            return_();
-            break;
-          default:
-            jj_la1[11] = jj_gen;
-
-          }
-          jj_consume_token(RCBR);
-          break;
-        default:
-          jj_la1[12] = jj_gen;
-
-        }
-                                                        jjtree.closeNodeScope(jjtn000, true);
-                                                        jjtc000 = false;
-                                                        jjtn000.value = t.image;
+        else_();
+                jjtree.closeNodeScope(jjtn000, true);
+                jjtc000 = false;
+                jjtn000.value = t.image;
         break;
       case WHILE:
         t = jj_consume_token(WHILE);
@@ -611,7 +598,7 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
           array();
           break;
         default:
-          jj_la1[13] = jj_gen;
+          jj_la1[11] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -623,7 +610,7 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
           return_();
           break;
         default:
-          jj_la1[14] = jj_gen;
+          jj_la1[12] = jj_gen;
 
         }
         jj_consume_token(RCBR);
@@ -637,7 +624,10 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
         break;
       case VAR:
       case CONST:
-        decl();
+        r = decl();
+                    jjtree.closeNodeScope(jjtn000, true);
+                    jjtc000 = false;
+                    jjtn000.value = r;
         break;
       case PRINT:
         t = jj_consume_token(PRINT);
@@ -652,7 +642,7 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
         jj_consume_token(SEMIC);
         break;
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[13] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -677,10 +667,72 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
     }
   }
 
+  static final public void else_() throws ParseException {
+                 Token t;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ELSE:
+      ASTstatement jjtn001 = new ASTstatement(JJTSTATEMENT);
+      boolean jjtc001 = true;
+      jjtree.openNodeScope(jjtn001);
+      try {
+        t = jj_consume_token(ELSE);
+                  jjtn001.value = t.image;
+        jj_consume_token(LCBR);
+        statement_block();
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case RETURN:
+          return_();
+          break;
+        default:
+          jj_la1[14] = jj_gen;
+
+        }
+        jj_consume_token(RCBR);
+      } catch (Throwable jjte001) {
+      if (jjtc001) {
+        jjtree.clearNodeScope(jjtn001);
+        jjtc001 = false;
+      } else {
+        jjtree.popNode();
+      }
+      if (jjte001 instanceof RuntimeException) {
+        {if (true) throw (RuntimeException)jjte001;}
+      }
+      if (jjte001 instanceof ParseException) {
+        {if (true) throw (ParseException)jjte001;}
+      }
+      {if (true) throw (Error)jjte001;}
+      } finally {
+      if (jjtc001) {
+        jjtree.closeNodeScope(jjtn001, true);
+      }
+      }
+      break;
+    default:
+      jj_la1[15] = jj_gen;
+
+    }
+  }
+
   static final public void else_if_list() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ELSEIF:
       else_if();
+      else_if_list();
+      break;
+    default:
+      jj_la1[16] = jj_gen;
+
+    }
+  }
+
+  static final public void else_if() throws ParseException {
+                           /*@bgen(jjtree) else_if */
+                           ASTelse_if jjtn000 = new ASTelse_if(JJTELSE_IF);
+                           boolean jjtc000 = true;
+                           jjtree.openNodeScope(jjtn000);Token t ;
+    try {
+      t = jj_consume_token(ELSEIF);
       condition();
       jj_consume_token(LCBR);
       statement_block();
@@ -689,28 +741,27 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
         return_();
         break;
       default:
-        jj_la1[16] = jj_gen;
+        jj_la1[17] = jj_gen;
 
       }
       jj_consume_token(RCBR);
-      else_if_list();
-      break;
-    default:
-      jj_la1[17] = jj_gen;
-
-    }
-  }
-
-  static final public void else_if() throws ParseException {
-                         /*@bgen(jjtree) else_ */
-                         ASTelse_ jjtn000 = new ASTelse_(JJTELSE_);
-                         boolean jjtc000 = true;
-                         jjtree.openNodeScope(jjtn000);Token t ;
-    try {
-      t = jj_consume_token(ELSEIF);
-                   jjtree.closeNodeScope(jjtn000, true);
-                   jjtc000 = false;
-                  jjtn000.value = t.image;
+                                                                                jjtree.closeNodeScope(jjtn000, true);
+                                                                                jjtc000 = false;
+                                                                               jjtn000.value = t.image;
+    } catch (Throwable jjte000) {
+      if (jjtc000) {
+        jjtree.clearNodeScope(jjtn000);
+        jjtc000 = false;
+      } else {
+        jjtree.popNode();
+      }
+      if (jjte000 instanceof RuntimeException) {
+        {if (true) throw (RuntimeException)jjte000;}
+      }
+      if (jjte000 instanceof ParseException) {
+        {if (true) throw (ParseException)jjte000;}
+      }
+      {if (true) throw (Error)jjte000;}
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -718,47 +769,40 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
     }
   }
 
-  static final public void statement_Left_factor_IDENTIFIER() throws ParseException {
+  static final public String statement_Left_factor_IDENTIFIER() throws ParseException {
+                                             String t ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case ASSIGN:
-      assign();
+      t = assign();
       expression();
-                            ASTassignment jjtn001 = new ASTassignment(JJTASSIGNMENT);
-                            boolean jjtc001 = true;
-                            jjtree.openNodeScope(jjtn001);
+      jj_consume_token(SEMIC);
+                                       ASTassigns jjtn001 = new ASTassigns(JJTASSIGNS);
+                                       boolean jjtc001 = true;
+                                       jjtree.openNodeScope(jjtn001);
       try {
-        jj_consume_token(SEMIC);
+                                       jjtree.closeNodeScope(jjtn001,  1);
+                                       jjtc001 = false;
+                                      {if (true) return t;}
       } finally {
-                            if (jjtc001) {
-                              jjtree.closeNodeScope(jjtn001,  2);
-                            }
+                                       if (jjtc001) {
+                                         jjtree.closeNodeScope(jjtn001,  1);
+                                       }
       }
       break;
     case LBR:
-                                                      ASTfunctionCall jjtn002 = new ASTfunctionCall(JJTFUNCTIONCALL);
-                                                      boolean jjtc002 = true;
-                                                      jjtree.openNodeScope(jjtn002);
+      jj_consume_token(LBR);
+      arg_list();
+                                                                                     ASTfunctionCall jjtn002 = new ASTfunctionCall(JJTFUNCTIONCALL);
+                                                                                     boolean jjtc002 = true;
+                                                                                     jjtree.openNodeScope(jjtn002);
       try {
-        jj_consume_token(LBR);
-        arg_list();
-      } catch (Throwable jjte002) {
-                                                      if (jjtc002) {
-                                                        jjtree.clearNodeScope(jjtn002);
-                                                        jjtc002 = false;
-                                                      } else {
-                                                        jjtree.popNode();
-                                                      }
-                                                      if (jjte002 instanceof RuntimeException) {
-                                                        {if (true) throw (RuntimeException)jjte002;}
-                                                      }
-                                                      if (jjte002 instanceof ParseException) {
-                                                        {if (true) throw (ParseException)jjte002;}
-                                                      }
-                                                      {if (true) throw (Error)jjte002;}
+                                                                                     jjtree.closeNodeScope(jjtn002,  2);
+                                                                                     jjtc002 = false;
+                                                                                    {if (true) return "functionCall";}
       } finally {
-                                                      if (jjtc002) {
-                                                        jjtree.closeNodeScope(jjtn002,  2);
-                                                      }
+                                                                                     if (jjtc002) {
+                                                                                       jjtree.closeNodeScope(jjtn002,  2);
+                                                                                     }
       }
       jj_consume_token(RBR);
       jj_consume_token(SEMIC);
@@ -770,32 +814,21 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
       try {
         jj_consume_token(DOT);
         identifier();
-                           ASTfunctionCall jjtn003 = new ASTfunctionCall(JJTFUNCTIONCALL);
-                           boolean jjtc003 = true;
-                           jjtree.openNodeScope(jjtn003);
+        jj_consume_token(LBR);
+        arg_list();
+        jj_consume_token(RBR);
+        jj_consume_token(SEMIC);
+                                                          ASTfunctionCall jjtn003 = new ASTfunctionCall(JJTFUNCTIONCALL);
+                                                          boolean jjtc003 = true;
+                                                          jjtree.openNodeScope(jjtn003);
         try {
-          jj_consume_token(LBR);
-          arg_list();
-          jj_consume_token(RBR);
-          jj_consume_token(SEMIC);
-        } catch (Throwable jjte003) {
-                           if (jjtc003) {
-                             jjtree.clearNodeScope(jjtn003);
-                             jjtc003 = false;
-                           } else {
-                             jjtree.popNode();
-                           }
-                           if (jjte003 instanceof RuntimeException) {
-                             {if (true) throw (RuntimeException)jjte003;}
-                           }
-                           if (jjte003 instanceof ParseException) {
-                             {if (true) throw (ParseException)jjte003;}
-                           }
-                           {if (true) throw (Error)jjte003;}
+                                                          jjtree.closeNodeScope(jjtn003,  2);
+                                                          jjtc003 = false;
+                                                         {if (true) return "classF";}
         } finally {
-                           if (jjtc003) {
-                             jjtree.closeNodeScope(jjtn003,  2);
-                           }
+                                                          if (jjtc003) {
+                                                            jjtree.closeNodeScope(jjtn003,  2);
+                                                          }
         }
       } catch (Throwable jjte004) {
         if (jjtc004) {
@@ -822,6 +855,7 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
       jj_consume_token(-1);
       throw new ParseException();
     }
+    throw new Error("Missing return statement in function");
   }
 
   static final public void expression() throws ParseException {
@@ -1598,13 +1632,13 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
       jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x1800,0x1800,0x0,0x0,0x138000,0x0,0x138000,0x138000,0x0,0xc4281800,0x2000,0x2000,0x400000,0x0,0x2000,0xc4281800,0x2000,0x800000,0x0,0x30000000,0x0,0x0,0x0,0x0,0x30000000,0x30000000,0x30000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x30000000,};
+      jj_la1_0 = new int[] {0x1800,0x1800,0x0,0x0,0x138000,0x0,0x138000,0x138000,0x0,0xc4281800,0x2000,0x0,0x2000,0xc4281800,0x2000,0x400000,0x800000,0x2000,0x0,0x30000000,0x0,0x0,0x0,0x0,0x30000000,0x30000000,0x30000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x30000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x1000,0x1000,0x80000201,0x4,0x80000201,0x80000201,0x4,0x22,0x0,0x0,0x0,0xc0000220,0x0,0x22,0x0,0x0,0x1880,0xc00042a0,0x7e000,0x7e000,0x4000,0x80,0xc0004000,0xc007e2a0,0xc0084080,0x300000,0xfc00000,0x40000220,0x40000220,0x4,0x40000000,0x40000000,0x4,0xc0000000,0xc0000200,0x4,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x1000,0x1000,0x80000201,0x4,0x80000201,0x80000201,0x4,0x22,0x0,0xc0000220,0x0,0x22,0x0,0x0,0x0,0x0,0x1880,0xc00042a0,0x7e000,0x7e000,0x4000,0x80,0xc0004000,0xc007e2a0,0xc0084080,0x300000,0xfc00000,0x40000220,0x40000220,0x4,0x40000000,0x40000000,0x4,0xc0000000,0xc0000200,0x4,0x0,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x0,0x3,0x0,0x1,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x0,0x3,0x3,0x3,0x0,0x0,0x3,0x3,0x0,0x2,0x2,0x0,0x3,0x3,0x0,0x0,0x0,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x3,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x0,0x0,0x0,0x3,0x3,0x3,0x0,0x0,0x3,0x3,0x0,0x2,0x2,0x0,0x3,0x3,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */

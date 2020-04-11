@@ -14,7 +14,7 @@ public enum DataType {
     Identifier,
     Boolean,
     Integer,
-    String,
+    string,
     TypeUnknown,
     TypeVoid
 }
