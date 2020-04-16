@@ -6,14 +6,29 @@
 main:                                   # @main
 	.cfi_startproc
 # %bb.0:
-	pushq	%rax
+	pushq	%rbx
 	.cfi_def_cfa_offset 16
+	subq	$16, %rsp
+	.cfi_def_cfa_offset 32
+	.cfi_offset %rbx, -16
+	movl	$1, 12(%rsp)
+	movl	$1, %ebx
+	testl	%ebx, %ebx
+	je	.LBB0_3
+	.p2align	4, 0x90
+.LBB0_2:                                # %label2
+                                        # =>This Inner Loop Header: Depth=1
 	movl	$.L.1arg_str, %edi
-	movl	$20, %esi
+	movl	$1, %esi
 	xorl	%eax, %eax
 	callq	printf
+	movl	$10, 12(%rsp)
+	testl	%ebx, %ebx
+	jne	.LBB0_2
+.LBB0_3:                                # %label3
 	xorl	%eax, %eax
-	popq	%rcx
+	addq	$16, %rsp
+	popq	%rbx
 	retq
 .Lfunc_end0:
 	.size	main, .Lfunc_end0-main

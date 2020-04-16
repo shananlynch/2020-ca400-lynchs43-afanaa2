@@ -1,11 +1,11 @@
 main{
-    var int a = 10 ;
+    var int a = 10 + 22 ;
+    a = a + a ;
     print a ;
     a = 11 ;
     print a ;
     a = 1023123 ;
     print a ;
-
 
 
 

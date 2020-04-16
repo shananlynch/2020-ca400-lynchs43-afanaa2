@@ -1,66 +1,81 @@
-@.k = constant [25 x i8] c"else statement evaluated\00"
-@.k1 = constant [31 x i8] c"if statement in else evaluated\00"
+@.zero = constant [5 x i8] c"zero\00"
+@.five = constant [5 x i8] c"five\00"
+@.zero1 = constant [4 x i8] c"one\00"
+@.zero2 = constant [4 x i8] c"two\00"
+@.zero3 = constant [6 x i8] c"three\00"
+@.zero4 = constant [5 x i8] c"four\00"
 declare i32 @printf(i8*, ...) #1
 @.1arg_str = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
  
 declare i32 @puts(i8*)
 define i32 @main () 
  {%.va = alloca i32
-store i32 10, i32* %.va
+store i32 0, i32* %.va
 %.t1 = load i32, i32* %.va
-%.t2 = icmp eq i32 %.t1, 10
-br i1 %.t2, label %label1, label %label2
+%.vzero = alloca i8*
+%.t2 = getelementptr [5 x i8], [5 x i8]*@.zero, i64 0, i64 0
+store i8* %.t2, i8** %.vzero
+%.t3 = load i8*, i8** %.vzero
+%.vfive = alloca i8*
+%.t4 = getelementptr [5 x i8], [5 x i8]*@.five, i64 0, i64 0
+store i8* %.t4, i8** %.vfive
+%.t5 = load i8*, i8** %.vfive
+br label %label1
 label1:
-store i32 11, i32* %.va
-%.t3 = load i32, i32* %.va
-%.t4 = icmp eq i32 %.t3, 11
-br i1 %.t4, label %label4, label %label5
+%.t7 = load i8*, i8** %.vzero
+%.t8 = load i8*, i8** %.vfive
+%.t6 = icmp ne i8* %.t7, %.t8
+br i1 %.t6, label %label2, label %label3
+label2:
+%.t10 = load i32, i32* %.va
+%.t9 = icmp eq i32 %.t10, 1
+br i1 %.t9, label %label4, label %label5
 label4:
-call i32 (i8*, ...) @printf (i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.1arg_str, i32 0, i32 0), i32 %.t3) 
+%.t11 = getelementptr [4 x i8], [4 x i8]*@.zero1, i64 0, i64 0
+store i8* %.t11, i8** %.vzero
 br label %label6
 label5:
+%.t13 = load i32, i32* %.va
+%.t12 = icmp eq i32 %.t13, 2
+br i1 %.t12, label %label9, label %label10
+label9:
+%.t14 = getelementptr [4 x i8], [4 x i8]*@.zero2, i64 0, i64 0
+store i8* %.t14, i8** %.vzero
+br label %label6
+label10:
+%.t16 = load i32, i32* %.va
+%.t15 = icmp eq i32 %.t16, 3
+br i1 %.t15, label %label14, label %label15
+label14:
+%.t17 = getelementptr [6 x i8], [6 x i8]*@.zero3, i64 0, i64 0
+store i8* %.t17, i8** %.vzero
+br label %label6
+label15:
+%.t19 = load i32, i32* %.va
+%.t18 = icmp eq i32 %.t19, 4
+br i1 %.t18, label %label19, label %label20
+label19:
+%.t20 = getelementptr [5 x i8], [5 x i8]*@.zero4, i64 0, i64 0
+store i8* %.t20, i8** %.vzero
+br label %label6
+label20:
+%.t22 = load i32, i32* %.va
+%.t21 = icmp eq i32 %.t22, 5
+br i1 %.t21, label %label24, label %label25
+label24:
+%.t23 = getelementptr [5 x i8], [5 x i8]*@.five, i64 0, i64 0
+store i8* %.t23, i8** %.vzero
+br label %label6
+label25:
 br label %label6
 label6:
-br label %label3
-label2:
-br label %label3
+%.t24= load i8* , i8** %.vzero
+call i32 @puts (i8* %.t24) 
+%.t25 = load i32, i32* %.va
+%.t26 = add i32 %.t25, 1
+store i32 %.t26, i32* %.va
+%.t27 = load i32, i32* %.va
+br label %label1
 label3:
-%.vb = alloca i32
-store i32 12, i32* %.vb
-%.t5 = load i32, i32* %.vb
-%.t6 = icmp eq i32 %.t5, 10
-br i1 %.t6, label %label7, label %label8
-label7:
-call i32 (i8*, ...) @printf (i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.1arg_str, i32 0, i32 0), i32 %.t5) 
-br label %label9
-label8:
-%.t7 = icmp eq i32 %.t5, 12
-br i1 %.t7, label %label12, label %label13
-label12:
-call i32 (i8*, ...) @printf (i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.1arg_str, i32 0, i32 0), i32 %.t5) 
-br label %label9
-label13:
-br label %label9
-label9:
-%.t8 = icmp eq i32 %.t3, %.t5
-br i1 %.t8, label %label15, label %label16
-label15:
-call i32 (i8*, ...) @printf (i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.1arg_str, i32 0, i32 0), i32 %.t3) 
-br label %label17
-label16:
-%.t9 = getelementptr [25 x i8], [25 x i8]*@.k, i64 0, i64 0
-call i32 @puts (i8* %.t9) 
-%.t10 = getelementptr [25 x i8], [25 x i8]*@.k, i64 0, i64 0
-%.t11 = icmp eq i8* %.t9, %.t10
-br i1 %.t11, label %label18, label %label19
-label18:
-%.t12 = getelementptr [31 x i8], [31 x i8]*@.k1, i64 0, i64 0
-call i32 @puts (i8* %.t12) 
-br label %label20
-label19:
-br label %label20
-label20:
-br label %label17
-label17:
 ret i32 0 
 }

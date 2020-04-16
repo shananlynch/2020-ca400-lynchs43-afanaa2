@@ -134,6 +134,7 @@ public class IrCodeVisitor implements monaVisitor {
           if(node0.equals("string") && node.jjtGetNumChildren() > 2 ){
             String node2 = (String) node.jjtGetChild (2).jjtAccept (this, data);
             String dec1 = sv.get(node2);
+            System.out.println(node2);
             String var = "";
             String temp = "";
             if(dec1 ==  null){
@@ -144,9 +145,14 @@ public class IrCodeVisitor implements monaVisitor {
                 var = dec1;
             }
             temp = getTemp();
+            dec = "%.v" + node1.jjtGetValue() + " = alloca " + mt ;
+            prog = prog + dec + "\n" ;
             prog = prog + temp + " = getelementptr [" +(node2.length() - 1) + " x i8], [" + (node2.length() - 1) + " x i8]*" + var + ", i64 0, i64 0\n";
-            iv.put( node1.jjtGetValue().toString(),temp);
+            prog = prog + "store i8* " + temp + ", i8** %.v" + node1.jjtGetValue() + "\n";
+            temp = getTemp();
+            prog = prog + temp + " = load " + mt + ", " + mt + "* " + "%.v" + node1.jjtGetValue() + "\n";
             sv.put(node2,var);
+            iv.put( node1.jjtGetValue().toString(),"%.v." + node1.jjtGetValue());
           }
         else{
           dec = "%.v" + node1.jjtGetValue() + " = alloca " + mt ;
@@ -182,8 +188,15 @@ public class IrCodeVisitor implements monaVisitor {
               String sValue = value.jjtGetValue().toString();
               String temp = getTemp();
               int len = (sValue.length() - 1);
-              stringDec = stringDec + sVar + " = constant [" + len + " x i8] c" + sValue.substring(0, len) + "\\00\"" + "\n";;
+              String dec1 = sv.get(sValue);
+              if(dec1 == null){
+                  stringDec = stringDec + sVar + " = constant [" + len + " x i8] c" + sValue.substring(0, len) + "\\00\"" + "\n";;
+              }
+              else{
+                  sVar = dec1 ;
+              }
               prog = prog + temp + " = getelementptr [" + len + " x i8], [" + len+ " x i8]*" + sVar + ", i64 0, i64 0\n";
+              prog = prog + "store i8* " + temp + ", i8** %.v" + sVar1 + "\n";
               iv.put(sVar1,temp);
           }
           else if(sType.equals("string")){
@@ -315,8 +328,10 @@ public class IrCodeVisitor implements monaVisitor {
 	       	   prog = prog +result + ") \n";
             }
             else if (sType.equals("i8*")){
+                String temp = getTemp();
+                prog = prog + temp + "= load i8* , i8** " + "%.v" + node0.jjtGetValue() + "\n";
                 prog = prog +  "call i32 @puts (i8* ";
-                prog = prog +result + ") \n";
+                prog = prog +temp + ") \n";
             }
        	    }
           else if(node.jjtGetValue().equals("=")){
@@ -336,6 +351,7 @@ public class IrCodeVisitor implements monaVisitor {
             if(mt.equals("i8*")){
                 String var = node0.jjtGetValue().toString();
                 getStringDeclN(var);
+                System.out.println(var);
                 String node1 = (String) node.jjtGetChild (1).jjtAccept (this, data);
 
             }
@@ -348,7 +364,6 @@ public class IrCodeVisitor implements monaVisitor {
               trueLabel = getLabel();
               FalseLabel = getLabel();
               endLabel = getLabel();
-
 
               boolean elseCheck = false ;
               String cond = (String)node.jjtGetChild(0).jjtAccept(this,data);
@@ -398,6 +413,20 @@ public class IrCodeVisitor implements monaVisitor {
       else if(node.jjtGetValue().equals("decl")){
           node0.jjtAccept(this,data);
       }
+      else if(node.jjtGetValue().equals("while")){
+            String conditionLabel = getLabel ();
+            String trueLabel = getLabel ();
+            String endLabel = getLabel ();
+            prog = prog + "br label %" + conditionLabel + "\n" + conditionLabel + ":" + "\n";     // end the previous basic block and start a new one
+            String cond = (String)node.jjtGetChild(0).jjtAccept(this,data); //
+            prog = prog + "br i1 " + cond + ", label %" + trueLabel + ", label %" + endLabel + "\n";
+            prog = prog + trueLabel + ":" +"\n";
+            for(int i = 1; i < node.jjtGetNumChildren(); i++){
+                node.jjtGetChild (i).jjtAccept (this, data);
+            }                                 // While true Block
+            prog = prog +  "br label %" + conditionLabel + "\n";
+		    prog = prog + endLabel + ":" + "\n";
+        }
       return data;
 }
 
@@ -448,7 +477,7 @@ public class IrCodeVisitor implements monaVisitor {
 		break;
 
 	    case "!=":
-		cOp = "neq";
+		cOp = "ne";
 		break;
 
 	    case ">":
@@ -487,7 +516,16 @@ public class IrCodeVisitor implements monaVisitor {
       public Object visit(ASTarray node, Object data){ return null;}
       public Object visit(ASTclass_ node, Object data){ return null;}
       public Object visit(ASTdecl_list node, Object data){ return null;}
-      public Object visit(ASTIdentifier node, Object data){ return iv.get(node.value.toString());}
+      public Object visit(ASTIdentifier node, Object data){
+          DataType dType = st.getType(node.jjtGetValue().toString(),scope);
+          String cType = dType.toString();
+          String mt = machineType(cType);
+          String temp = getTemp();
+          String load = temp + " = load " + mt + ", " + mt + "* " + "%.v" + node.jjtGetValue();
+          prog = prog + load + "\n" ;
+          System.out.println(load);
+          iv.put(node.jjtGetValue().toString(),temp);
+          return iv.get(node.value.toString());}
       public Object visit(ASTbreak_ node, Object data){ return null;}
       public Object visit(ASTNumber node, Object data){ return node.value;}
       public Object visit(ASTString node, Object data){

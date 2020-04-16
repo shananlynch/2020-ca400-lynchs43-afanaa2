@@ -1,0 +1,20 @@
+main{
+var int a = 0 ;
+var string zero = "zero";
+var string five = "five";
+while( zero != five ){
+    if(a == 1){
+        zero = "one";
+    }else_if(a == 2){
+        zero = "two";
+    }else_if(a == 3){
+        zero = "three";
+    }else_if(a == 4){
+        zero = "four";
+    }else_if(a == 5){
+        zero = "five" ;
+    }
+    print zero ;
+    a = a + 1 ;
+}
+}
