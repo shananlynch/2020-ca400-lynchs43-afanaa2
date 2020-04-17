@@ -41,7 +41,7 @@ public class TypeCheckVisitor implements monaVisitor {
         public Object visit(ASTType node, Object data) {
             String s = (String)node.value;
             if (s.equals("boolean")) {
-                return DataType.Boolean;
+                return DataType.Bool;
             }
             else if (s.equals("int")) {
                 return DataType.Integer;
@@ -102,6 +102,6 @@ public class TypeCheckVisitor implements monaVisitor {
     public Object visit(ASTNumber node, Object data){
          return DataType.Integer;}
     public Object visit(ASTString node, Object data){ return DataType.string;}
-    public Object visit(ASTBoolean node, Object data){ return DataType.Boolean;}
+    public Object visit(ASTBoolean node, Object data){ return DataType.Bool;}
 
 }

@@ -12,7 +12,7 @@ public enum DataType {
     Statement,
     ArgumentList,
     Identifier,
-    Boolean,
+    Bool,
     Integer,
     string,
     TypeUnknown,

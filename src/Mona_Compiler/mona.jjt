@@ -314,7 +314,7 @@ void statement() #statement : {Token t; String r ;} {
        <LCBR> statement_block() (return_() | {})  <RCBR> { jjtThis.value = t.image;}
      |<SKIP_mona> <SEMIC>
      | r = decl() { jjtThis.value = r;}
-     | t =  <PRINT> identifier() <SEMIC> { jjtThis.value = t.image;}
+     | t =  <PRINT> values() <SEMIC> { jjtThis.value = t.image;}
      | break_() <SEMIC>
 
 }
@@ -394,7 +394,7 @@ void condition()  : {Token t;String image;}
      (
           <LOG_NEG> condition()
           |  <LBR> condition() <RBR>
-          | fragment() image = comp_op() expression(){jjtThis.value = image;}#comp_op(2)
+          | fragment() (image = comp_op() expression(){jjtThis.value = image;}#comp_op(2) | {})
      )
      conditionPrime()
 }
@@ -443,7 +443,7 @@ void dictionary () : {} {
 }
 
 void values() : {} {
-    (<IDENTIFIER> | <FLOAT> | string() | number() )
+    (identifier() | <FLOAT> | string() | number() |bool() )
 }
 
 void d_structure () : {} {

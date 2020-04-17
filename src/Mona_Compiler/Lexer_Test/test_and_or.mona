@@ -1,0 +1,26 @@
+main{
+    if (true && false ){
+        print true ;
+    }
+    else{
+        print false ;
+    }
+    if (true && true ){
+        print true ;
+    }
+    else{
+        print false ;
+    }
+    if (true || false ){
+        print true ;
+    }
+    else{
+        print false ;
+    }
+    if (false || false ){
+        print true ;
+    }
+    else{
+        print false ;
+    }
+}

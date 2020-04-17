@@ -68,8 +68,8 @@ public class STC extends Object {
 
 }
  public DataType getDType(String s ){
-    if (s.equals("boolean")) {
-        return DataType.Boolean;
+    if (s.equals("bool")) {
+        return DataType.Bool;
     }
     else if (s.equals("int")) {
         return DataType.Integer;

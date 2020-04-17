@@ -1,0 +1,6 @@
+main{
+    print true ;
+    print false ;
+    print "string";
+    print 10 ;
+}
