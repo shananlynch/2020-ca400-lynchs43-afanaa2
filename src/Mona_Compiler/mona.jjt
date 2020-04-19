@@ -381,7 +381,7 @@ void fragment() : {}
 {
      (
           (<MINUS_SIGN> | {} ) identifier() ( (<LBR> arg_list() <RBR>)#functionCall(2)
-          | (<GET> <LBR> number() <RBR> )#getArray(2) | {} )
+          | (<GET> <LBR> (number() | identifier()) <RBR> )#getArray(2) | {} )
           | number() |bool() |string() | float_()
      )
 }

@@ -918,7 +918,7 @@ void fragment() : {}
               jjtree.openNodeScope(jjtn002);
             }
             try {
-/*@egen*/ (<GET> <LBR> number() <RBR> )/*@bgen(jjtree)*/
+/*@egen*/ (<GET> <LBR> (number() | identifier()) <RBR> )/*@bgen(jjtree)*/
             } catch (Throwable jjte002) {
               if (jjtc002) {
                 jjtree.clearNodeScope(jjtn002);
