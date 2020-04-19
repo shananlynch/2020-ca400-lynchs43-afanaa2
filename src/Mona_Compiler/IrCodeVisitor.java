@@ -20,6 +20,7 @@ public class IrCodeVisitor implements monaVisitor {
     private static String FalseLabel ;
     private Map<String,Integer> varInc = new HashMap<String, Integer>();
     private static int boolLabel = 0;
+    private static String lv = "";
 
     /*
     getTemp funtion gets a temporary local variable
@@ -102,10 +103,10 @@ public class IrCodeVisitor implements monaVisitor {
     public static String machineType (String type)
     {
         String mty;
-        if (type.equals ("Integer")){
+        if (type.equalsIgnoreCase("Integer") || type.equalsIgnoreCase("Number")){
             mty = "i32";
 	    }
-        else if (type.equalsIgnoreCase("bool")){
+        else if (type.equalsIgnoreCase("bool") || type.equalsIgnoreCase("boolean")){
             mty = "i1";
 	    }
         else if (type.equals ("string")){
@@ -187,6 +188,17 @@ public class IrCodeVisitor implements monaVisitor {
             sv.put(node2,var);
             iv.put( node1.jjtGetValue().toString(),"%.v." + node1.jjtGetValue());
           }
+           if(node0.equals("[") && node.jjtGetNumChildren() > 2 ){
+               SimpleNode sNode0 = (SimpleNode) node.jjtGetChild(0);
+                node0 = (String) sNode0.jjtGetChild (0).jjtAccept (this, data);
+                mt = machineType(node0) ;
+                String num = (String) node.jjtGetChild (2).jjtAccept (this, data);
+                String var = "%.l" + node1.jjtGetValue();
+                dec = var + " = alloca [" +  num + " x " + mt + "]" ;
+                prog = prog + dec + "\n" ;
+                prog = prog + "store [" +  num + " x " + mt + "]" + lv + ", [" +  num + " x " + mt + "]*" + var;
+                prog = prog +"\n" ;
+           }
           else{
             dec = "%.v" + node1.jjtGetValue() + " = alloca " + mt ;
             if(node.jjtGetNumChildren() > 2){
@@ -215,6 +227,7 @@ public class IrCodeVisitor implements monaVisitor {
           String sType =(String) type.jjtGetValue();
           DataType dType = st.getType(sType,scope);
           SimpleNode parentType = (SimpleNode)node.jjtGetParent() ;
+          SimpleNode cNode = (SimpleNode)node.jjtGetChild(0);
           if(parentType.toString().equals("statement") && dType.toString().equals("string") ){
               SimpleNode var = (SimpleNode)node.jjtGetParent().jjtGetChild(0);
               String sVar1 = var.jjtGetValue().toString();
@@ -242,6 +255,12 @@ public class IrCodeVisitor implements monaVisitor {
               SimpleNode value = (SimpleNode) node.jjtGetChild(0) ;
               return value.jjtGetValue() ;
           }
+          else if(sType.equals("[")){
+              String value = (String) node.jjtGetChild(0).jjtAccept(this,data) ;
+              System.out.print(value);
+              return value;
+          }
+
 
           else if(parentType.toString().equals("statement") &&
           dType.toString().equals("Bool") ){
@@ -619,8 +638,27 @@ public class IrCodeVisitor implements monaVisitor {
           return temp;
       }
       public Object visit(ASTargumentList node, Object data){ return null;}
-      public Object visit(ASTarray node, Object data){ return null;}
-      public Object visit(ASTclass_ node, Object data){ return null;}
+      public Object visit(ASTarray node, Object data){
+          int numChildren = node.jjtGetNumChildren();
+          String num = Integer.toString(numChildren);
+          String nodeN ;
+          String nodeT = (String)node.jjtGetChild(0).toString();
+          String mtype = machineType(nodeT);
+          lv = "[";
+          for(int i = 0; i < numChildren ; i ++ ){
+              nodeN = (String) node.jjtGetChild(i).jjtAccept(this,data);
+              if(i == 0){
+                  lv = lv + mtype + " " + nodeN;
+              }
+              else{
+                  lv = lv + "," + mtype + " " +  nodeN;
+              }
+          }
+          lv = lv +"]";
+          return num ;
+
+      }
+        public Object visit(ASTclass_ node, Object data){ return null;}
       public Object visit(ASTdecl_list node, Object data){ return null;}
 
       public Object visit(ASTIdentifier node, Object data){
@@ -634,6 +672,7 @@ public class IrCodeVisitor implements monaVisitor {
           return iv.get(node.value.toString());
       }
       public Object visit(ASTbreak_ node, Object data){ return null;}
+      public Object visit(ASTgetArray node, Object data){ return "null";}
       public Object visit(ASTNumber node, Object data){ return node.value;}
       public Object visit(ASTString node, Object data){
           SimpleNode nodeParent = (SimpleNode) node.jjtGetParent();

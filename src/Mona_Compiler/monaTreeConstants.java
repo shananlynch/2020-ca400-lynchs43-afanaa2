@@ -14,7 +14,7 @@ public interface monaTreeConstants
   public int JJTSTATEMENT = 10;
   public int JJTELSE_IF = 11;
   public int JJTFUNCTIONCALL = 12;
-  public int JJTCLASS_CALL = 13;
+  public int JJTGETARRAY = 13;
   public int JJTARITH_OP = 14;
   public int JJTCOMP_OP = 15;
   public int JJTANDCONDITION = 16;
@@ -44,7 +44,7 @@ public interface monaTreeConstants
     "statement",
     "else_if",
     "functionCall",
-    "class_call",
+    "getArray",
     "arith_op",
     "comp_op",
     "andCondition",
@@ -60,4 +60,4 @@ public interface monaTreeConstants
     "Boolean",
   };
 }
-/* JavaCC - OriginalChecksum=c02f97bf900730c9490c3f95f821c277 (do not edit this line) */
+/* JavaCC - OriginalChecksum=0769b7984351ee89d74e29700f6b0854 (do not edit this line) */

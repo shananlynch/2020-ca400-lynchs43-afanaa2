@@ -1,0 +1,4 @@
+main{
+    var [int] a = [10,11,12,13,14] ;
+     var int l = a.get(2);
+}

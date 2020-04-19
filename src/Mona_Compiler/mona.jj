@@ -150,6 +150,7 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < FALSE : "false" >
      | < WHILE : "while" >
      | < FOR : "for" >
+     | < GET : ".get" >
      | < STRING : "String" >
      | < SKIP_mona : "skip" >
 }
@@ -641,7 +642,6 @@ void statement()            : {/*@bgen(jjtree) statement */
       }
     }
 /*@egen*/
-
 }
 
 
@@ -757,52 +757,34 @@ String statement_Left_factor_IDENTIFIER() : {String t ;}
                                                                                      }
                                                                                    }
 /*@egen*/                 <RBR> <SEMIC>
-    |/*@bgen(jjtree) #class_call( 2) */
-      {
-        ASTclass_call jjtn004 = new ASTclass_call(JJTCLASS_CALL);
-        boolean jjtc004 = true;
-        jjtree.openNodeScope(jjtn004);
-      }
-      try {
-/*@egen*/ (<DOT>identifier() (<LBR> arg_list()<RBR> <SEMIC>)/*@bgen(jjtree) #functionCall( 2) */
-                                                        {
-                                                          ASTfunctionCall jjtn003 = new ASTfunctionCall(JJTFUNCTIONCALL);
-                                                          boolean jjtc003 = true;
-                                                          jjtree.openNodeScope(jjtn003);
-                                                        }
-                                                        try {
-/*@egen*//*@bgen(jjtree)*/
-                                                        {
-                                                          jjtree.closeNodeScope(jjtn003,  2);
-                                                          jjtc003 = false;
-                                                        }
-/*@egen*/{return "classF";}/*@bgen(jjtree)*/
-                                                        } finally {
-                                                          if (jjtc003) {
-                                                            jjtree.closeNodeScope(jjtn003,  2);
-                                                          }
-                                                        }
-/*@egen*/                )/*@bgen(jjtree)*/
-      } catch (Throwable jjte004) {
-        if (jjtc004) {
-          jjtree.clearNodeScope(jjtn004);
-          jjtc004 = false;
-        } else {
-          jjtree.popNode();
-        }
-        if (jjte004 instanceof RuntimeException) {
-          throw (RuntimeException)jjte004;
-        }
-        if (jjte004 instanceof ParseException) {
-          throw (ParseException)jjte004;
-        }
-        throw (Error)jjte004;
-      } finally {
-        if (jjtc004) {
-          jjtree.closeNodeScope(jjtn004,  2);
-        }
-      }
-/*@egen*/              
+    |/*@bgen(jjtree) getArray */
+     {
+       ASTgetArray jjtn003 = new ASTgetArray(JJTGETARRAY);
+       boolean jjtc003 = true;
+       jjtree.openNodeScope(jjtn003);
+     }
+     try {
+/*@egen*/(<GET> <LBR> number() <RBR>  <SEMIC>)/*@bgen(jjtree)*/
+     } catch (Throwable jjte003) {
+       if (jjtc003) {
+         jjtree.clearNodeScope(jjtn003);
+         jjtc003 = false;
+       } else {
+         jjtree.popNode();
+       }
+       if (jjte003 instanceof RuntimeException) {
+         throw (RuntimeException)jjte003;
+       }
+       if (jjte003 instanceof ParseException) {
+         throw (ParseException)jjte003;
+       }
+       throw (Error)jjte003;
+     } finally {
+       if (jjtc003) {
+         jjtree.closeNodeScope(jjtn003, true);
+       }
+     }
+/*@egen*/         {return "get";}
 }
 
 
@@ -928,7 +910,35 @@ void fragment() : {}
                                                   jjtree.closeNodeScope(jjtn001,  2);
                                                 }
                                               }
-/*@egen*/                 | {} )
+/*@egen*/                
+          |/*@bgen(jjtree) #getArray( 2) */
+            {
+              ASTgetArray jjtn002 = new ASTgetArray(JJTGETARRAY);
+              boolean jjtc002 = true;
+              jjtree.openNodeScope(jjtn002);
+            }
+            try {
+/*@egen*/ (<GET> <LBR> number() <RBR> )/*@bgen(jjtree)*/
+            } catch (Throwable jjte002) {
+              if (jjtc002) {
+                jjtree.clearNodeScope(jjtn002);
+                jjtc002 = false;
+              } else {
+                jjtree.popNode();
+              }
+              if (jjte002 instanceof RuntimeException) {
+                throw (RuntimeException)jjte002;
+              }
+              if (jjte002 instanceof ParseException) {
+                throw (ParseException)jjte002;
+              }
+              throw (Error)jjte002;
+            } finally {
+              if (jjtc002) {
+                jjtree.closeNodeScope(jjtn002,  2);
+              }
+            }
+/*@egen*/             | {} )
           | number() |bool() |string() | float_()
      )
 }

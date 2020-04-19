@@ -146,6 +146,7 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < FALSE : "false" >
      | < WHILE : "while" >
      | < FOR : "for" >
+     | < GET : ".get" >
      | < STRING : "String" >
      | < SKIP_mona : "skip" >
 }
@@ -316,7 +317,6 @@ void statement() #statement : {Token t; String r ;} {
      | r = decl() { jjtThis.value = r;}
      | t =  <PRINT> values() <SEMIC> { jjtThis.value = t.image;}
      | break_() <SEMIC>
-
 }
 
 
@@ -338,7 +338,7 @@ void else_if() #else_if : {Token t ;} {
 String statement_Left_factor_IDENTIFIER() : {String t ;}
 {
     t = assign() expression() <SEMIC>{return t; } #assigns(1) |  (<LBR> arg_list()){return "functionCall";}#functionCall(2) <RBR> <SEMIC>
-    | (<DOT>identifier() (<LBR> arg_list()<RBR> <SEMIC>){return "classF";}#functionCall(2))#class_call(2)
+    |(<GET> <LBR> number() <RBR>  <SEMIC>)#getArray{return "get";}
 }
 
 
@@ -380,7 +380,8 @@ void arith_op() : {Token t ;}
 void fragment() : {}
 {
      (
-          (<MINUS_SIGN> | {} ) identifier() ( (<LBR> arg_list() <RBR>)#functionCall(2) | {} )
+          (<MINUS_SIGN> | {} ) identifier() ( (<LBR> arg_list() <RBR>)#functionCall(2)
+          | (<GET> <LBR> number() <RBR> )#getArray(2) | {} )
           | number() |bool() |string() | float_()
      )
 }

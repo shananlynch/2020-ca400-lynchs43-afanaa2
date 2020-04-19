@@ -3,6 +3,9 @@ import java.util.*;
 public class TypeCheckVisitor implements monaVisitor {
     private static String scope = "global";
     private static STC st;
+
+    public Object visit(ASTgetArray node, Object data){ return null;}
+
     public Object visit(SimpleNode node, Object data){
          return null;}
 

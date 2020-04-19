@@ -1,12 +1,13 @@
 main{
-    var int a = 10 + 22 ;
-    a = a + a ;
-    print a ;
-    a = 11 ;
-    print a ;
-    a = 1023123 ;
-    print a ;
-
+    var int a = 0 ;
+    var bool b = a < 10;
+    while(b){
+    var int isOdd = a % 3;
+    if(isOdd == 0){
+        print a ;
+    }
+    a = a + 1;
+    }
 
 
 }
