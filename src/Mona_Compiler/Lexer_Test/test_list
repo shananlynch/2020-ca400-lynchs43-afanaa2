@@ -1,6 +1,10 @@
 main{
-    var [int] a = [1,2,3,4,5,6,7] ;
-    var int l  = a.get(2);
-    l = 2;
-    print l ;
+    var string a = "hello" ;
+    print a ;
+    var [int] l = [1,2,3,4,5];
+    var int l1;
+    var int l2 = l.get(2);
+    l1 = l.get(0);
+    print l1 ;
+    print l2 ;
 }

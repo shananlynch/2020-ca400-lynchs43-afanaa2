@@ -189,7 +189,7 @@ public class IrCodeVisitor implements monaVisitor {
             sv.put(node2,var);
             iv.put( node1.jjtGetValue().toString(),"%.v." + node1.jjtGetValue());
           }
-           if(node0.equals("[") && node.jjtGetNumChildren() > 2 ){
+           else if(node0.equals("[") && node.jjtGetNumChildren() > 2 ){
                SimpleNode sNode0 = (SimpleNode) node.jjtGetChild(0);
                 node0 = (String) sNode0.jjtGetChild (0).jjtAccept (this, data);
                 mt = machineType(node0) ;
@@ -720,6 +720,11 @@ public class IrCodeVisitor implements monaVisitor {
       public Object visit(ASTgetArray node, Object data){
           String l = (String) node.jjtGetChild(0).jjtAccept(this,data);
           String n = (String) node.jjtGetChild(1).jjtAccept(this,data);
+          String length = listLenght.get(l);
+          return l;
+      }
+      public Object visit(ASTgetLength node, Object data){
+          String l = (String) node.jjtGetChild(0).jjtAccept(this,data);
           String length = listLenght.get(l);
           return l;
       }

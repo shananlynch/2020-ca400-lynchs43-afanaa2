@@ -14,20 +14,21 @@ public interface monaTreeConstants
   public int JJTSTATEMENT = 10;
   public int JJTELSE_IF = 11;
   public int JJTFUNCTIONCALL = 12;
-  public int JJTGETARRAY = 13;
-  public int JJTARITH_OP = 14;
-  public int JJTCOMP_OP = 15;
-  public int JJTANDCONDITION = 16;
-  public int JJTORCONDITION = 17;
-  public int JJTARGUMENTLIST = 18;
-  public int JJTARRAY = 19;
-  public int JJTCLASS_ = 20;
-  public int JJTDECL_LIST = 21;
-  public int JJTIDENTIFIER = 22;
-  public int JJTBREAK_ = 23;
-  public int JJTNUMBER = 24;
-  public int JJTSTRING = 25;
-  public int JJTBOOLEAN = 26;
+  public int JJTARITH_OP = 13;
+  public int JJTGETARRAY = 14;
+  public int JJTGETLENGTH = 15;
+  public int JJTCOMP_OP = 16;
+  public int JJTANDCONDITION = 17;
+  public int JJTORCONDITION = 18;
+  public int JJTARGUMENTLIST = 19;
+  public int JJTARRAY = 20;
+  public int JJTCLASS_ = 21;
+  public int JJTDECL_LIST = 22;
+  public int JJTIDENTIFIER = 23;
+  public int JJTBREAK_ = 24;
+  public int JJTNUMBER = 25;
+  public int JJTSTRING = 26;
+  public int JJTBOOLEAN = 27;
 
 
   public String[] jjtNodeName = {
@@ -44,8 +45,9 @@ public interface monaTreeConstants
     "statement",
     "else_if",
     "functionCall",
-    "getArray",
     "arith_op",
+    "getArray",
+    "getLength",
     "comp_op",
     "andCondition",
     "orCondition",
@@ -60,4 +62,4 @@ public interface monaTreeConstants
     "Boolean",
   };
 }
-/* JavaCC - OriginalChecksum=0769b7984351ee89d74e29700f6b0854 (do not edit this line) */
+/* JavaCC - OriginalChecksum=b66801a3c9049fc9e9961ad0d51b1c70 (do not edit this line) */

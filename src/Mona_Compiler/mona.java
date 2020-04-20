@@ -809,37 +809,6 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
       jj_consume_token(RBR);
       jj_consume_token(SEMIC);
       break;
-    case GET:
-       ASTgetArray jjtn003 = new ASTgetArray(JJTGETARRAY);
-       boolean jjtc003 = true;
-       jjtree.openNodeScope(jjtn003);
-      try {
-        jj_consume_token(GET);
-        jj_consume_token(LBR);
-        number();
-        jj_consume_token(RBR);
-        jj_consume_token(SEMIC);
-      } catch (Throwable jjte003) {
-       if (jjtc003) {
-         jjtree.clearNodeScope(jjtn003);
-         jjtc003 = false;
-       } else {
-         jjtree.popNode();
-       }
-       if (jjte003 instanceof RuntimeException) {
-         {if (true) throw (RuntimeException)jjte003;}
-       }
-       if (jjte003 instanceof ParseException) {
-         {if (true) throw (ParseException)jjte003;}
-       }
-       {if (true) throw (Error)jjte003;}
-      } finally {
-       if (jjtc003) {
-         jjtree.closeNodeScope(jjtn003, true);
-       }
-      }
-                                                    {if (true) return "get";}
-      break;
     default:
       jj_la1[18] = jj_gen;
       jj_consume_token(-1);
@@ -1046,6 +1015,20 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
               if (jjtc002) {
                 jjtree.closeNodeScope(jjtn002,  2);
               }
+        }
+        break;
+      case LENGTH:
+                                                                           ASTgetLength jjtn003 = new ASTgetLength(JJTGETLENGTH);
+                                                                           boolean jjtc003 = true;
+                                                                           jjtree.openNodeScope(jjtn003);
+        try {
+          jj_consume_token(LENGTH);
+          jj_consume_token(LBR);
+          jj_consume_token(RBR);
+        } finally {
+                                                                           if (jjtc003) {
+                                                                             jjtree.closeNodeScope(jjtn003,  1);
+                                                                           }
         }
         break;
       default:
@@ -1683,10 +1666,10 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
       jj_la1_0 = new int[] {0x1800,0x1800,0x0,0x0,0x138000,0x0,0x138000,0x138000,0x0,0xc4281800,0x2000,0x30000000,0x2000,0xc4281800,0x2000,0x400000,0x800000,0x2000,0x0,0x30000000,0x0,0x0,0x0,0x0,0x0,0x30000000,0x30000000,0x0,0x30000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x30000000,0x30000000,0x0,0x4000,0x30000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x2000,0x2000,0x402,0x8,0x402,0x402,0x8,0x44,0x0,0x80000440,0x0,0x44,0x0,0x0,0x0,0x0,0x2101,0x80008540,0xfc000,0xfc000,0x8000,0x80000000,0x101,0x80008000,0x800fc540,0x1f800000,0x80108100,0x600000,0x1f800000,0x80000440,0x80000440,0x8,0x80000000,0x80000000,0x8,0x80000000,0x80000400,0x8,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x4000,0x4000,0x804,0x10,0x804,0x804,0x10,0x88,0x0,0x880,0x0,0x88,0x0,0x0,0x0,0x0,0x4200,0x10a80,0x1f8000,0x1f8000,0x10000,0x0,0x203,0x10000,0x1f8a80,0x3f000000,0x210200,0xc00000,0x3f000000,0x880,0x880,0x10,0x0,0x0,0x10,0x0,0x800,0x10,0x0,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x1,0x0,0x1,0x1,0x0,0x2,0x0,0x7,0x0,0x2,0x0,0x0,0x0,0x0,0x0,0x7,0x0,0x0,0x0,0x2,0x0,0x7,0x7,0x0,0x7,0x0,0x0,0x6,0x6,0x0,0x4,0x4,0x0,0x7,0x7,0x0,0x0,0x0,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x2,0x0,0x2,0x2,0x0,0x4,0x0,0xf,0x0,0x4,0x0,0x0,0x0,0x0,0x0,0xf,0x0,0x0,0x0,0x5,0x0,0xf,0xf,0x0,0xf,0x0,0x0,0xd,0xd,0x0,0x9,0x9,0x0,0xf,0xf,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -1827,7 +1810,7 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[67];
+    boolean[] la1tokens = new boolean[68];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -1847,7 +1830,7 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
         }
       }
     }
-    for (int i = 0; i < 67; i++) {
+    for (int i = 0; i < 68; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

@@ -151,6 +151,7 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < WHILE : "while" >
      | < FOR : "for" >
      | < GET : ".get" >
+      | < LENGTH : ".length" >
      | < STRING : "String" >
      | < SKIP_mona : "skip" >
 }
@@ -757,34 +758,7 @@ String statement_Left_factor_IDENTIFIER() : {String t ;}
                                                                                      }
                                                                                    }
 /*@egen*/                 <RBR> <SEMIC>
-    |/*@bgen(jjtree) getArray */
-     {
-       ASTgetArray jjtn003 = new ASTgetArray(JJTGETARRAY);
-       boolean jjtc003 = true;
-       jjtree.openNodeScope(jjtn003);
-     }
-     try {
-/*@egen*/(<GET> <LBR> number() <RBR>  <SEMIC>)/*@bgen(jjtree)*/
-     } catch (Throwable jjte003) {
-       if (jjtc003) {
-         jjtree.clearNodeScope(jjtn003);
-         jjtc003 = false;
-       } else {
-         jjtree.popNode();
-       }
-       if (jjte003 instanceof RuntimeException) {
-         throw (RuntimeException)jjte003;
-       }
-       if (jjte003 instanceof ParseException) {
-         throw (ParseException)jjte003;
-       }
-       throw (Error)jjte003;
-     } finally {
-       if (jjtc003) {
-         jjtree.closeNodeScope(jjtn003, true);
-       }
-     }
-/*@egen*/         {return "get";}
+
 }
 
 
@@ -938,7 +912,20 @@ void fragment() : {}
                 jjtree.closeNodeScope(jjtn002,  2);
               }
             }
-/*@egen*/             | {} )
+/*@egen*/             |/*@bgen(jjtree) #getLength( 1) */
+                                                                         {
+                                                                           ASTgetLength jjtn003 = new ASTgetLength(JJTGETLENGTH);
+                                                                           boolean jjtc003 = true;
+                                                                           jjtree.openNodeScope(jjtn003);
+                                                                         }
+                                                                         try {
+/*@egen*/ (<LENGTH> <LBR> <RBR>)/*@bgen(jjtree)*/
+                                                                         } finally {
+                                                                           if (jjtc003) {
+                                                                             jjtree.closeNodeScope(jjtn003,  1);
+                                                                           }
+                                                                         }
+/*@egen*/              | {} )
           | number() |bool() |string() | float_()
      )
 }

@@ -53,73 +53,75 @@ public interface monaConstants {
   /** RegularExpression Id. */
   int GET = 32;
   /** RegularExpression Id. */
-  int STRING = 33;
+  int LENGTH = 33;
   /** RegularExpression Id. */
-  int SKIP_mona = 34;
+  int STRING = 34;
   /** RegularExpression Id. */
-  int COMMA = 35;
+  int SKIP_mona = 35;
   /** RegularExpression Id. */
-  int SEMIC = 36;
+  int COMMA = 36;
   /** RegularExpression Id. */
-  int COLON = 37;
+  int SEMIC = 37;
   /** RegularExpression Id. */
-  int LCBR = 38;
+  int COLON = 38;
   /** RegularExpression Id. */
-  int RCBR = 39;
+  int LCBR = 39;
   /** RegularExpression Id. */
-  int LBR = 40;
+  int RCBR = 40;
   /** RegularExpression Id. */
-  int RBR = 41;
+  int LBR = 41;
   /** RegularExpression Id. */
-  int LSBR = 42;
+  int RBR = 42;
   /** RegularExpression Id. */
-  int RSBR = 43;
+  int LSBR = 43;
   /** RegularExpression Id. */
-  int DOT = 44;
+  int RSBR = 44;
   /** RegularExpression Id. */
-  int ASSIGN = 45;
+  int DOT = 45;
   /** RegularExpression Id. */
-  int PLUS_SIGN = 46;
+  int ASSIGN = 46;
   /** RegularExpression Id. */
-  int MINUS_SIGN = 47;
+  int PLUS_SIGN = 47;
   /** RegularExpression Id. */
-  int MUL = 48;
+  int MINUS_SIGN = 48;
   /** RegularExpression Id. */
-  int DIV = 49;
+  int MUL = 49;
   /** RegularExpression Id. */
-  int POW = 50;
+  int DIV = 50;
   /** RegularExpression Id. */
-  int MOD = 51;
+  int POW = 51;
   /** RegularExpression Id. */
-  int LOG_NEG = 52;
+  int MOD = 52;
   /** RegularExpression Id. */
-  int OR = 53;
+  int LOG_NEG = 53;
   /** RegularExpression Id. */
-  int AND = 54;
+  int OR = 54;
   /** RegularExpression Id. */
-  int EQUAL = 55;
+  int AND = 55;
   /** RegularExpression Id. */
-  int NOT_EQUAL = 56;
+  int EQUAL = 56;
   /** RegularExpression Id. */
-  int LESS_THAN = 57;
+  int NOT_EQUAL = 57;
   /** RegularExpression Id. */
-  int LESS_THAN_OR_EQUAL = 58;
+  int LESS_THAN = 58;
   /** RegularExpression Id. */
-  int GREATER_THAN = 59;
+  int LESS_THAN_OR_EQUAL = 59;
   /** RegularExpression Id. */
-  int GREATER_THAN_OR_EQUAL = 60;
+  int GREATER_THAN = 60;
   /** RegularExpression Id. */
-  int DIGIT = 61;
+  int GREATER_THAN_OR_EQUAL = 61;
   /** RegularExpression Id. */
-  int CHAR = 62;
+  int DIGIT = 62;
   /** RegularExpression Id. */
-  int NUM = 63;
+  int CHAR = 63;
   /** RegularExpression Id. */
-  int FLOAT = 64;
+  int NUM = 64;
   /** RegularExpression Id. */
-  int IDENTIFIER = 65;
+  int FLOAT = 65;
   /** RegularExpression Id. */
-  int QUOTED_STRING = 66;
+  int IDENTIFIER = 66;
+  /** RegularExpression Id. */
+  int QUOTED_STRING = 67;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -161,6 +163,7 @@ public interface monaConstants {
     "\"while\"",
     "\"for\"",
     "\".get\"",
+    "\".length\"",
     "\"String\"",
     "\"skip\"",
     "\",\"",

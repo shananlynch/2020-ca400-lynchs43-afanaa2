@@ -9,6 +9,9 @@ public class TypeCheckVisitor implements monaVisitor {
     public Object visit(SimpleNode node, Object data){
          return null;}
 
+    public Object visit(ASTgetLength node, Object data){
+              return null;}
+
     public Object visit(ASTProgram node, Object data){
           st = (STC) data;
           node.childrenAccept(this, data); //accepts nodes

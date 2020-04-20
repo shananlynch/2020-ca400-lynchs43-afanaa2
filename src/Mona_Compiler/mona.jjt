@@ -147,6 +147,7 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < WHILE : "while" >
      | < FOR : "for" >
      | < GET : ".get" >
+      | < LENGTH : ".length" >
      | < STRING : "String" >
      | < SKIP_mona : "skip" >
 }
@@ -338,7 +339,7 @@ void else_if() #else_if : {Token t ;} {
 String statement_Left_factor_IDENTIFIER() : {String t ;}
 {
     t = assign() expression() <SEMIC>{return t; } #assigns(1) |  (<LBR> arg_list()){return "functionCall";}#functionCall(2) <RBR> <SEMIC>
-    |(<GET> <LBR> number() <RBR>  <SEMIC>)#getArray{return "get";}
+
 }
 
 
@@ -381,7 +382,7 @@ void fragment() : {}
 {
      (
           (<MINUS_SIGN> | {} ) identifier() ( (<LBR> arg_list() <RBR>)#functionCall(2)
-          | (<GET> <LBR> (number() | identifier()) <RBR> )#getArray(2) | {} )
+          | (<GET> <LBR> (number() | identifier()) <RBR> )#getArray(2) | (<LENGTH> <LBR> <RBR>)#getLength(1) | {} )
           | number() |bool() |string() | float_()
      )
 }
