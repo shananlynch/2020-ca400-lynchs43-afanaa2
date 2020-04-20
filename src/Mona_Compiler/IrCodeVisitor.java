@@ -205,6 +205,8 @@ public class IrCodeVisitor implements monaVisitor {
            }
           else {
             dec = "%.v" + node1.jjtGetValue() + " = alloca " + mt ;
+            prog = prog + dec + "\n";
+
             String node2 = "";
             if( node.jjtGetNumChildren() > 2 ){
                  node2 = (String) node.jjtGetChild (2).jjtAccept (this, data);
@@ -223,7 +225,6 @@ public class IrCodeVisitor implements monaVisitor {
               load = temp + " = load " + mt + ", " + mt + "* " + "%.v" + node1.jjtGetValue();
               iv.put(node1.jjtGetValue().toString(),temp);
           }
-              prog = prog + dec + "\n";
               prog = prog + command + "\n";
               prog = prog + load + "\n" ;
        }
@@ -239,7 +240,6 @@ public class IrCodeVisitor implements monaVisitor {
           SimpleNode parentType = (SimpleNode)node.jjtGetParent() ;
           SimpleNode cNode = (SimpleNode)node.jjtGetChild(0);
           String get = (String) cNode.toString();
-          System.out.println(get);
           if(parentType.toString().equals("statement") && dType.toString().equals("string") ){
               SimpleNode var = (SimpleNode)node.jjtGetParent().jjtGetChild(0);
               String sVar1 = var.jjtGetValue().toString();
@@ -289,17 +289,31 @@ public class IrCodeVisitor implements monaVisitor {
           else if (get.equals("getArray")){
               SimpleNode parentNode = (SimpleNode) node.jjtGetParent();
                cNode = (SimpleNode) node.jjtGetChild(0);
-              SimpleNode var = (SimpleNode) parentNode.jjtGetChild(1);
+              SimpleNode var = (SimpleNode) parentNode.jjtGetChild(0);
               String sVar = var.jjtGetValue().toString();
-              String t = (String) parentNode.jjtGetChild(0).jjtAccept(this,data).toString();
-              String mType = machineType(t);
+              String mType="";
+              String t ="" ;
+              DataType dtype = st.getType(sVar,scope);
+              mType = machineType(type.toString());
+              if(parentNode.toString().equals("VariableDeclaration")){
+                   var = (SimpleNode) parentNode.jjtGetChild(1);
+                   sVar = var.jjtGetValue().toString();
+                   t = (String) parentNode.jjtGetChild(0).jjtAccept(this,data).toString();
+                   mType = machineType(t);
+
+              }
               String mVar = "%.v" + sVar  ;
               String index = (String)cNode.jjtGetChild(1).jjtAccept(this,data);
               String list = (String)cNode.jjtGetChild(0).jjtAccept(this,data);
               String length = listLenght.get(list);
               String ptr = " [" + length + " x " + mType + "]";
-              prog = prog + mVar + "= getelementptr" + ptr + ", "+ ptr + "* " + list + ","
-              + mType + " 0," + mType  +" " + index + "\n"  ;
+              String temp = getTemp();
+              prog = prog + temp + "= getelementptr" + ptr + ", "+ ptr + "* " + list + ","
+              + mType + " 0," + mType  +" " + index + "\n" ;
+              String temp2 = getTemp();
+              prog = prog + temp2 + " = load " + mType + ", " + mType + "* " + temp +"\n";
+              prog = prog + "store i32 " + temp2 + ", i32* " + mVar + "\n" ;
+
               return "getArray";
           }
           String node0 = (String) node.jjtGetChild(0).jjtAccept (this, data);
@@ -475,12 +489,15 @@ public class IrCodeVisitor implements monaVisitor {
             }
             else{
                 String node1 = (String) node.jjtGetChild (1).jjtAccept (this, data);
+                if(!node1.equals("getArray"))
+                {
                 command = "store " + mt + " " + node1 + ", " + mt + "* " + "%.v" + node0.jjtGetValue() ;
                 String temp = getTemp();
                 load = temp + " = load " + mt + ", " + mt + "* " + "%.v" + node0.jjtGetValue();
                 iv.put(node0.jjtGetValue().toString(),temp);
                 prog = prog + command + "\n";
                 prog = prog + load + "\n";
+            }
             }
       }
       else if(node.jjtGetValue().equals("if")){
