@@ -147,7 +147,8 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < WHILE : "while" >
      | < FOR : "for" >
      | < GET : ".get" >
-      | < LENGTH : ".length" >
+     | < LENGTH : ".length" >
+     | < INSERT : ".insert" >
      | < STRING : "String" >
      | < SKIP_mona : "skip" >
 }
@@ -339,6 +340,7 @@ void else_if() #else_if : {Token t ;} {
 String statement_Left_factor_IDENTIFIER() : {String t ;}
 {
     t = assign() expression() <SEMIC>{return t; } #assigns(1) |  (<LBR> arg_list()){return "functionCall";}#functionCall(2) <RBR> <SEMIC>
+    |  <INSERT> <LBR>values()<RBR><SEMIC>{return "insert";}#insert(2)
 
 }
 

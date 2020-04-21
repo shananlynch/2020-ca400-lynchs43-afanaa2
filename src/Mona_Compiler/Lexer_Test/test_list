@@ -1,10 +1,9 @@
 main{
-    var string a = "hello" ;
-    print a ;
-    var [int] l = [1,2,3,4,5];
-    var int l1;
-    var int l2 = l.get(2);
-    l1 = l.get(0);
-    print l1 ;
-    print l2 ;
+    var [int] a = [];
+    a.insert(1);
+    a.insert(2);
+    var int i = 0 ;
+    var int length = a.length() ;
+    print length ;
+
 }

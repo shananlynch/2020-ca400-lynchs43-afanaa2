@@ -20,8 +20,10 @@ public class IrCodeVisitor implements monaVisitor {
     private static String FalseLabel ;
     private Map<String,Integer> varInc = new HashMap<String, Integer>();
     private Map<String,String> listLenght = new HashMap<String, String>();
+    private Map<String,String> listInsert = new HashMap<String, String>();
     private static int boolLabel = 0;
     private static String lv = "";
+    private static int listInc = 0 ;
 
     /*
     getTemp funtion gets a temporary local variable
@@ -190,7 +192,7 @@ public class IrCodeVisitor implements monaVisitor {
             iv.put( node1.jjtGetValue().toString(),"%.v." + node1.jjtGetValue());
           }
            else if(node0.equals("[") && node.jjtGetNumChildren() > 2 ){
-               SimpleNode sNode0 = (SimpleNode) node.jjtGetChild(0);
+                SimpleNode sNode0 = (SimpleNode) node.jjtGetChild(0);
                 node0 = (String) sNode0.jjtGetChild (0).jjtAccept (this, data);
                 mt = machineType(node0) ;
                 String num = (String) node.jjtGetChild (2).jjtAccept (this, data);
@@ -199,6 +201,7 @@ public class IrCodeVisitor implements monaVisitor {
                 prog = prog + dec + "\n" ;
                 prog = prog + "store [" +  num + " x " + mt + "]" + lv + ", [" +  num + " x " + mt + "]*" + var;
                 prog = prog +"\n" ;
+                listInsert.put((String)node1.jjtGetValue(),lv.substring(0,lv.length()-1));
 
                 iv.put(node1.jjtGetValue().toString(),var);
                 listLenght.put(var,num);
@@ -430,6 +433,10 @@ public class IrCodeVisitor implements monaVisitor {
       public Object visit(ASTstatement node, Object data){
           SimpleNode node0 = (SimpleNode)node.jjtGetChild(0);
           // printing
+          if(node.jjtGetValue().equals("insert")){
+             node0.jjtAccept(this,data);
+
+          }
           if(node.jjtGetValue().equals("print")){
             String var = node0.jjtGetValue().toString();
             DataType type = st.getType(var,scope);
@@ -681,6 +688,10 @@ public class IrCodeVisitor implements monaVisitor {
       public Object visit(ASTargumentList node, Object data){ return null;}
       public Object visit(ASTarray node, Object data){
           int numChildren = node.jjtGetNumChildren();
+          if(numChildren == 0){
+              lv="[]";
+              return "0";
+              }
           String num = Integer.toString(numChildren);
           String nodeN ;
           String nodeT = (String)node.jjtGetChild(0).toString();
@@ -723,10 +734,37 @@ public class IrCodeVisitor implements monaVisitor {
           String length = listLenght.get(l);
           return l;
       }
+      public Object visit(ASTinsert node, Object data){
+           SimpleNode val = (SimpleNode) node.jjtGetChild(0);
+           String sVar = (String) val.jjtGetValue();
+           DataType dtype = st.getType(sVar,scope);
+           String mt = machineType(dtype.toString());
+           String num = listLenght.get(iv.get(sVar));
+           num = Integer.toString(Integer.parseInt(num) + 1) ;
+           SimpleNode node0 = (SimpleNode) node.jjtGetChild(1);
+           String newElement = ( String) node0.jjtAccept(this,data);
+           if( listInsert.get(sVar).length() > 2 ){
+               lv = listInsert.get(sVar) + ", " + mt + " " + newElement + "]" ;
+           }
+           else{
+              lv = listInsert.get(sVar) + mt + " " + newElement + "]" ;
+          }
+           listInsert.put(sVar,lv.substring(0,lv.length() - 1));
+
+           String var = "%.l" + sVar + listInc;
+           prog = prog + var + " = alloca [" +  num + " x " + mt + "]" ;
+           prog = prog +  "\n" ;
+           prog = prog + "store [" +  num + " x " + mt + "]" + lv + ", [" +  num + " x " + mt + "]*" + var;
+           prog = prog +"\n" ;
+           iv.put(sVar,var);
+           listLenght.put(var,num);
+           listInc ++ ;
+           return null;}
+
       public Object visit(ASTgetLength node, Object data){
           String l = (String) node.jjtGetChild(0).jjtAccept(this,data);
           String length = listLenght.get(l);
-          return l;
+          return length;
       }
       public Object visit(ASTNumber node, Object data){ return node.value;}
       public Object visit(ASTString node, Object data){
