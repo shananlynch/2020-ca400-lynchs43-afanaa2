@@ -794,17 +794,19 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
     case LBR:
       jj_consume_token(LBR);
       arg_list();
-                                                                                     ASTfunctionCall jjtn002 = new ASTfunctionCall(JJTFUNCTIONCALL);
-                                                                                     boolean jjtc002 = true;
-                                                                                     jjtree.openNodeScope(jjtn002);
+      jj_consume_token(RBR);
+      jj_consume_token(SEMIC);
+                                                                                                   ASTfunctionCall jjtn002 = new ASTfunctionCall(JJTFUNCTIONCALL);
+                                                                                                   boolean jjtc002 = true;
+                                                                                                   jjtree.openNodeScope(jjtn002);
       try {
-                                                                                     jjtree.closeNodeScope(jjtn002,  2);
-                                                                                     jjtc002 = false;
-                                                                                    {if (true) return "functionCall";}
+                                                                                                   jjtree.closeNodeScope(jjtn002,  2);
+                                                                                                   jjtc002 = false;
+                                                                                                  {if (true) return "functionCall";}
       } finally {
-                                                                                     if (jjtc002) {
-                                                                                       jjtree.closeNodeScope(jjtn002,  2);
-                                                                                     }
+                                                                                                   if (jjtc002) {
+                                                                                                     jjtree.closeNodeScope(jjtn002,  2);
+                                                                                                   }
       }
       jj_consume_token(RBR);
       jj_consume_token(SEMIC);

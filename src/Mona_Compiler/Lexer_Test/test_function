@@ -1,0 +1,7 @@
+int helloWorld(String a,int v){
+    print a;
+    return("");
+}
+main{
+    helloWorld("kos", 10) ;
+}

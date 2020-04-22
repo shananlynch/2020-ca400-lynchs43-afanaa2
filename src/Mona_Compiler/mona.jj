@@ -740,24 +740,24 @@ String statement_Left_factor_IDENTIFIER() : {String t ;}
                                          jjtree.closeNodeScope(jjtn001,  1);
                                        }
                                      }
-/*@egen*/             |  (<LBR> arg_list())/*@bgen(jjtree) #functionCall( 2) */
-                                                                                   {
-                                                                                     ASTfunctionCall jjtn002 = new ASTfunctionCall(JJTFUNCTIONCALL);
-                                                                                     boolean jjtc002 = true;
-                                                                                     jjtree.openNodeScope(jjtn002);
-                                                                                   }
-                                                                                   try {
+/*@egen*/             |  (<LBR> arg_list() <RBR> <SEMIC>)/*@bgen(jjtree) #functionCall( 2) */
+                                                                                                 {
+                                                                                                   ASTfunctionCall jjtn002 = new ASTfunctionCall(JJTFUNCTIONCALL);
+                                                                                                   boolean jjtc002 = true;
+                                                                                                   jjtree.openNodeScope(jjtn002);
+                                                                                                 }
+                                                                                                 try {
 /*@egen*//*@bgen(jjtree)*/
-                                                                                   {
-                                                                                     jjtree.closeNodeScope(jjtn002,  2);
-                                                                                     jjtc002 = false;
-                                                                                   }
+                                                                                                 {
+                                                                                                   jjtree.closeNodeScope(jjtn002,  2);
+                                                                                                   jjtc002 = false;
+                                                                                                 }
 /*@egen*/{return "functionCall";}/*@bgen(jjtree)*/
-                                                                                   } finally {
-                                                                                     if (jjtc002) {
-                                                                                       jjtree.closeNodeScope(jjtn002,  2);
-                                                                                     }
-                                                                                   }
+                                                                                                 } finally {
+                                                                                                   if (jjtc002) {
+                                                                                                     jjtree.closeNodeScope(jjtn002,  2);
+                                                                                                   }
+                                                                                                 }
 /*@egen*/                 <RBR> <SEMIC>
     |  <INSERT> <LBR>values()<RBR><SEMIC>/*@bgen(jjtree) #insert( 2) */
                                          {
