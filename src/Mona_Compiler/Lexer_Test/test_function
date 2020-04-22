@@ -1,5 +1,11 @@
 int helloWorld(String a,int v){
     print a;
+    if(10 == 10){
+        return(10);
+    }
+    if(10 == 10){
+        return(10);
+    }
     return(10);
 }
 main{

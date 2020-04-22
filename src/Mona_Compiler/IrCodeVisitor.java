@@ -423,13 +423,14 @@ public class IrCodeVisitor implements monaVisitor {
           String argsString = (String)node.jjtGetChild (2).jjtAccept (this, data);
           String mt = machineType(ty);
           prog = prog + "define " + mt + " " + "@" + id + "( " + argsString + " ) \n { \n" ;
+          r = mt ;
           node.childrenAccept(this,data);
-          prog = prog + "ret " + mt + " " + r +"\n}\n";
+          prog = prog + "}\n";
 
           return null;}
       public Object visit(ASTreturn_ node, Object data){
           String sty = (String)node.jjtGetChild(0).jjtAccept(this,data)   ;       // Type
-          r = sty ;
+          prog = prog + "ret " + r + " " + sty + "\n";
           return null;}
 
 
@@ -466,6 +467,10 @@ public class IrCodeVisitor implements monaVisitor {
           SimpleNode node0 = (SimpleNode)node.jjtGetChild(0);
           // printing
           if(node.jjtGetValue().equals("insert")){
+             node0.jjtAccept(this,data);
+
+          }
+          if(node.jjtGetValue().equals("return")){
              node0.jjtAccept(this,data);
 
           }
@@ -800,7 +805,7 @@ public class IrCodeVisitor implements monaVisitor {
       public Object visit(ASTNumber node, Object data){ return node.value;}
       public Object visit(ASTString node, Object data){
           SimpleNode nodeParent = (SimpleNode) node.jjtGetParent();
-          String parent = (String) nodeParent.jjtGetValue();
+          String parent = (String) nodeParent.toString();
           if(parent.equals("assigns")){
               return node.value ;
           }

@@ -258,7 +258,6 @@ void function() #function : {Token t ; String id; String type;}
      <LCBR>
      decl_list()
      statement_block()
-     return_()
      <RCBR>{scope = "global";}
 }
 
@@ -309,16 +308,17 @@ void statement_block() : {}
 void statement() #statement : {Token t; String r ;} {
     identifier() r = statement_Left_factor_IDENTIFIER(){ jjtThis.value = r;}
      | <LCBR> statement_block() <RCBR>
-     | t = <IF> condition() <LCBR> statement_block() (return_() | {}) <RCBR>
+     | t = <IF> condition() <LCBR> statement_block() <RCBR>
      (else_if_list())
      (else_()){ jjtThis.value = t.image;}
      | t = <WHILE> condition() <LCBR> statement_block() <RCBR> { jjtThis.value = t.image;}
      | t = <FOR> <LBR> identifier() <IN> (values()|dictionary()|array()) <RBR>
-       <LCBR> statement_block() (return_() | {})  <RCBR> { jjtThis.value = t.image;}
+       <LCBR> statement_block()  <RCBR> { jjtThis.value = t.image;}
      |<SKIP_mona> <SEMIC>
      | r = decl() { jjtThis.value = r;}
      | t =  <PRINT> values() <SEMIC> { jjtThis.value = t.image;}
      | break_() <SEMIC>
+     |  return_() { jjtThis.value = "return";}
 }
 
 
