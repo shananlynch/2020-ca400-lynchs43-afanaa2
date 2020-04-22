@@ -23,6 +23,7 @@ public class IrCodeVisitor implements monaVisitor {
     private Map<String,String> listInsert = new HashMap<String, String>();
     private static int boolLabel = 0;
     private static String lv = "";
+    private static String currentList = "";
     private static int listInc = 0 ;
 
     /*
@@ -64,6 +65,13 @@ public class IrCodeVisitor implements monaVisitor {
         else {
             varInc.put(word, count + 1);
         }
+    }
+    private void replaceList(String num1, String num2, String  mt, String var , String newElement ){
+        String temp = getTemp();
+        prog = prog + temp +
+        " = getelementptr " + "[" +  num2 + " x " + mt + "],"  + "[" +  num2 + " x " + mt + "]* "
+        + var + ", " + mt + " 0 ," + mt + " " + num1 +   "\n" ;
+        prog = prog + "store " + mt + " " +  newElement + " , " + mt + "* " +  temp + "\n";
     }
 
     /*This writes the beggining of the ir code file*/
@@ -191,20 +199,11 @@ public class IrCodeVisitor implements monaVisitor {
             sv.put(node2,var);
             iv.put( node1.jjtGetValue().toString(),"%.v." + node1.jjtGetValue());
           }
-           else if(node0.equals("[") && node.jjtGetNumChildren() > 2 ){
-                SimpleNode sNode0 = (SimpleNode) node.jjtGetChild(0);
-                node0 = (String) sNode0.jjtGetChild (0).jjtAccept (this, data);
-                mt = machineType(node0) ;
-                String num = (String) node.jjtGetChild (2).jjtAccept (this, data);
+           else if(node0.equals("[")  ){
                 String var = "%.l" + node1.jjtGetValue();
-                dec = var + " = alloca [" +  num + " x " + mt + "]" ;
-                prog = prog + dec + "\n" ;
-                prog = prog + "store [" +  num + " x " + mt + "]" + lv + ", [" +  num + " x " + mt + "]*" + var;
-                prog = prog +"\n" ;
-                listInsert.put((String)node1.jjtGetValue(),lv.substring(0,lv.length()-1));
-
+                currentList = var ;
+                String node2 = (String) node.jjtGetChild (2).jjtAccept (this, data);
                 iv.put(node1.jjtGetValue().toString(),var);
-                listLenght.put(var,num);
            }
           else {
             dec = "%.v" + node1.jjtGetValue() + " = alloca " + mt ;
@@ -260,6 +259,7 @@ public class IrCodeVisitor implements monaVisitor {
               }
               prog = prog + temp + " = getelementptr [" + len + " x i8], [" + len+ " x i8]*" + sVar + ", i64 0, i64 0\n";
               prog = prog + "store i8* " + temp + ", i8** %.v" + sVar1 + "\n";
+
               iv.put(sVar1,temp);
           }
           else if(sType.equals("string")){
@@ -272,6 +272,7 @@ public class IrCodeVisitor implements monaVisitor {
           }
           else if(sType.equals("[")){
               String value = (String) node.jjtGetChild(0).jjtAccept(this,data) ;
+              currentList = value ;
               return value;
           }
 
@@ -687,27 +688,25 @@ public class IrCodeVisitor implements monaVisitor {
       }
       public Object visit(ASTargumentList node, Object data){ return null;}
       public Object visit(ASTarray node, Object data){
-          int numChildren = node.jjtGetNumChildren();
-          if(numChildren == 0){
-              lv="[]";
-              return "0";
-              }
-          String num = Integer.toString(numChildren);
-          String nodeN ;
-          String nodeT = (String)node.jjtGetChild(0).toString();
-          String mtype = machineType(nodeT);
-          lv = "[";
+         int numChildren = node.jjtGetNumChildren();
+         String num = Integer.toString(numChildren);
+         String nodeN ;
+         if(numChildren > 0 ){
+             String nodeT = (String)node.jjtGetChild(0).toString();
+        }
+         String mtype = machineType("nodeT");
+         String type = "[ " + numChildren + " x " + mtype + " ]";
+         prog  = prog + currentList + " = alloca [" +  numChildren + " x " + mtype + "] \n" ;
+
+         listLenght.put(currentList,num);
+
           for(int i = 0; i < numChildren ; i ++ ){
               nodeN = (String) node.jjtGetChild(i).jjtAccept(this,data);
-              if(i == 0){
-                  lv = lv + mtype + " " + nodeN;
-              }
-              else{
-                  lv = lv + "," + mtype + " " +  nodeN;
-              }
+              String temp = getTemp();
+              prog = prog + temp + " = getelementptr " + type + "," + type + "* " + currentList + ", " + mtype + " 0 , " + mtype + " " + i ;
+              prog = prog + "\n" + "store " + mtype + " " + nodeN + ", " + mtype + "* " + temp + "\n" ;
           }
-          lv = lv +"]";
-          return num ;
+          return "getArray" ;
 
       }
         public Object visit(ASTclass_ node, Object data){ return null;}
@@ -734,30 +733,30 @@ public class IrCodeVisitor implements monaVisitor {
           String length = listLenght.get(l);
           return l;
       }
+
       public Object visit(ASTinsert node, Object data){
            SimpleNode val = (SimpleNode) node.jjtGetChild(0);
            String sVar = (String) val.jjtGetValue();
            DataType dtype = st.getType(sVar,scope);
            String mt = machineType(dtype.toString());
            String num = listLenght.get(iv.get(sVar));
-           num = Integer.toString(Integer.parseInt(num) + 1) ;
+           String num2 = Integer.toString(Integer.parseInt(num) + 1) ;
            SimpleNode node0 = (SimpleNode) node.jjtGetChild(1);
            String newElement = ( String) node0.jjtAccept(this,data);
-           if( listInsert.get(sVar).length() > 2 ){
-               lv = listInsert.get(sVar) + ", " + mt + " " + newElement + "]" ;
-           }
-           else{
-              lv = listInsert.get(sVar) + mt + " " + newElement + "]" ;
-          }
-           listInsert.put(sVar,lv.substring(0,lv.length() - 1));
+           String var = iv.get(sVar);
+           String temp = getTemp();
+           prog = prog + temp + " = bitcast " +  "[" +  num + " x " + mt + "]* " + var +" to " + "[" +  num2 + " x " + mt + "]* \n";
+           String temp2 = getTemp();
+           prog = prog + temp2 + "= load "  + "[" +  num2 + " x " + mt + "],"  + "[" +  num2 + " x " + mt + "]* " + temp + "\n" ;
 
-           String var = "%.l" + sVar + listInc;
-           prog = prog + var + " = alloca [" +  num + " x " + mt + "]" ;
+           var = var + listInc ;
+           prog = prog + var + " = alloca [" +  num2 + " x " + mt + "] \n" ;
+           prog = prog + "store "  + "[" +  num2 + " x " + mt + "] " + temp2 + " ,[" +  num2 + " x " + mt + "]* " + var ;
            prog = prog +  "\n" ;
-           prog = prog + "store [" +  num + " x " + mt + "]" + lv + ", [" +  num + " x " + mt + "]*" + var;
-           prog = prog +"\n" ;
+
+           replaceList(num,num2, mt, var , newElement );
            iv.put(sVar,var);
-           listLenght.put(var,num);
+           listLenght.put(var,num2);
            listInc ++ ;
            return null;}
 

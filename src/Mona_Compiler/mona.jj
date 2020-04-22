@@ -1129,7 +1129,7 @@ void array ()        : {/*@bgen(jjtree) array */
 }
 
 void element () : {}{
-    ( string()| number() )(<COMMA> element() | {} )
+    ( string()| number() | identifier() )(<COMMA> element() | {} )
 }
 
 void dictionary () : {} {
