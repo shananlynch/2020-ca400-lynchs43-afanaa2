@@ -388,7 +388,6 @@ void function()           : {/*@bgen(jjtree) function */
      <LCBR>
      decl_list()
      statement_block()
-     return_()
      <RCBR>/*@bgen(jjtree)*/
            {
              jjtree.closeNodeScope(jjtn000, true);
@@ -589,7 +588,7 @@ void statement()            : {/*@bgen(jjtree) statement */
                                                        }
 /*@egen*/{ jjtn000.value = r;}
      | <LCBR> statement_block() <RCBR>
-     | t = <IF> condition() <LCBR> statement_block() (return_() | {}) <RCBR>
+     | t = <IF> condition() <LCBR> statement_block() <RCBR>
      (else_if_list())
      (else_())/*@bgen(jjtree)*/
               {
@@ -604,11 +603,11 @@ void statement()            : {/*@bgen(jjtree) statement */
                                                                }
 /*@egen*/ { jjtn000.value = t.image;}
      | t = <FOR> <LBR> identifier() <IN> (values()|dictionary()|array()) <RBR>
-       <LCBR> statement_block() (return_() | {})  <RCBR>/*@bgen(jjtree)*/
-                                                         {
-                                                           jjtree.closeNodeScope(jjtn000, true);
-                                                           jjtc000 = false;
-                                                         }
+       <LCBR> statement_block()  <RCBR>/*@bgen(jjtree)*/
+                                        {
+                                          jjtree.closeNodeScope(jjtn000, true);
+                                          jjtc000 = false;
+                                        }
 /*@egen*/ { jjtn000.value = t.image;}
      |<SKIP_mona> <SEMIC>
      | r = decl()/*@bgen(jjtree)*/
@@ -623,7 +622,13 @@ void statement()            : {/*@bgen(jjtree) statement */
                                        jjtc000 = false;
                                      }
 /*@egen*/ { jjtn000.value = t.image;}
-     | break_() <SEMIC>/*@bgen(jjtree)*/
+     | break_() <SEMIC>
+     |  return_()/*@bgen(jjtree)*/
+                  {
+                    jjtree.closeNodeScope(jjtn000, true);
+                    jjtc000 = false;
+                  }
+/*@egen*/ { jjtn000.value = "return";}/*@bgen(jjtree)*/
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);
