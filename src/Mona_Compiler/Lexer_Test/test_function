@@ -1,7 +1,7 @@
 int helloWorld(String a,int v){
     print a;
-    return("");
+    return(10);
 }
 main{
-    helloWorld("kos", 10) ;
+    helloWorld("hello world", 10) ;
 }

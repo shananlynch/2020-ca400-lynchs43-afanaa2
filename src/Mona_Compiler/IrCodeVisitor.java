@@ -24,7 +24,7 @@ public class IrCodeVisitor implements monaVisitor {
     private static int boolLabel = 0;
     private static String lv = "";
     private static String currentList = "";
-    private static String globals = "";
+    private static String r = "";
     private static int listInc = 0 ;
 
     /*
@@ -94,7 +94,6 @@ public class IrCodeVisitor implements monaVisitor {
       prog = prog + "ret i32 0 \n" ;
       prog = prog + "}\n";
       buff.write(stringDec);
-      buff.write(globals);
       buff.write(prog);
       buff.flush ();
 
@@ -425,10 +424,12 @@ public class IrCodeVisitor implements monaVisitor {
           String mt = machineType(ty);
           prog = prog + "define " + mt + " " + "@" + id + "( " + argsString + " ) \n { \n" ;
           node.childrenAccept(this,data);
-          prog = prog + "ret " + mt + " 0 \n}\n";
+          prog = prog + "ret " + mt + " " + r +"\n}\n";
 
           return null;}
       public Object visit(ASTreturn_ node, Object data){
+          String sty = (String)node.jjtGetChild(0).jjtAccept(this,data)   ;       // Type
+          r = sty ;
           return null;}
 
 
@@ -448,7 +449,7 @@ public class IrCodeVisitor implements monaVisitor {
               arg =arg +  ty + "*" + " " + id;
           }
           else{
-              arg = arg + ", " + ty + " " + id;
+              arg = arg + ", " + ty + "* " + id;
         }
       }
           return arg;}

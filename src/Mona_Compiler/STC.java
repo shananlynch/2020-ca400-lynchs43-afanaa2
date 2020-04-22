@@ -55,15 +55,11 @@ public class STC extends Object {
  }
  public DataType getType (String id, String scope){
      LinkedList<String> scope_list = ST.get(scope);
-     System.out.println( ST.get(scope));
      String type_scope = "" ;
      if(scope_list != null) {
        for (String match : scope_list) {
-           System.out.println(match);
-           System.out.println(id);
            if(match.equals(id)) {
                type_scope = Type.get(id + scope);
-               System.out.println(type_scope);
                 return(getDType(type_scope));
            }
        }
