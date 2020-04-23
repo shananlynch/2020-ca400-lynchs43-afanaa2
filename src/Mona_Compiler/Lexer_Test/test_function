@@ -1,13 +1,26 @@
 void helloWorld(String a,int v){
     var int i = 0 ;
     while(i <= v){
-        print i ;
+        print a ;
         i  = i + 1 ;
     }
 
 }
+
+void testRecursive(string a, int v){
+    if (v > 0){
+        print v;
+        v = v - 1;
+        testRecursive(a, v);
+    }
+    else{
+        print v;
+    }
+
+}
+
 main{
-    var int b = 0 ;
+    var int a = 0 ;
     var int l;
-    helloWorld( "a" , 100) ;
+    testRecursive( "helloWorld" , 100) ;
 }

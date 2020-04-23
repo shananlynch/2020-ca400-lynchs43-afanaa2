@@ -1,10 +1,7 @@
 main{
     var int i = 0 ;
     var [int] a = [];
-    while(i < 3 ){
-        a.insert(i);
-        i = i + 1 ;
-    }
+    a.insert(200);
     i = 0;
     i = a.get(i);
     print i ;

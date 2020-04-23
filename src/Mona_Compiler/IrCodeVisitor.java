@@ -268,8 +268,9 @@ public class IrCodeVisitor implements monaVisitor {
               return value.jjtGetValue() ;
           }
           else if(sType.equals("[")){
-              String value = (String) node.jjtGetChild(0).jjtAccept(this,data) ;
+              String value =  (String) node.jjtGetChild(0).jjtAccept(this,data) ;
               currentList = value ;
+
               return value;
           }
 
@@ -811,7 +812,7 @@ public class IrCodeVisitor implements monaVisitor {
           DataType dType = st.getType(node.jjtGetValue().toString(),scope);
           String cType = dType.toString();
           if(cType.equalsIgnoreCase("TypeUnknown")){
-              return iv.get(node.value.toString());
+              return iv.get(scope+node.value.toString());
           }
           String mt = machineType(cType);
           String temp = getTemp();
