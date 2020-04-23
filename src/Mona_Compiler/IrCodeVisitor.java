@@ -753,20 +753,29 @@ public class IrCodeVisitor implements monaVisitor {
       }
       public Object visit(ASTargumentList node, Object data){
           String param = "";
+
             for(int i = 0 ; i < node.jjtGetNumChildren(); i ++){
                 String var =(String) node.jjtGetChild(i).jjtAccept(this,data);
                 SimpleNode node0 = (SimpleNode) node.jjtGetChild(i);
                 String t = (String) node0.toString() ;
+                String mt = machineType(t)+ "*";
                 if(t == "Identifier"){
                     var ="%." + scope + (String) node0.jjtGetValue();
                     t =(String)( st.getType( (String) node0.jjtGetValue(),scope)).toString();
-                }
-                String mt = machineType(t)+ "*";
-                if(i == 0){
-                    param = param + mt + " " + var ;
+                     mt = machineType(t);
                 }
                 else{
-                    param = param +", " + mt + " " + var ;
+                    mt = machineType(t);
+                    String temp =getTemp();
+                    prog = prog + temp + " = alloca "  + mt + "\n ";
+                    prog = prog + "store  " + mt + " " + var + ", " + mt + "*" + " " + temp  + "\n";
+                    var = temp;
+                }
+                if(i == 0){
+                    param = param + mt + "* " + var ;
+                }
+                else{
+                    param = param +", " + mt + "* " + var ;
                 }
 
             }
