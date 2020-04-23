@@ -78,7 +78,7 @@ public class STC extends Object {
         return DataType.string;
     }
     else if (s.equals("void")) {
-        return DataType.TypeVoid;
+        return DataType.Void;
     }
     return DataType.TypeUnknown;
     }

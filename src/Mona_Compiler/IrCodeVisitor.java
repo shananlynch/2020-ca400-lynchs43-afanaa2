@@ -120,7 +120,7 @@ public class IrCodeVisitor implements monaVisitor {
         else if (type.equalsIgnoreCase ("string")){
             mty = "i8*";
 	    }
-        else if (type.equals ("void"))
+        else if (type.equalsIgnoreCase ("void"))
         {
             mty = "void";
 	    }
@@ -190,17 +190,17 @@ public class IrCodeVisitor implements monaVisitor {
             dec = "%." +scope + node1.jjtGetValue() + " = alloca " + mt ;
             prog = prog + dec + "\n" ;
             prog = prog + temp + " = getelementptr [" +(node2.length() - 1) + " x i8], [" + (node2.length() - 1) + " x i8]*" + var + ", i64 0, i64 0\n";
-            prog = prog + "store i8* " + temp + ", i8** %." + node1.jjtGetValue() + "\n";
+            prog = prog + "store i8* " + temp + ", i8** %." + scope+ node1.jjtGetValue() + "\n";
             temp = getTemp();
             prog = prog + temp + " = load " + mt + ", " + mt + "* " + "%." + scope + node1.jjtGetValue() + "\n";
             sv.put(node2,var);
-            iv.put( node1.jjtGetValue().toString(),"%." + scope + node1.jjtGetValue());
+            iv.put( scope + node1.jjtGetValue().toString(),"%." + scope + node1.jjtGetValue());
           }
            else if(node0.equals("[")  ){
-                String var = "%.l" + node1.jjtGetValue();
+                String var = "%.l" + scope + node1.jjtGetValue();
                 currentList = var ;
                 String node2 = (String) node.jjtGetChild (2).jjtAccept (this, data);
-                iv.put(node1.jjtGetValue().toString(),var);
+                iv.put(scope+node1.jjtGetValue().toString(),var);
            }
           else {
             dec = "%." + scope + node1.jjtGetValue() + " = alloca " + mt ;
@@ -222,7 +222,7 @@ public class IrCodeVisitor implements monaVisitor {
               command = "store " + mt + " " + node2 + ", " + mt + "* " + "%." + scope + node1.jjtGetValue() ;
               String temp = getTemp();
               load = temp + " = load " + mt + ", " + mt + "* " + "%." + scope + node1.jjtGetValue();
-              iv.put(node1.jjtGetValue().toString(),temp);
+              iv.put(scope +node1.jjtGetValue().toString(),temp);
           }
               prog = prog + command + "\n";
               prog = prog + load + "\n" ;
@@ -317,6 +317,12 @@ public class IrCodeVisitor implements monaVisitor {
 
               return "getArray";
           }
+          else if(get.equals("functionCall")){
+              SimpleNode n = (SimpleNode) node.jjtGetChild(0);
+              String temp =(String) n.jjtAccept(this,data);
+              return temp  ;
+          }
+
           String node0 = (String) node.jjtGetChild(0).jjtAccept (this, data);
           String str[] = node0.split(" ");
           List<String> al = new ArrayList<String>();
@@ -425,6 +431,11 @@ public class IrCodeVisitor implements monaVisitor {
           prog = prog + "define " + mt + " " + "@" + id + "( " + argsString + " ) \n { \n" ;
           r = mt ;
           node.childrenAccept(this,data);
+          if(mt.equals("void")){
+
+                prog = prog + "ret void \n";
+          }
+
           prog = prog + "}\n";
 
           return null;}
@@ -467,6 +478,10 @@ public class IrCodeVisitor implements monaVisitor {
           SimpleNode node0 = (SimpleNode)node.jjtGetChild(0);
           // printing
           if(node.jjtGetValue().equals("insert")){
+             node0.jjtAccept(this,data);
+
+          }
+          if(node.jjtGetValue().equals("functionCall")){
              node0.jjtAccept(this,data);
 
           }
@@ -539,7 +554,7 @@ public class IrCodeVisitor implements monaVisitor {
                 command = "store " + mt + " " + node1 + ", " + mt + "* " + "%." + scope + node0.jjtGetValue() ;
                 String temp = getTemp();
                 load = temp + " = load " + mt + ", " + mt + "* " + "%."+ scope + node0.jjtGetValue();
-                iv.put(node0.jjtGetValue().toString(),temp);
+                iv.put(scope + node0.jjtGetValue().toString(),temp);
                 prog = prog + command + "\n";
                 prog = prog + load + "\n";
             }
@@ -635,7 +650,20 @@ public class IrCodeVisitor implements monaVisitor {
           return null;}
       public Object visit(ASTassignment node, Object data){
           return null;}
-      public Object visit(ASTfunctionCall node, Object data){ return null;}
+          public Object visit(ASTfunctionCall node, Object data){
+              SimpleNode node0 = (SimpleNode) node.jjtGetChild(0);
+              String var = node0.jjtGetValue().toString();
+              DataType type = st.getType(var,"global");
+              String sType = machineType(type.toString());
+              String params = (String) node.jjtGetChild(1).jjtAccept(this,data);
+              String temp = getTemp();
+              if(!sType.equalsIgnoreCase("void")){
+                  prog = prog + temp +" = ";
+              }
+              prog  = prog +  "call " + sType + " @" + var + " (" + params + ")\n";
+              return temp;
+          }
+
       public Object visit(ASTclass_call node, Object data){ return null;}
 
       public Object visit(ASTarith_op node, Object data){
@@ -723,7 +751,27 @@ public class IrCodeVisitor implements monaVisitor {
           prog = prog + temp +  " = or i1 " + s0 + ", " + s1 + "\n";
           return temp;
       }
-      public Object visit(ASTargumentList node, Object data){ return null;}
+      public Object visit(ASTargumentList node, Object data){
+          String param = "";
+            for(int i = 0 ; i < node.jjtGetNumChildren(); i ++){
+                String var =(String) node.jjtGetChild(i).jjtAccept(this,data);
+                SimpleNode node0 = (SimpleNode) node.jjtGetChild(i);
+                String t = (String) node0.toString() ;
+                if(t == "Identifier"){
+                    var ="%." + scope + (String) node0.jjtGetValue();
+                    t =(String)( st.getType( (String) node0.jjtGetValue(),scope)).toString();
+                }
+                String mt = machineType(t)+ "*";
+                if(i == 0){
+                    param = param + mt + " " + var ;
+                }
+                else{
+                    param = param +", " + mt + " " + var ;
+                }
+
+            }
+            return param;
+        }
       public Object visit(ASTarray node, Object data){
          int numChildren = node.jjtGetNumChildren();
          String num = Integer.toString(numChildren);
@@ -760,8 +808,8 @@ public class IrCodeVisitor implements monaVisitor {
           String temp = getTemp();
           String load = temp + " = load " + mt + ", " + mt + "* " + "%." + scope + node.jjtGetValue();
           prog = prog + load + "\n" ;
-          iv.put(node.jjtGetValue().toString(),temp);
-          return iv.get(node.value.toString());
+          iv.put(scope+node.jjtGetValue().toString(),temp);
+          return iv.get(scope+node.value.toString());
       }
       public Object visit(ASTbreak_ node, Object data){ return null;}
       public Object visit(ASTgetArray node, Object data){
@@ -773,7 +821,7 @@ public class IrCodeVisitor implements monaVisitor {
 
       public Object visit(ASTinsert node, Object data){
            SimpleNode val = (SimpleNode) node.jjtGetChild(0);
-           String sVar = (String) val.jjtGetValue();
+           String sVar = scope + (String) val.jjtGetValue();
            DataType dtype = st.getType(sVar,scope);
            String mt = machineType(dtype.toString());
            String num = listLenght.get(iv.get(sVar));
@@ -829,10 +877,16 @@ public class IrCodeVisitor implements monaVisitor {
             prog = prog + dec + "\n" ;
             prog = prog + temp + " = getelementptr [" +(str.length() - 1) + " x i8], [" + (str.length() - 1) + " x i8]*" + var + ", i64 0, i64 0\n";
             prog = prog + "store i8* " + temp + ", i8** " + mem + "\n";
+            if(parent.equals("argumentList")){
+                return temp ;
+            }
             temp = getTemp();
             prog = prog + temp + " = load " +  " i8* , " +  "i8** "  + mem + "\n";
             sv.put(str,var);
             iv.put( mem ,mem);
+
+            if(parent.equals("argumentList")){
+            }
             return temp;
       }
 

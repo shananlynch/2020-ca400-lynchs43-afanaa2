@@ -1,13 +1,7 @@
 main{
     var int a = 0 ;
-    var bool b = a < 10;
-    while(b){
-    var int isOdd = a % 3;
-    if(isOdd == 0){
-        print a ;
-    }
     a = a + 1;
-    }
+    print a ;
 
 
 }
