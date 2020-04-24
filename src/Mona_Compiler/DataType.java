@@ -16,5 +16,6 @@ public enum DataType {
     Integer,
     string,
     TypeUnknown,
+    Array,
     Void
 }

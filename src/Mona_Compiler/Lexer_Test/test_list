@@ -1,8 +1,6 @@
 main{
     var int i = 0 ;
-    var [int] a = [];
-    a.insert(200);
-    i = 0;
+    var [int] a = [2] ;
     i = a.get(i);
     print i ;
 }

@@ -1,0 +1,10 @@
+int get([int] a){
+    var int l = a.get(1);
+    return (l) ;
+}
+
+main{
+    var [int] l =[1,2,3];
+    var int i = get(l) ;
+    print i ;
+}

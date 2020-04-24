@@ -21,10 +21,12 @@ public class IrCodeVisitor implements monaVisitor {
     private Map<String,Integer> varInc = new HashMap<String, Integer>();
     private Map<String,String> listLenght = new HashMap<String, String>();
     private Map<String,String> listInsert = new HashMap<String, String>();
+    private Map<String,String> listType = new HashMap<String, String>();
     private static int boolLabel = 0;
     private static String lv = "";
     private static String currentList = "";
     private static String r = "";
+    private static String list = "";
     private static int listInc = 0 ;
 
     /*
@@ -168,9 +170,11 @@ public class IrCodeVisitor implements monaVisitor {
           String dec = "";
           String command =  "";
           String load = "";
-          String node0 = (String) node.jjtGetChild (0).jjtAccept (this, data);
           SimpleNode node1 = (SimpleNode) node.jjtGetChild (1);
+          String node0 = (String)( (SimpleNode) node.jjtGetChild (0)).jjtGetValue();
+
           String mt = machineType(node0) ;
+
 
           if(node0.equals("string") && node.jjtGetNumChildren() > 2 ){
             String node2 = (String) node.jjtGetChild (2).jjtAccept (this, data);
@@ -197,9 +201,12 @@ public class IrCodeVisitor implements monaVisitor {
             iv.put( scope + node1.jjtGetValue().toString(),"%." + scope + node1.jjtGetValue());
           }
            else if(node0.equals("[")  ){
-                String var = "%.l" + scope + node1.jjtGetValue();
+                String var = "%." + scope + node1.jjtGetValue();
                 currentList = var ;
-                String node2 = (String) node.jjtGetChild (2).jjtAccept (this, data);
+
+                if(node.jjtGetNumChildren() > 2 ){
+                    String node2 = (String) node.jjtGetChild (2).jjtAccept (this, data);
+                }
                 iv.put(scope+node1.jjtGetValue().toString(),var);
            }
           else {
@@ -271,7 +278,7 @@ public class IrCodeVisitor implements monaVisitor {
               String value =  (String) node.jjtGetChild(0).jjtAccept(this,data) ;
               currentList = value ;
 
-              return value;
+              return "Array";
           }
 
 
@@ -425,20 +432,28 @@ public class IrCodeVisitor implements monaVisitor {
           SimpleNode sty = (SimpleNode)node.jjtGetChild (0)   ;       // Type
           SimpleNode sid = (SimpleNode)node.jjtGetChild (1)    ;      // Identifier
           String ty = (String)sty.jjtGetValue()   ;       // Type
+          String mt = machineType(ty);
+          if(ty.equals("[")){
+              ty = (String) sty.jjtAccept(this,data);
+               mt = machineType(ty) + "*";
+          }
           String id = (String)sid.jjtGetValue()   ;      // Identifier
           scope = id ;
           String argsString = (String)node.jjtGetChild (2).jjtAccept (this, data);
-          String mt = machineType(ty);
           prog = prog + "define " + mt + " " + "@" + id + "( " + argsString + " ) \n { \n" ;
+          prog = prog + list + "\n";
           r = mt ;
-          node.childrenAccept(this,data);
+          for(int i = 3; i < node.jjtGetNumChildren(); i ++){
+            node.jjtGetChild (i).jjtAccept (this, data);
+
+        }
           if(mt.equals("void")){
 
                 prog = prog + "ret void \n";
           }
 
           prog = prog + "}\n";
-
+          list = "";
           return null;}
       public Object visit(ASTreturn_ node, Object data){
           String sty = (String)node.jjtGetChild(0).jjtAccept(this,data)   ;       // Type
@@ -447,22 +462,36 @@ public class IrCodeVisitor implements monaVisitor {
 
 
       public Object visit(ASTType node, Object data) {
+                  String t = (String)node.value ;
+                  if(t.equals("["))
+                  {
+                      return node.jjtGetChild(0).jjtAccept(this,data) ;
+                  }
                   return node.value ;
               }
 
       public Object visit(ASTparameter_list node, Object data){
           String arg = "";
-          for(int i = 0 ; i < node.jjtGetNumChildren(); i = i + 2){
+          for(int i = 0 ; i <( node.jjtGetNumChildren())/2; i ++){
           SimpleNode sty = (SimpleNode)node.jjtGetChild (0 + i)   ;       // Type
           SimpleNode sid = (SimpleNode)node.jjtGetChild (1 +i )    ;      // Identifier
           String ty = (String)sty.jjtGetValue()   ;       // Type
           String id = "%." +scope + (String)sid.jjtGetValue()   ;      // Identifier
-          ty = machineType(ty);
+          String mty = machineType(id);
+          if(ty.equals("[")){
+              ty = (String) sty.jjtAccept(this,data);
+               mty = machineType(ty);
+               String temp = getTemp();
+               list = list + temp + " = bitcast " + mty + "*" + id + " to [ 100 x i32 ]*";
+               iv.put(scope + sid.jjtGetValue().toString(),temp);
+               String a = iv.get(scope + sid.jjtGetValue().toString());
+          }
+
           if(i == 0 ){
-              arg =arg +  ty + "*" + " " + id;
+              arg =arg +  mty + "*" + " " + id;
           }
           else{
-              arg = arg + ", " + ty + "* " + id;
+              arg = arg + ", " + mty + "* " + id;
         }
       }
           return arg;}
@@ -759,11 +788,18 @@ public class IrCodeVisitor implements monaVisitor {
                 String var =(String) node.jjtGetChild(i).jjtAccept(this,data);
                 SimpleNode node0 = (SimpleNode) node.jjtGetChild(i);
                 String t = (String) node0.toString() ;
+                String arr = t =(String)( st.getType( (String) node0.jjtGetValue(),scope)).toString(); ;
                 String mt = machineType(t)+ "*";
-                if(t == "Identifier"){
+                if(t.equalsIgnoreCase("Identifier")){
                     var ="%." + scope + (String) node0.jjtGetValue();
                     t =(String)( st.getType( (String) node0.jjtGetValue(),scope)).toString();
-                     mt = machineType(t);
+
+                }
+                else if(arr.equalsIgnoreCase("Array")){
+                    mt = machineType(t);
+                    String temp =getTemp();
+                    prog = prog + temp + " = bitcast "+ listType.get(var)+ "* "  + var  + " to " + mt + "* \n";
+                    var = temp ;
                 }
                 else{
                     mt = machineType(t);
@@ -788,12 +824,15 @@ public class IrCodeVisitor implements monaVisitor {
          String nodeN ;
          if(numChildren > 0 ){
              String nodeT = (String)node.jjtGetChild(0).toString();
+             // TODO there is an issue here
+
         }
          String mtype = machineType("nodeT");
          String type = "[ " + numChildren + " x " + mtype + " ]";
          prog  = prog + currentList + " = alloca [" +  numChildren + " x " + mtype + "] \n" ;
 
          listLenght.put(currentList,num);
+         listType.put(currentList,type);
 
           for(int i = 0; i < numChildren ; i ++ ){
               nodeN = (String) node.jjtGetChild(i).jjtAccept(this,data);
@@ -811,7 +850,7 @@ public class IrCodeVisitor implements monaVisitor {
 
           DataType dType = st.getType(node.jjtGetValue().toString(),scope);
           String cType = dType.toString();
-          if(cType.equalsIgnoreCase("TypeUnknown")){
+          if(cType.equalsIgnoreCase("Array") || cType.equalsIgnoreCase("TypeUnknown")){
               return iv.get(scope+node.value.toString());
           }
           String mt = machineType(cType);
@@ -843,7 +882,7 @@ public class IrCodeVisitor implements monaVisitor {
            prog = prog + temp + " = bitcast " +  "[" +  num + " x " + mt + "]* " + var +" to " + "[" +  num2 + " x " + mt + "]* \n";
            String temp2 = getTemp();
            prog = prog + temp2 + "= load "  + "[" +  num2 + " x " + mt + "],"  + "[" +  num2 + " x " + mt + "]* " + temp + "\n" ;
-
+           String type = "[" +  num2 + " x " + mt + "]";
            var = var + listInc ;
            prog = prog + var + " = alloca [" +  num2 + " x " + mt + "] \n" ;
            prog = prog + "store "  + "[" +  num2 + " x " + mt + "] " + temp2 + " ,[" +  num2 + " x " + mt + "]* " + var ;
@@ -852,6 +891,7 @@ public class IrCodeVisitor implements monaVisitor {
            replaceList(num,num2, mt, var , newElement );
            iv.put(sVar,var);
            listLenght.put(var,num2);
+           listType.put(var,type);
            listInc ++ ;
            return null;}
 

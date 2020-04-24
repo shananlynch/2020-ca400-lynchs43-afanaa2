@@ -80,6 +80,10 @@ public class STC extends Object {
     else if (s.equals("void")) {
         return DataType.Void;
     }
+    else if (s.equals("["))
+    {
+        return DataType.Array;
+    }
     return DataType.TypeUnknown;
     }
 }

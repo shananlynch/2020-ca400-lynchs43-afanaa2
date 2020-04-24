@@ -6,6 +6,9 @@ void helloWorld(String a,int v){
     }
 
 }
+void get([int] a){
+    print a ;
+}
 
 void testRecursive(string a, int v){
     if (v > 0){
@@ -21,6 +24,6 @@ void testRecursive(string a, int v){
 
 main{
     var int a = 0 ;
-    var int l;
-    testRecursive( "helloWorld" , 100) ;
+    var [int] l =[1,2,3];
+    get( l ) ;
 }
