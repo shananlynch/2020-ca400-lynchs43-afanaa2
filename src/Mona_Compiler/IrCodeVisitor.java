@@ -274,13 +274,17 @@ public class IrCodeVisitor implements monaVisitor {
               SimpleNode value = (SimpleNode) node.jjtGetChild(0) ;
               return value.jjtGetValue() ;
           }
-          else if(sType.equals("[")){
+          else if(sType.equals("[") && !get.equals("functionCall")){
               String value =  (String) node.jjtGetChild(0).jjtAccept(this,data) ;
               currentList = value ;
 
               return "Array";
           }
-
+          else if(sType.equals("[") && get.equals("functionCall")){
+              prog = prog + currentList + " =  " ;
+              String value =  (String) node.jjtGetChild(0).jjtAccept(this,data) ;
+              return "Array";
+          }
 
           else if(parentType.toString().equals("statement") &&
           dType.toString().equals("Bool") ){
@@ -327,6 +331,7 @@ public class IrCodeVisitor implements monaVisitor {
           else if(get.equals("functionCall")){
               SimpleNode n = (SimpleNode) node.jjtGetChild(0);
               String temp =(String) n.jjtAccept(this,data);
+              System.out.println(temp);
               return temp  ;
           }
 
@@ -434,7 +439,8 @@ public class IrCodeVisitor implements monaVisitor {
           String mt = machineType(ty);
           if(ty.equals("[")){
               ty = (String) sty.jjtAccept(this,data);
-               mt = machineType(ty) + "*";
+               ty = machineType(ty);
+               mt = "[ 256 x " + ty + "]*" ;
           }
           String id = (String)sid.jjtGetValue()   ;      // Identifier
           scope = id ;
@@ -442,6 +448,7 @@ public class IrCodeVisitor implements monaVisitor {
           prog = prog + "define " + mt + " " + "@" + id + "( " + argsString + " ) \n { \n" ;
           prog = prog + list + "\n";
           r = mt ;
+
           for(int i = 3; i < node.jjtGetNumChildren(); i ++){
             node.jjtGetChild (i).jjtAccept (this, data);
 
@@ -456,6 +463,7 @@ public class IrCodeVisitor implements monaVisitor {
           return null;}
       public Object visit(ASTreturn_ node, Object data){
           String sty = (String)node.jjtGetChild(0).jjtAccept(this,data)   ;       // Type
+
           prog = prog + "ret " + r + " " + sty + "\n";
           return null;}
 
@@ -479,16 +487,14 @@ public class IrCodeVisitor implements monaVisitor {
           String mty = machineType(id);
           if(ty.equals("[")){
               ty = (String) sty.jjtAccept(this,data);
-               mty = machineType(ty);
-               String temp = getTemp();
-               list = list + temp + " = bitcast " + mty + "*" + id + " to [ 100 x i32 ]*";
-               iv.put(scope + sid.jjtGetValue().toString(),temp);
-               String a = iv.get(scope + sid.jjtGetValue().toString());
-          }
+              mty = machineType(ty);
+              mty = "[256 x " + mty + "]";
+              iv.put(scope + (String)sid.jjtGetValue() , id);
+         }
 
           if(i == 0 ){
               arg =arg +  mty + "*" + " " + id;
-          }
+         }
           else{
               arg = arg + ", " + mty + "* " + id;
         }
@@ -686,9 +692,12 @@ public class IrCodeVisitor implements monaVisitor {
               String sType = machineType(type.toString());
               String params = (String) node.jjtGetChild(1).jjtAccept(this,data);
               String temp = getTemp();
-              if(!sType.equalsIgnoreCase("void")){
-                  prog = prog + temp +" = ";
+              if(!sType.equalsIgnoreCase("void") && !type.toString().equalsIgnoreCase("Array")){
+                  prog = prog + temp + " = ";
               }
+              if((type.toString()).equalsIgnoreCase("Array")){
+                 sType = "[ 256 x " + sType + "]*" ;
+            }
               prog  = prog +  "call " + sType + " @" + var + " (" + params + ")\n";
               return temp;
           }
@@ -795,11 +804,9 @@ public class IrCodeVisitor implements monaVisitor {
 
                 }
                 else if(arr.equalsIgnoreCase("Array")){
-                    mt = machineType(t);
-                    String temp =getTemp();
-                    prog = prog + temp + " = bitcast "+ listType.get(var)+ "* "  + var  + " to " + mt + "* \n";
-                    var = temp ;
-                }
+                   mt = "[256 x i32]";
+              }
+
                 else{
                     mt = machineType(t);
                     String temp =getTemp();
@@ -807,9 +814,11 @@ public class IrCodeVisitor implements monaVisitor {
                     prog = prog + "store  " + mt + " " + var + ", " + mt + "*" + " " + temp  + "\n";
                     var = temp;
                 }
+
                 if(i == 0){
                     param = param + mt + "* " + var ;
                 }
+
                 else{
                     param = param +", " + mt + "* " + var ;
                 }
