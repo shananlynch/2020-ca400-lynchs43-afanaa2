@@ -807,17 +807,17 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
       values();
       jj_consume_token(RBR);
       jj_consume_token(SEMIC);
-                                           ASTinsert jjtn003 = new ASTinsert(JJTINSERT);
-                                           boolean jjtc003 = true;
-                                           jjtree.openNodeScope(jjtn003);
+                                            ASTinsert jjtn003 = new ASTinsert(JJTINSERT);
+                                            boolean jjtc003 = true;
+                                            jjtree.openNodeScope(jjtn003);
       try {
-                                           jjtree.closeNodeScope(jjtn003,  2);
-                                           jjtc003 = false;
-                                          {if (true) return "insert";}
+                                            jjtree.closeNodeScope(jjtn003,  2);
+                                            jjtc003 = false;
+                                           {if (true) return "insert";}
       } finally {
-                                           if (jjtc003) {
-                                             jjtree.closeNodeScope(jjtn003,  2);
-                                           }
+                                            if (jjtc003) {
+                                              jjtree.closeNodeScope(jjtn003,  2);
+                                            }
       }
       break;
     default:

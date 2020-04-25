@@ -72,7 +72,7 @@ public class IrCodeVisitor implements monaVisitor {
     private void replaceList(String num1, String num2, String  mt, String var , String newElement ){
         String temp = getTemp();
         prog = prog + temp +
-        " = getelementptr " + "[" +  num2 + " x " + mt + "],"  + "[" +  num2 + " x " + mt + "]* "
+        " = getelementptr " + "[" +  "256" + " x " + mt + "],"  + "[" +  "256" + " x " + mt + "]* "
         + var + ", " + mt + " 0 ," + mt + " " + num1 +   "\n" ;
         prog = prog + "store " + mt + " " +  newElement + " , " + mt + "* " +  temp + "\n";
     }
@@ -314,8 +314,7 @@ public class IrCodeVisitor implements monaVisitor {
               String mVar = "%." + scope + sVar  ;
               String index = (String)cNode.jjtGetChild(1).jjtAccept(this,data);
               String list = (String)cNode.jjtGetChild(0).jjtAccept(this,data);
-              String length = listLenght.get(list);
-              String ptr = " [" + length + " x " + mType + "]";
+              String ptr = " [" + "256" + " x " + mType + "]";
               String temp = getTemp();
               prog = prog + temp + "= getelementptr" + ptr + ", "+ ptr + "* " + list + ","
               + mType + " 0," + mType  +" " + index + "\n" ;
@@ -828,8 +827,11 @@ public class IrCodeVisitor implements monaVisitor {
 
         }
          String mtype = machineType("nodeT");
-         String type = "[ " + numChildren + " x " + mtype + " ]";
-         prog  = prog + currentList + " = alloca [" +  numChildren + " x " + mtype + "] \n" ;
+         String type = "[ " + "256" + " x " + mtype + " ]";
+         prog  = prog + currentList + " = alloca " + type + " \n" ;
+         prog = prog + currentList + "len = alloca i32 \n";
+         prog = prog + "store i32 " +  num +", i32* " +  currentList + "len \n";
+
 
          listLenght.put(currentList,num);
          listType.put(currentList,type);
@@ -879,26 +881,21 @@ public class IrCodeVisitor implements monaVisitor {
            String newElement = ( String) node0.jjtAccept(this,data);
            String var = iv.get(sVar);
            String temp = getTemp();
-           prog = prog + temp + " = bitcast " +  "[" +  num + " x " + mt + "]* " + var +" to " + "[" +  num2 + " x " + mt + "]* \n";
-           String temp2 = getTemp();
-           prog = prog + temp2 + "= load "  + "[" +  num2 + " x " + mt + "],"  + "[" +  num2 + " x " + mt + "]* " + temp + "\n" ;
-           String type = "[" +  num2 + " x " + mt + "]";
-           var = var + listInc ;
-           prog = prog + var + " = alloca [" +  num2 + " x " + mt + "] \n" ;
-           prog = prog + "store "  + "[" +  num2 + " x " + mt + "] " + temp2 + " ,[" +  num2 + " x " + mt + "]* " + var ;
-           prog = prog +  "\n" ;
-
-           replaceList(num,num2, mt, var , newElement );
+           prog = prog + temp + " = load i32, i32* " + var + "len \n";
+           String temp1 = getTemp();
+           prog = prog + temp1 + " = add i32 " + temp +" , 1 \n";
+           prog = prog + "store i32 " + temp1 + ", i32* " +  var + "len \n" ;
+           replaceList(temp,num2, mt, var , newElement );
            iv.put(sVar,var);
            listLenght.put(var,num2);
-           listType.put(var,type);
            listInc ++ ;
            return null;}
 
       public Object visit(ASTgetLength node, Object data){
           String l = (String) node.jjtGetChild(0).jjtAccept(this,data);
-          String length = listLenght.get(l);
-          return length;
+          String temp = getTemp();
+          prog = prog + temp + " = load i32 , i32* " + l + "len \n";
+          return temp;
       }
       public Object visit(ASTNumber node, Object data){ return node.value;}
       public Object visit(ASTString node, Object data){
