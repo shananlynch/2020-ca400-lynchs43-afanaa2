@@ -1,0 +1,6 @@
+var int a = 1;
+main{
+     print a ;
+     a = a + 1;
+
+}

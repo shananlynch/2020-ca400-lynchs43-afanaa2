@@ -28,6 +28,7 @@ public class IrCodeVisitor implements monaVisitor {
     private static String r = "";
     private static String list = "";
     private static int listInc = 0 ;
+    private static String global = "";
 
     /*
     getTemp funtion gets a temporary local variable
@@ -95,6 +96,7 @@ public class IrCodeVisitor implements monaVisitor {
       {
       prog = prog + "ret i32 0 \n" ;
       prog = prog + "}\n";
+      buff.write(global);
       buff.write(stringDec);
       buff.write(prog);
       buff.flush ();
@@ -175,7 +177,12 @@ public class IrCodeVisitor implements monaVisitor {
 
           String mt = machineType(node0) ;
 
-
+          if(scope.equals("global")){
+               global = global + "@." + node1.jjtGetValue() + " = global " + mt + " " +((String) node.jjtGetChild (2).jjtAccept (this, data)) ;
+               global = global + "\n";
+               iv.put(node1.jjtGetValue().toString(),"@." + node1.jjtGetValue());
+          }
+          else {
           if(node0.equals("string") && node.jjtGetNumChildren() > 2 ){
             String node2 = (String) node.jjtGetChild (2).jjtAccept (this, data);
             String dec1 = sv.get(node2);
@@ -191,26 +198,26 @@ public class IrCodeVisitor implements monaVisitor {
                 var = dec1;
             }
             temp = getTemp();
-            dec = "%." +scope + node1.jjtGetValue() + " = alloca " + mt ;
+            dec = "%."  + node1.jjtGetValue() + " = alloca " + mt ;
             prog = prog + dec + "\n" ;
             prog = prog + temp + " = getelementptr [" +(node2.length() - 1) + " x i8], [" + (node2.length() - 1) + " x i8]*" + var + ", i64 0, i64 0\n";
-            prog = prog + "store i8* " + temp + ", i8** %." + scope+ node1.jjtGetValue() + "\n";
+            prog = prog + "store i8* " + temp + ", i8** %." +  node1.jjtGetValue() + "\n";
             temp = getTemp();
-            prog = prog + temp + " = load " + mt + ", " + mt + "* " + "%." + scope + node1.jjtGetValue() + "\n";
+            prog = prog + temp + " = load " + mt + ", " + mt + "* " + "%." +   node1.jjtGetValue() + "\n";
             sv.put(node2,var);
-            iv.put( scope + node1.jjtGetValue().toString(),"%." + scope + node1.jjtGetValue());
+            iv.put( node1.jjtGetValue().toString(),"%." +   node1.jjtGetValue());
           }
            else if(node0.equals("[")  ){
-                String var = "%." + scope + node1.jjtGetValue();
+                String var = "%." +  node1.jjtGetValue();
                 currentList = var ;
 
                 if(node.jjtGetNumChildren() > 2 ){
                     String node2 = (String) node.jjtGetChild (2).jjtAccept (this, data);
                 }
-                iv.put(scope+node1.jjtGetValue().toString(),var);
+                iv.put(node1.jjtGetValue().toString(),var);
            }
           else {
-            dec = "%." + scope + node1.jjtGetValue() + " = alloca " + mt ;
+            dec = "%." +  node1.jjtGetValue() + " = alloca " + mt ;
             prog = prog + dec + "\n";
 
             String node2 = "";
@@ -226,15 +233,21 @@ public class IrCodeVisitor implements monaVisitor {
               else if(node2.equals("false")){
                   node2 = "0" ;
               }
-              command = "store " + mt + " " + node2 + ", " + mt + "* " + "%." + scope + node1.jjtGetValue() ;
+              String var = "%." + node1.jjtGetValue() ;
+              if(st.in_scope(node1.jjtGetValue()+"","global")){
+                    var = "@." + node1.jjtGetValue() ;
+
+              }
+              command = "store " + mt + " " + node2 + ", " + mt + "* " + var ;
               String temp = getTemp();
-              load = temp + " = load " + mt + ", " + mt + "* " + "%." + scope + node1.jjtGetValue();
-              iv.put(scope +node1.jjtGetValue().toString(),temp);
+              load = temp + " = load " + mt + ", " + mt + "* " +var;
+              iv.put(node1.jjtGetValue().toString(),temp);
           }
               prog = prog + command + "\n";
               prog = prog + load + "\n" ;
        }
     }
+     }
           return null;
       }
 
@@ -262,7 +275,7 @@ public class IrCodeVisitor implements monaVisitor {
                   sVar = dec1 ;
               }
               prog = prog + temp + " = getelementptr [" + len + " x i8], [" + len+ " x i8]*" + sVar + ", i64 0, i64 0\n";
-              prog = prog + "store i8* " + temp + ", i8** %." + scope + sVar1 + "\n";
+              prog = prog + "store i8* " + temp + ", i8** %."  + sVar1 + "\n";
 
               iv.put(sVar1,temp);
           }
@@ -315,7 +328,7 @@ public class IrCodeVisitor implements monaVisitor {
                    mType = machineType(t);
 
               }
-              String mVar = "%." + scope + sVar  ;
+              String mVar = "%." +  sVar  ;
               String index = (String)cNode.jjtGetChild(1).jjtAccept(this,data);
               String list = (String)cNode.jjtGetChild(0).jjtAccept(this,data);
               String ptr = " [" + "256" + " x " + mType + "]";
@@ -331,8 +344,6 @@ public class IrCodeVisitor implements monaVisitor {
           else if(get.equals("functionCall")){
               SimpleNode n = (SimpleNode) node.jjtGetChild(0);
               String temp =(String) n.jjtAccept(this,data);
-              System.out.println(temp);
-              return temp  ;
           }
 
           String node0 = (String) node.jjtGetChild(0).jjtAccept (this, data);
@@ -479,17 +490,17 @@ public class IrCodeVisitor implements monaVisitor {
 
       public Object visit(ASTparameter_list node, Object data){
           String arg = "";
-          for(int i = 0 ; i <( node.jjtGetNumChildren())/2; i ++){
+          for(int i = 0 ; i <( node.jjtGetNumChildren()); i  = i + 2){
           SimpleNode sty = (SimpleNode)node.jjtGetChild (0 + i)   ;       // Type
           SimpleNode sid = (SimpleNode)node.jjtGetChild (1 +i )    ;      // Identifier
           String ty = (String)sty.jjtGetValue()   ;       // Type
-          String id = "%." +scope + (String)sid.jjtGetValue()   ;      // Identifier
-          String mty = machineType(id);
+          String id = "%." + (String)sid.jjtGetValue()   ;      // Identifier
+          String mty = machineType(ty);
           if(ty.equals("[")){
               ty = (String) sty.jjtAccept(this,data);
               mty = machineType(ty);
               mty = "[256 x " + mty + "]";
-              iv.put(scope + (String)sid.jjtGetValue() , id);
+              iv.put( (String)sid.jjtGetValue() , id);
          }
 
           if(i == 0 ){
@@ -529,8 +540,12 @@ public class IrCodeVisitor implements monaVisitor {
             DataType type = st.getType(var,scope);
             String sType = machineType(type.toString());
             String isType =(String) node0.toString() ;
-
-            var = "%." + scope + var ;
+            if(st.in_scope(var,"global")){
+                  var = iv.get(var) ;
+            }
+            else{
+                 var = "%." + node0.jjtGetValue().toString();
+            }
             if(isType.equalsIgnoreCase("string")){
                 sType = "Undec";
                 var =(String) node0.jjtAccept(this,data);
@@ -586,10 +601,15 @@ public class IrCodeVisitor implements monaVisitor {
                 String node1 = (String) node.jjtGetChild (1).jjtAccept (this, data);
                 if(!node1.equals("getArray"))
                 {
-                command = "store " + mt + " " + node1 + ", " + mt + "* " + "%." + scope + node0.jjtGetValue() ;
+                     String var = "%." + node0.jjtGetValue() ;
+                     if(st.in_scope(node0.jjtGetValue()+"","global")){
+                          var = "@." + node0.jjtGetValue() ;
+
+                     }
+                command = "store " + mt + " " + node1 + ", " + mt + "* " + var ;
                 String temp = getTemp();
-                load = temp + " = load " + mt + ", " + mt + "* " + "%."+ scope + node0.jjtGetValue();
-                iv.put(scope + node0.jjtGetValue().toString(),temp);
+                load = temp + " = load " + mt + ", " + mt + "* " + var;
+                iv.put( node0.jjtGetValue().toString(),temp);
                 prog = prog + command + "\n";
                 prog = prog + load + "\n";
             }
@@ -799,7 +819,7 @@ public class IrCodeVisitor implements monaVisitor {
                 String arr = t =(String)( st.getType( (String) node0.jjtGetValue(),scope)).toString(); ;
                 String mt = machineType(t)+ "*";
                 if(t.equalsIgnoreCase("Identifier")){
-                    var ="%." + scope + (String) node0.jjtGetValue();
+                    var ="%."  + (String) node0.jjtGetValue();
                     t =(String)( st.getType( (String) node0.jjtGetValue(),scope)).toString();
 
                 }
@@ -807,13 +827,21 @@ public class IrCodeVisitor implements monaVisitor {
                    mt = "[256 x i32]";
               }
 
-                else{
+           else if (!t.equals("TypeUnknown")) {
                     mt = machineType(t);
                     String temp =getTemp();
                     prog = prog + temp + " = alloca "  + mt + "\n ";
                     prog = prog + "store  " + mt + " " + var + ", " + mt + "*" + " " + temp  + "\n";
                     var = temp;
-                }
+               }
+          else if (t.equals("TypeUnknown")) {
+               mt = machineType("" + node0);
+               String temp =getTemp();
+               prog = prog + temp + " = alloca "  + mt + "\n ";
+               prog = prog + "store  " + mt + " " + var + ", " + mt + "*" + " " + temp  + "\n";
+               var = temp;
+
+          }
 
                 if(i == 0){
                     param = param + mt + "* " + var ;
@@ -858,18 +886,29 @@ public class IrCodeVisitor implements monaVisitor {
       public Object visit(ASTdecl_list node, Object data){ return null;}
 
       public Object visit(ASTIdentifier node, Object data){
-
           DataType dType = st.getType(node.jjtGetValue().toString(),scope);
           String cType = dType.toString();
-          if(cType.equalsIgnoreCase("Array") || cType.equalsIgnoreCase("TypeUnknown")){
-              return iv.get(scope+node.value.toString());
+          if(cType.equalsIgnoreCase("Array")  ){
+              return iv.get(node.value.toString());
+          }
+          String var = "" + node.jjtGetValue();
+          if(st.in_scope(var,"global")){
+               var = iv.get(var) ;
+         }else{
+               var = "%." +  node.jjtGetValue();
           }
           String mt = machineType(cType);
           String temp = getTemp();
-          String load = temp + " = load " + mt + ", " + mt + "* " + "%." + scope + node.jjtGetValue();
+          String load = temp + " = load " + mt + ", " + mt + "* " + var ;
           prog = prog + load + "\n" ;
-          iv.put(scope+node.jjtGetValue().toString(),temp);
-          return iv.get(scope+node.value.toString());
+          iv.put(node.jjtGetValue().toString(),temp);
+
+          if(st.in_scope(node.jjtGetValue() + "" ,"global")){
+
+               iv.put(var,temp);
+               return iv.get(var);
+         }
+          return iv.get(node.value.toString());
       }
       public Object visit(ASTbreak_ node, Object data){ return null;}
       public Object visit(ASTgetArray node, Object data){
@@ -881,7 +920,7 @@ public class IrCodeVisitor implements monaVisitor {
 
       public Object visit(ASTinsert node, Object data){
            SimpleNode val = (SimpleNode) node.jjtGetChild(0);
-           String sVar = scope + (String) val.jjtGetValue();
+           String sVar =  (String) val.jjtGetValue();
            DataType dtype = st.getType(sVar,scope);
            String mt = machineType(dtype.toString());
            String num = listLenght.get(iv.get(sVar));

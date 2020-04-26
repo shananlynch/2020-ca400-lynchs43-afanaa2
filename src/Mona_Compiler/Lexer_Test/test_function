@@ -1,4 +1,4 @@
-void helloWorld(String a,int v){
+void helloWorld(string a,int v){
     var int i = 0 ;
     while(i <= v){
         print a ;
@@ -7,7 +7,7 @@ void helloWorld(String a,int v){
 
 }
 void get([int] a){
-    print a ;
+    print 10 ;
 }
 
 void testRecursive(string a, int v){

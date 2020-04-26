@@ -1,11 +1,7 @@
-[int] get([int] a){
-     var [int] l = [1,9,3,4];
-    return (l) ;
+void a() {
+     var string a = "hello";
+     print a ;
 }
-
 main{
-    var [int] l =[1,2,3];
-    var [int] i = get(l) ;
-    var int k = i.get(1);
-    print k ;
+ a();
 }
