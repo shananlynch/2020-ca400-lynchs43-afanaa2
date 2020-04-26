@@ -1,18 +1,18 @@
-[string] insert100([string] a){
+[int] insert100([int] a){
      var int i = 0 ;
      while(i < 100 ){
-          a.insert("hello");
+          a.insert(i);
           i= i + 1;
      }
     return (a) ;
 }
 
 main{
-    var [string] l =[];
-    var [string] i = insert100(l) ;
+    var [int] l =[];
+    var [int] i = insert100(l) ;
     var int j = 0;
     while(j < 100 ){
-          var string k = i.get(9);
+          var int k = i.get(j);
           j = j + 1 ;
           print k;
     }

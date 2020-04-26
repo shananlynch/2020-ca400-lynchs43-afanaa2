@@ -1,0 +1,9 @@
+string helloWorld(string hello){
+     return(hello);
+}
+main{
+     var string h = helloWorld("hello");
+     print h ;
+     h = helloWorld("world");
+     print h ;
+}
