@@ -6,8 +6,8 @@ void helloWorld(string a,int v){
     }
 
 }
-void get([int] a){
-    print 10 ;
+int get([int] a){
+    return (10) ;
 }
 
 void testRecursive(string a, int v){
@@ -25,5 +25,8 @@ void testRecursive(string a, int v){
 main{
     var int a = 0 ;
     var [int] l =[1,2,3];
-    get( l ) ;
+    a = get( l ) ;
+    print a ;
+    a = a + 1;
+    print a ;
 }
