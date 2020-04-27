@@ -530,6 +530,9 @@ public class IrCodeVisitor implements monaVisitor {
           String argsString = (String)node.jjtGetChild (2).jjtAccept (this, data);
           prog = prog + "define " + mt + " " + "@" + id + "( " + argsString + " ) \n { \n" ;
           prog = prog + list + "\n";
+          prog = prog + "%.true = getelementptr [5 x i8], [5 x i8]*@.true, i64 0, i64 0 \n";
+          prog = prog + "%.false = getelementptr [6 x i8], [6 x i8]*@.false, i64 0, i64 0 \n";
+          prog = prog + "%.newline1098019 = getelementptr [2 x i8], [2 x i8]*@.newline1098019, i64 0, i64 0 \n";
           r = mt ;
 
           for(int i = 3; i < node.jjtGetNumChildren(); i ++){

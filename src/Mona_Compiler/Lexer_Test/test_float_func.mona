@@ -1,0 +1,11 @@
+float function(float a ){
+     a  = a + 3.2 ;
+     return (a) ;
+
+}
+main{
+     var float a  ;
+     a = 200.0 ;
+     a = function(a);
+     print a ;
+}
