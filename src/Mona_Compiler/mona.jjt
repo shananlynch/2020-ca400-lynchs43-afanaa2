@@ -131,6 +131,7 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < CLASS : "class" >
      | < INT : "int" >
      | < BOOL : "bool" >
+     | < T_FLOAT : "float" >
      | < VOID : "void" >
      | < MAIN : "main" >
      | < BREAK : "break" >
@@ -273,7 +274,7 @@ void return_list() : {} {
 
 String type() #Type : {Token t;}
 {
-    (t = <INT> | t = <BOOL> | t = <VOID> | t = <STRING> | t = <LSBR> type() <RSBR> | t = <FLOAT> | t = <DICT>)
+    (t = <INT> | t = <BOOL> | t = <VOID> | t = <STRING> | t = <LSBR> type() <RSBR> | t = <T_FLOAT> | t = <DICT>)
      {jjtThis.value = t.image;
      return t.image;}
 }
@@ -439,7 +440,7 @@ void array () #array : {} {
 }
 
 void element () : {}{
-    ( string()| number() | identifier() )(<COMMA> element() | {} )
+    ( string()| number() | identifier() | float_() )(<COMMA> element() | {} )
 }
 
 void dictionary () : {} {
@@ -447,7 +448,7 @@ void dictionary () : {} {
 }
 
 void values() : {} {
-    (identifier() | <FLOAT> | string() | number() |bool() )
+    (identifier() |float_() | string() | number() |bool() )
 }
 
 void d_structure () : {} {

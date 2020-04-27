@@ -84,6 +84,10 @@ public class STC extends Object {
     {
         return DataType.Array;
     }
+    else if (s.equals("float"))
+    {
+        return DataType.Float;
+    }
     return DataType.TypeUnknown;
     }
 }

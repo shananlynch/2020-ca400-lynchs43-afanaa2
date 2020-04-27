@@ -135,6 +135,7 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < CLASS : "class" >
      | < INT : "int" >
      | < BOOL : "bool" >
+     | < T_FLOAT : "float" >
      | < VOID : "void" >
      | < MAIN : "main" >
      | < BREAK : "break" >
@@ -460,7 +461,7 @@ String type()       : {/*@bgen(jjtree) Type */
 {/*@bgen(jjtree) Type */
     try {
 /*@egen*/
-    (t = <INT> | t = <BOOL> | t = <VOID> | t = <STRING> | t = <LSBR> type() <RSBR> | t = <FLOAT> | t = <DICT>)/*@bgen(jjtree)*/
+    (t = <INT> | t = <BOOL> | t = <VOID> | t = <STRING> | t = <LSBR> type() <RSBR> | t = <T_FLOAT> | t = <DICT>)/*@bgen(jjtree)*/
      {
        jjtree.closeNodeScope(jjtn000, true);
        jjtc000 = false;
@@ -1134,7 +1135,7 @@ void array ()        : {/*@bgen(jjtree) array */
 }
 
 void element () : {}{
-    ( string()| number() | identifier() )(<COMMA> element() | {} )
+    ( string()| number() | identifier() | float_() )(<COMMA> element() | {} )
 }
 
 void dictionary () : {} {
@@ -1142,7 +1143,7 @@ void dictionary () : {} {
 }
 
 void values() : {} {
-    (identifier() | <FLOAT> | string() | number() |bool() )
+    (identifier() |float_() | string() | number() |bool() )
 }
 
 void d_structure () : {} {

@@ -86,8 +86,12 @@ public class IrCodeVisitor implements monaVisitor {
     {
      prog = prog + "@.true = constant [5 x i8] c\"true\00\" \n";
      prog = prog + "@.false = constant [6 x i8] c\"false\00\" \n";
+     prog = prog + "@.newline1098019 = constant [2 x i8] c\" \00\" \n";
+
      prog = prog + "declare i32 @printf(i8*, ...) #1\n";
      prog =prog + "@.1arg_str = private unnamed_addr constant [4 x i8] c\"%d\\0A\\00\", align 1\n \n";
+     prog =prog + "@.1arg_ = private unnamed_addr constant [3 x i8] c\"%f\\00\", align 1\n \n";
+
      prog = prog + "declare i32 @puts(i8*)\n" ;
       return;
     }
@@ -126,6 +130,9 @@ public class IrCodeVisitor implements monaVisitor {
 	    }
         else if (type.equalsIgnoreCase ("string")){
             mty = "i8*";
+	    }
+         else if (type.equalsIgnoreCase ("float")){
+            mty = "double";
 	    }
         else if (type.equalsIgnoreCase ("void"))
         {
@@ -395,7 +402,7 @@ public class IrCodeVisitor implements monaVisitor {
           al = Arrays.asList(str);
           ArrayList<String> arith_op_l = new ArrayList<String>(al);
           String command = "";
-
+          //mType = machineType(sType);
           // multiply or division first then + or -
           for(int i = 0 ; i < arith_op_l.size() ; i ++ ){
               if(arith_op_l.get(i).equals("^")){
@@ -572,6 +579,7 @@ public class IrCodeVisitor implements monaVisitor {
           prog =prog + "{ \n";
           prog = prog + "%.true = getelementptr [5 x i8], [5 x i8]*@.true, i64 0, i64 0 \n";
           prog = prog + "%.false = getelementptr [6 x i8], [6 x i8]*@.false, i64 0, i64 0 \n";
+          prog = prog + "%.newline1098019 = getelementptr [2 x i8], [2 x i8]*@.newline1098019, i64 0, i64 0 \n";
            node.childrenAccept(this, data); //accepts nodes
           return null;}
 
@@ -636,6 +644,13 @@ public class IrCodeVisitor implements monaVisitor {
                 prog = prog +  "call i32 @puts (i8* ";
                 prog = prog +temp + ") \n";
             }
+            else if (sType.equals("double")){
+               String temp = getTemp();
+               prog = prog + temp + "= load double , double* " + var + "\n";
+               prog = prog +  "call i32 (i8*, ...) @printf (i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.1arg_, i32 0, i32 0), double ";
+               prog = prog +temp + ") \n";
+               prog = prog + "call i32 @puts (i8* %.newline1098019) \n";
+           }
 
             else if (sType.equals("i1")){
                 printBool(var);
