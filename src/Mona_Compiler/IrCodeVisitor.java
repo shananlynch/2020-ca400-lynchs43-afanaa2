@@ -218,13 +218,14 @@ public class IrCodeVisitor implements monaVisitor {
                 String var = "%." +  node1.jjtGetValue();
                 currentList = var ;
                 listT=machineType(((SimpleNode)node.jjtGetChild(0)).jjtAccept(this,data)+ "");
+                listType.put(var,listT);
                 global = global + "@." + scope + currentList.substring(2) + "len = global i32 0\n";
                 rlen = "@." + scope + currentList.substring(2) + "len" ;
-
+                 String mtype = machineType(((SimpleNode)node.jjtGetChild(0)).jjtAccept(this,data)+ "") ;
+                 String type = "[ " + "256" + " x " + mtype + " ]";
+                 prog  = prog + currentList + " = alloca " + type + " \n" ;
                 if(node.jjtGetNumChildren() > 2 ){
-                     String mtype = listT ;
-                      String type = "[ " + "256" + " x " + listT + " ]";
-                      prog  = prog + currentList + " = alloca " + type + " \n" ;
+
                     String node2 = (String) node.jjtGetChild (2).jjtAccept (this, data);
                 }
                 iv.put(node1.jjtGetValue().toString(),var);
@@ -272,7 +273,8 @@ public class IrCodeVisitor implements monaVisitor {
           SimpleNode parentType = (SimpleNode)node.jjtGetParent() ;
           SimpleNode cNode = (SimpleNode)node.jjtGetChild(0);
           String get = (String) cNode.toString();
-          if(parentType.toString().equals("statement") && dType.toString().equals("string") ){
+
+          if(parentType.toString().equals("statement") && dType.toString().equals("string") && !get.equals("getArray")){
                SimpleNode val = (SimpleNode) node.jjtGetChild(0) ;
                String fc = "" + val;
                if(fc.equals("functionCall")){
@@ -331,6 +333,7 @@ public class IrCodeVisitor implements monaVisitor {
           }
           else if(sType.equals("[") && get.equals("functionCall")){
               String value =  (String) node.jjtGetChild(0).jjtAccept(this,data) ;
+              //TODO
               String temp = getTemp() ;
               String t = "[ " + "256" + " x " + listT + " ]";
               prog = prog + temp + "= load " + t + ", " + t + "* " + value +  " \n" ;
@@ -359,7 +362,8 @@ public class IrCodeVisitor implements monaVisitor {
               String mType="";
               String t ="" ;
               DataType dtype = st.getType(sVar,scope);
-              mType = machineType(type.toString());
+              mType = machineType(dtype.toString());
+          //    System.out.println(dtype.toString());
               if(parentNode.toString().equals("VariableDeclaration")){
                    var = (SimpleNode) parentNode.jjtGetChild(1);
                    sVar = var.jjtGetValue().toString();
@@ -921,13 +925,22 @@ public class IrCodeVisitor implements monaVisitor {
          int numChildren = node.jjtGetNumChildren();
          String num = Integer.toString(numChildren);
          String nodeN ;
+         SimpleNode assignmentType = (SimpleNode)((SimpleNode) node.jjtGetParent()).jjtGetParent();
+         String assignmentTypeS = "" + assignmentType ;
+     //    System.out.println(assignmentTypeS);
+          String mtype = listT ;
          if(numChildren > 0 ){
              String nodeT = (String)node.jjtGetChild(0).toString();
-             // TODO there is an issue here
-
         }
-        String mtype = listT ;
-         String type = "[ " + "256" + " x " + listT + " ]";
+       if(assignmentTypeS.equals("statement")){
+             String var = (String)((SimpleNode) assignmentType.jjtGetChild(0)).jjtGetValue();
+             currentList = "%." + var ;
+             mtype = listType.get("%." + var);
+        }
+        // for variable declaration we can keep it as listT
+
+       // System.out.println(listT);
+         String type = "[ " + "256" + " x " + mtype + " ]";
          prog = prog + "store i32 " +  num +", i32* " + " @." + scope +  currentList.substring(2) + "len \n";
 
 
@@ -936,8 +949,10 @@ public class IrCodeVisitor implements monaVisitor {
 
           for(int i = 0; i < numChildren ; i ++ ){
               nodeN = (String) node.jjtGetChild(i).jjtAccept(this,data);
+            //  System.out.println(type);
+
               String temp = getTemp();
-              prog = prog + temp + " = getelementptr " + type + "," + type + "* " + currentList + ", " + mtype + " 0 , " + mtype + " " + i ;
+              prog = prog + temp + " = getelementptr " + type + "," + type + "* " + currentList + ", i32" + " 0 , " + " i32 " + i ;
               prog = prog + "\n" + "store " + mtype + " " + nodeN + ", " + mtype + "* " + temp + "\n" ;
           }
           return "getArray" ;
