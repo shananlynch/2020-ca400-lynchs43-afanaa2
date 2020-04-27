@@ -1,0 +1,14 @@
+[float] function([float] a){
+     a.insert(1.0);
+     return (a) ;
+}
+
+main{
+     var [float] a = [1.0];
+     a = function(a);
+     var float l = a.get(1);
+     print l ;
+     a = function(a);
+     l=a.get(2);
+     print l ;
+}
