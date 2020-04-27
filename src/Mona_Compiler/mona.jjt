@@ -496,7 +496,7 @@ String number() #Number : {Token t;} {
       return t.image;
     })
 }
-String float_() #Number : {Token t;} {
+String float_() #Float : {Token t;} {
     (t = <FLOAT> {
       jjtThis.value = t.image;
       return t.image;

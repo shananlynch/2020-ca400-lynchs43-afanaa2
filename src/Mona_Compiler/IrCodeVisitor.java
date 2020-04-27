@@ -402,7 +402,19 @@ public class IrCodeVisitor implements monaVisitor {
           al = Arrays.asList(str);
           ArrayList<String> arith_op_l = new ArrayList<String>(al);
           String command = "";
-          //mType = machineType(sType);
+          String mType ;
+          String f = "";
+
+          if((parentType+"").equals("statement")){
+               mType = machineType(dType+"") ;
+          }
+          else{
+               mType = machineType(sType);
+          }
+          if(mType.equals("double")){
+               f = "f";
+
+          }
           // multiply or division first then + or -
           for(int i = 0 ; i < arith_op_l.size() ; i ++ ){
               if(arith_op_l.get(i).equals("^")){
@@ -410,17 +422,17 @@ public class IrCodeVisitor implements monaVisitor {
                   String temp_1 = arith_op_l.get(i-1)  ;
                   if(arith_op_l.get(i+1).equals("0")){
                       temp = getTemp() ;
-                      command = temp + " = mul i32 " + temp_1 + ", " + "0";
+                      command = temp + " =" + f + "mul "  +  mType  + temp_1 + ", " + "0";
                       right(buff,command);
                   }
                   else if(arith_op_l.get(i+1).equals("1")){
                       temp = getTemp() ;
-                      command = temp + " = mul i32 " + temp_1 + ", " + "1";
+                      command = temp + " =" + f + "mul " + mType +  " " + temp_1 + ", " + "1";
                       right(buff,command);
                   }
                   for(int j = 0 ; j < Integer.parseInt(arith_op_l.get(i+1)) - 1  ; j++){
                   temp = getTemp() ;
-                  command = temp + " = mul i32 " + temp_1 + ", " + arith_op_l.get(i-1);
+                  command = temp + " = " + f + "mul " +  mType + " "+ temp_1 + ", " + arith_op_l.get(i-1);
                   temp_1 = temp ;
                   right(buff,command);
               }
@@ -431,15 +443,19 @@ public class IrCodeVisitor implements monaVisitor {
               }
               else if(arith_op_l.get(i).equals( "%" ) && !arith_op_l.contains("^") && !arith_op_l.contains("/") ){
                   String temp = getTemp() ;
-                  command = temp + " = sdiv i32 " + arith_op_l.get(i-1) + ", " + arith_op_l.get(i+1);
+                  String fOrS = "s";
+                 if (mType.equals("double")){
+                      fOrS = "f";
+                 }
+                  command = temp + " = " + fOrS + "div "+ mType + " " + arith_op_l.get(i-1) + ", " + arith_op_l.get(i+1);
                   right(buff,command);
                   String temp_1 = temp;
                   temp = getTemp();
-                  command = temp + " = mul i32 " +  arith_op_l.get(i+1)  + ", " + temp_1 ;
+                  command = temp + " = " + f +"mul "+ mType + " " +  arith_op_l.get(i+1)  + ", " + temp_1 ;
                   right(buff,command);
                   temp_1 = temp;
                   temp = getTemp();
-                  command = temp + " = sub i32 " + arith_op_l.get(i-1) + ", " + temp_1 ;
+                  command = temp + " = " + f + "sub "+ mType + " "+ arith_op_l.get(i-1) + ", " + temp_1 ;
                   right(buff,command);
                   arith_op_l.set(i,temp);
                   arith_op_l.remove(i+1);
@@ -448,7 +464,7 @@ public class IrCodeVisitor implements monaVisitor {
               }
               else if(arith_op_l.get(i).equals("*") && !arith_op_l.contains("^")  && !arith_op_l.contains("%") ){
                   String temp = getTemp() ;
-                  command = temp + " = mul i32 " + arith_op_l.get(i-1) + ", " + arith_op_l.get(i+1);
+                  command = temp + " = " + f + "mul "+ mType + " " + arith_op_l.get(i-1) + ", " + arith_op_l.get(i+1);
                   arith_op_l.set(i,temp);
                   arith_op_l.remove(i+1);
                   arith_op_l.remove(i-1);
@@ -457,7 +473,11 @@ public class IrCodeVisitor implements monaVisitor {
               }
               else if(arith_op_l.get(i).equals("/") && !arith_op_l.contains("^")){
                   String temp = getTemp() ;
-                  command = temp + " = sdiv i32 " + arith_op_l.get(i-1) + ", " + arith_op_l.get(i+1);
+                  String fOrS = "s";
+                  if (mType.equals("double")){
+                       fOrS = "f";
+                  }
+                  command = temp + " = " + fOrS + "div "+ mType + " " + arith_op_l.get(i-1) + ", " + arith_op_l.get(i+1);
                   arith_op_l.set(i,temp);
                   arith_op_l.remove(i+1);
                   arith_op_l.remove(i-1);
@@ -468,7 +488,7 @@ public class IrCodeVisitor implements monaVisitor {
               else if(!arith_op_l.contains("*")  && !arith_op_l.contains("/") && arith_op_l.get(i).equals("-")
               && !arith_op_l.contains("^")  && !arith_op_l.contains("%") ){
                   String temp = getTemp() ;
-                  command = temp + " = sub i32 " + arith_op_l.get(i-1) + ", " + arith_op_l.get(i+1);
+                  command = temp + " = " + f + "sub "+ mType + " " + arith_op_l.get(i-1) + ", " + arith_op_l.get(i+1);
                   arith_op_l.set(i,temp);
                   arith_op_l.remove(i+1);
                   arith_op_l.remove(i-1);
@@ -478,7 +498,7 @@ public class IrCodeVisitor implements monaVisitor {
               else if(!arith_op_l.contains("*") && !arith_op_l.contains("/") && arith_op_l.get(i).equals("+")
              && !arith_op_l.contains("^")  && !arith_op_l.contains("%")  ){
                   String temp = getTemp() ;
-                  command = temp + " = add i32 " + arith_op_l.get(i-1) + ", " + arith_op_l.get(i+1);
+                  command = temp + " = " + f + "add "+ mType + " " + arith_op_l.get(i-1) + ", " + arith_op_l.get(i+1);
                   arith_op_l.set(i,temp);
                   arith_op_l.remove(i+1);
                   arith_op_l.remove(i-1);
@@ -1037,6 +1057,8 @@ public class IrCodeVisitor implements monaVisitor {
           return temp;
       }
       public Object visit(ASTNumber node, Object data){ return node.value;}
+      public Object visit(ASTFloat node, Object data){ return node.value;}
+
       public Object visit(ASTString node, Object data){
           SimpleNode nodeParent = (SimpleNode) node.jjtGetParent();
           String parent = (String) nodeParent.toString();

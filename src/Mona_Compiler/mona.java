@@ -1597,10 +1597,10 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
   }
 
   static final public String float_() throws ParseException {
-                           /*@bgen(jjtree) Number */
-                           ASTNumber jjtn000 = new ASTNumber(JJTNUMBER);
-                           boolean jjtc000 = true;
-                           jjtree.openNodeScope(jjtn000);Token t;
+                          /*@bgen(jjtree) Float */
+                          ASTFloat jjtn000 = new ASTFloat(JJTFLOAT);
+                          boolean jjtc000 = true;
+                          jjtree.openNodeScope(jjtn000);Token t;
     try {
       t = jj_consume_token(FLOAT);
                    jjtree.closeNodeScope(jjtn000, true);

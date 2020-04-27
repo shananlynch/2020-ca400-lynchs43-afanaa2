@@ -1300,11 +1300,11 @@ String number()         : {/*@bgen(jjtree) Number */
     }
 /*@egen*/
 }
-String float_()         : {/*@bgen(jjtree) Number */
-                           ASTNumber jjtn000 = new ASTNumber(JJTNUMBER);
-                           boolean jjtc000 = true;
-                           jjtree.openNodeScope(jjtn000);
-/*@egen*/Token t;} {/*@bgen(jjtree) Number */
+String float_()        : {/*@bgen(jjtree) Float */
+                          ASTFloat jjtn000 = new ASTFloat(JJTFLOAT);
+                          boolean jjtc000 = true;
+                          jjtree.openNodeScope(jjtn000);
+/*@egen*/Token t;} {/*@bgen(jjtree) Float */
     try {
 /*@egen*/
     (t = <FLOAT>/*@bgen(jjtree)*/

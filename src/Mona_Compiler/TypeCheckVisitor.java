@@ -18,6 +18,8 @@ public class TypeCheckVisitor implements monaVisitor {
           node.childrenAccept(this, data); //accepts nodes
          // System.out.println(st.get_scope("i","global"));
         ; return null;}
+        public Object visit(ASTFloat node, Object data){ return node.value;}
+
     public Object visit(ASTVariableDeclaration node, Object data){
         if(node.jjtGetNumChildren() == 3 ){
             SimpleNode node0 = (SimpleNode)node.jjtGetChild(0);

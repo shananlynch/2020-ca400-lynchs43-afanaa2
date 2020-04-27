@@ -28,7 +28,8 @@ public interface monaVisitor
   public Object visit(ASTIdentifier node, Object data);
   public Object visit(ASTbreak_ node, Object data);
   public Object visit(ASTNumber node, Object data);
+  public Object visit(ASTFloat node, Object data);
   public Object visit(ASTString node, Object data);
   public Object visit(ASTBoolean node, Object data);
 }
-/* JavaCC - OriginalChecksum=2854627a25293feb0eb8a5e1daa9aa22 (do not edit this line) */
+/* JavaCC - OriginalChecksum=e09b0bf61cf4c0c4383c43a1b5fee7e4 (do not edit this line) */

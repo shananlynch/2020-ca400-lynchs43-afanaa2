@@ -28,8 +28,9 @@ public interface monaTreeConstants
   public int JJTIDENTIFIER = 24;
   public int JJTBREAK_ = 25;
   public int JJTNUMBER = 26;
-  public int JJTSTRING = 27;
-  public int JJTBOOLEAN = 28;
+  public int JJTFLOAT = 27;
+  public int JJTSTRING = 28;
+  public int JJTBOOLEAN = 29;
 
 
   public String[] jjtNodeName = {
@@ -60,8 +61,9 @@ public interface monaTreeConstants
     "Identifier",
     "break_",
     "Number",
+    "Float",
     "String",
     "Boolean",
   };
 }
-/* JavaCC - OriginalChecksum=da028a7940b7273c509d68f600a7fe3c (do not edit this line) */
+/* JavaCC - OriginalChecksum=743cc5322a27c373fa8aa5753746114f (do not edit this line) */

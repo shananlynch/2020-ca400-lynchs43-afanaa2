@@ -1,0 +1,16 @@
+main{
+// arith_op test
+var float a;
+a = 2.0 + 2.0 ;
+print a ;
+a = 2.0 * 2.0 ;
+print a ;
+a = 2.0 / 2.0 ;
+print a ;
+a = 2.0 ^ 3 ;
+print a ;
+a = 2.0 % 2.0 ;
+print a ;
+a = 2.0 - 2.0 ;
+print a ;
+}
