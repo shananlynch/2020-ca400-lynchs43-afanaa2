@@ -14,7 +14,8 @@ def compileCode(code,compilerDirectory, inputCodeFilePath):
     os.system("./script")
     os.system("java mona Lexer_Test/inputCode.mona")
     codeOutput = os.popen("lli irFileName").read()
-    return str(codeOutput)
+    codeOutput = codeOutput.split("\n")
+    return codeOutput
 
 
 app = Flask(__name__)
@@ -27,7 +28,8 @@ def home():
     form = CodeCompilerForm()
     if form.validate_on_submit():
         compiledCode = compileCode(form.validateCode.data, compilerDirectory, inputCodeFilePath)
-        flash(f'{compiledCode}!', 'success')
+        for line in compiledCode:
+            flash(line, 'success')
     return render_template('compiler.html', title='Mona Compiler', form=form)
 
 

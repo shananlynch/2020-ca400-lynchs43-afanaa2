@@ -1,32 +1,19 @@
-main{
-    // nested ifs
-    var int a = 10 ;
-    if( a == 10 ){
-        a = 11 ;
-        if (a ==11 ){
-            print a ;
-        }
-    }
-    //if with else if
-    var int b = 12 ;
-    if (b == 10){
-        print b ;
-    }
-    else_if(b == 12){
-        print b ;
-    }
-    // if with else
-    if( a == b ){
-        print a ;
-    }
-    else{
-        var string k = "else statement evaluated";
-        print k ;
-        var string l = "else statement evaluated";
-        if( k  ==  l){
-            k = "if statement in else evaluated";
-            print k ;
-        }
-    }
+[int] insert100([int] a){
+     var int i = 0 ;
+     while(i < 100 ){
+          a.insert(i);
+          i= i + 1;
+     }
+    return (a) ;
+}
 
+main{
+    var [int] l =[];
+    var [int] i = insert100(l) ;
+    var int j = 0;
+    while(j < 100 ){
+          var int k = i.get(j);
+          j = j + 1 ;
+          print k;
+    }
 }
