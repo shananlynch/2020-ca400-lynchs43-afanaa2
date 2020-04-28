@@ -152,7 +152,9 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < WHILE : "while" >
      | < FOR : "for" >
      | < GET : ".get" >
+     | < GETCHAR : ".getChar" >
      | < LENGTH : ".length" >
+     | <STRINGLEN : ".len" >
      | < INSERT : ".insert" >
      | < STRING : "String" >
      | < SKIP_mona : "skip" >
@@ -951,7 +953,47 @@ void fragment() : {}
                                                                              jjtree.closeNodeScope(jjtn003,  1);
                                                                            }
                                                                          }
-/*@egen*/              | {} )
+/*@egen*/              |/*@bgen(jjtree) #getStringLength( 1) */
+                                                                                                                {
+                                                                                                                  ASTgetStringLength jjtn004 = new ASTgetStringLength(JJTGETSTRINGLENGTH);
+                                                                                                                  boolean jjtc004 = true;
+                                                                                                                  jjtree.openNodeScope(jjtn004);
+                                                                                                                }
+                                                                                                                try {
+/*@egen*/  (<STRINGLEN> <LBR> <RBR>)/*@bgen(jjtree)*/
+                                                                                                                } finally {
+                                                                                                                  if (jjtc004) {
+                                                                                                                    jjtree.closeNodeScope(jjtn004,  1);
+                                                                                                                  }
+                                                                                                                }
+/*@egen*/                    |/*@bgen(jjtree) #getChar( 2) */
+                                                                                                                                                               {
+                                                                                                                                                                 ASTgetChar jjtn005 = new ASTgetChar(JJTGETCHAR);
+                                                                                                                                                                 boolean jjtc005 = true;
+                                                                                                                                                                 jjtree.openNodeScope(jjtn005);
+                                                                                                                                                               }
+                                                                                                                                                               try {
+/*@egen*/ (<GETCHAR> <LBR> (number() | identifier()) <RBR> )/*@bgen(jjtree)*/
+                                                                                                                                                               } catch (Throwable jjte005) {
+                                                                                                                                                                 if (jjtc005) {
+                                                                                                                                                                   jjtree.clearNodeScope(jjtn005);
+                                                                                                                                                                   jjtc005 = false;
+                                                                                                                                                                 } else {
+                                                                                                                                                                   jjtree.popNode();
+                                                                                                                                                                 }
+                                                                                                                                                                 if (jjte005 instanceof RuntimeException) {
+                                                                                                                                                                   throw (RuntimeException)jjte005;
+                                                                                                                                                                 }
+                                                                                                                                                                 if (jjte005 instanceof ParseException) {
+                                                                                                                                                                   throw (ParseException)jjte005;
+                                                                                                                                                                 }
+                                                                                                                                                                 throw (Error)jjte005;
+                                                                                                                                                               } finally {
+                                                                                                                                                                 if (jjtc005) {
+                                                                                                                                                                   jjtree.closeNodeScope(jjtn005,  2);
+                                                                                                                                                                 }
+                                                                                                                                                               }
+/*@egen*/            |  {} )
           | number() |bool() |string() | float_()
      )
 }

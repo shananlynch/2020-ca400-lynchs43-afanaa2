@@ -148,7 +148,9 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < WHILE : "while" >
      | < FOR : "for" >
      | < GET : ".get" >
+     | < GETCHAR : ".getChar" >
      | < LENGTH : ".length" >
+     | <STRINGLEN : ".len" >
      | < INSERT : ".insert" >
      | < STRING : "String" >
      | < SKIP_mona : "skip" >
@@ -385,7 +387,7 @@ void fragment() : {}
 {
      (
           (<MINUS_SIGN> | {} ) identifier() ( (<LBR> arg_list() <RBR>)#functionCall(2)
-          | (<GET> <LBR> (number() | identifier()) <RBR> )#getArray(2) | (<LENGTH> <LBR> <RBR>)#getLength(1) | {} )
+          | (<GET> <LBR> (number() | identifier()) <RBR> )#getArray(2) | (<LENGTH> <LBR> <RBR>)#getLength(1) |  (<STRINGLEN> <LBR> <RBR>)#getStringLength(1) | (<GETCHAR> <LBR> (number() | identifier()) <RBR> )#getChar(2) |  {} )
           | number() |bool() |string() | float_()
      )
 }

@@ -1,0 +1,19 @@
+main{
+     var string h = "racecar";
+     var int i = 0 ;
+     var int len = h.len();
+     var bool palindrome = true ;
+     while( i < len){
+          var string l = h.getChar(i);
+          var int p = len - 1 - i ;
+          var string k = h.getChar(p);
+          i = i + 1 ;
+          if(k != l){
+               palindrome = false ;
+          }
+          print l ;
+          print k ;
+     }
+     print 10 ;
+     print palindrome ;
+}

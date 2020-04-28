@@ -18,6 +18,8 @@ public interface monaVisitor
   public Object visit(ASTarith_op node, Object data);
   public Object visit(ASTgetArray node, Object data);
   public Object visit(ASTgetLength node, Object data);
+  public Object visit(ASTgetStringLength node, Object data);
+  public Object visit(ASTgetChar node, Object data);
   public Object visit(ASTcomp_op node, Object data);
   public Object visit(ASTandCondition node, Object data);
   public Object visit(ASTorCondition node, Object data);
@@ -32,4 +34,4 @@ public interface monaVisitor
   public Object visit(ASTString node, Object data);
   public Object visit(ASTBoolean node, Object data);
 }
-/* JavaCC - OriginalChecksum=e09b0bf61cf4c0c4383c43a1b5fee7e4 (do not edit this line) */
+/* JavaCC - OriginalChecksum=de1d37e68fe2cd6b08c2920b5372e756 (do not edit this line) */

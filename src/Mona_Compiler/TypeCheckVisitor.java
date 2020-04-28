@@ -9,6 +9,10 @@ public class TypeCheckVisitor implements monaVisitor {
 
     public Object visit(SimpleNode node, Object data){
          return null;}
+    public Object visit(ASTgetChar node, Object data){ return null ;}
+    public Object visit(ASTgetStringLength node, Object data){
+              return null;}
+
 
     public Object visit(ASTgetLength node, Object data){
               return null;}

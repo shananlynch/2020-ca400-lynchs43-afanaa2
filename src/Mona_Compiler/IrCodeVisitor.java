@@ -32,6 +32,7 @@ public class IrCodeVisitor implements monaVisitor {
     private static String global = "";
     private static String listT = "" ;
     private static String rlen = "";
+    private Map<String,String> isChar = new HashMap<String, String>();
 
     /*
     getTemp funtion gets a temporary local variable
@@ -206,6 +207,7 @@ public class IrCodeVisitor implements monaVisitor {
             if(dec1 ==  null){
                 var = "@." + node1.jjtGetValue();
                 stringDec = stringDec + var + " = constant [" + (node2.length() - 1) + " x i8] c" + node2.substring(0, node2.length() - 1) + "\\00\"" + "\n";
+                listLenght.put( var , (node2.length() - 1 ) + "" ) ;
             }
             else{
                 var = dec1;
@@ -218,6 +220,8 @@ public class IrCodeVisitor implements monaVisitor {
             prog = prog + temp + " = load " + mt + ", " + mt + "* " + "%." +   node1.jjtGetValue() + "\n";
             sv.put(node2,var);
             iv.put( node1.jjtGetValue().toString(),"%." +   node1.jjtGetValue());
+            listLenght.put( "@." + node1.jjtGetValue() , (node2.length() - 1  ) + "" ) ;
+
           }
           }
 
@@ -271,6 +275,16 @@ public class IrCodeVisitor implements monaVisitor {
      }
           return null;
       }
+      public Object visit(ASTgetChar node, Object data){
+           String var =(String) ((SimpleNode) node.jjtGetChild(0)).jjtGetValue();
+           String num =  listLenght.get("@."+((SimpleNode) node.jjtGetChild(0)).jjtGetValue());
+           String temp = getTemp();
+           String in = ( ((SimpleNode) node.jjtGetChild(1))).jjtAccept(this,data) + " ";
+           prog = prog + temp + "= getelementptr [" + num + " x i8 ] , [" + num + " x i8]* @." + var + ", i32 0 , i32 " + in ;
+           prog = prog + "\n" ;
+           String temp2 = getTemp();
+           prog = prog + temp2 + " = load i8 , i8* " + temp + " \n";
+            return temp2;}
 
       /* Assings node is called eachtime we assign a variable */
       public Object visit(ASTassigns node, Object data){
@@ -280,6 +294,19 @@ public class IrCodeVisitor implements monaVisitor {
           SimpleNode parentType = (SimpleNode)node.jjtGetParent() ;
           SimpleNode cNode = (SimpleNode)node.jjtGetChild(0);
           String get = (String) cNode.toString();
+          if(get.equals("getChar")){
+               String cha = (String)node.jjtGetChild(0).jjtAccept(this,data);
+               String store =((SimpleNode) parentType.jjtGetChild(1)).jjtGetValue() + "";
+               String temp = getTemp();
+               prog = prog + temp +  " = alloca i8 \n";
+               prog = prog + " store i8 " + cha+ ", i8* " + temp + " \n";
+               isChar.put("%." + store,temp);
+               prog = prog + " store i8* " + temp+ ", i8** %." + store + " \n";
+
+
+               return("getArray");
+
+          }
 
 
           if(parentType.toString().equals("statement") && dType.toString().equals("string") && !get.equals("getArray")){
@@ -396,6 +423,12 @@ public class IrCodeVisitor implements monaVisitor {
               SimpleNode n = (SimpleNode) node.jjtGetChild(0);
               String temp =(String) n.jjtAccept(this,data);
           }
+          else if(get.equals("getStringLength")){
+               SimpleNode n = (SimpleNode) node.jjtGetChild(0);
+               String temp =(String) n.jjtAccept(this,data);
+               return temp ;
+          }
+
 
           String node0 = (String) node.jjtGetChild(0).jjtAccept (this, data);
           String str[] = node0.split(" ");
@@ -671,7 +704,18 @@ public class IrCodeVisitor implements monaVisitor {
 
             else if (sType.equals("i8*")){
                 String temp = getTemp();
-                prog = prog + temp + "= load i8* , i8** " + var + "\n";
+                try{
+                if (!isChar.get(var).equals(null)){
+                     temp = isChar.get(var);
+                }
+
+          }catch(NullPointerException e ){
+
+               prog = prog + temp + "= load i8* , i8** " + var + "\n";
+          }
+
+
+                //check if its a char get char value ;
                 prog = prog +  "call i32 @puts (i8* ";
                 prog = prog +temp + ") \n";
             }
@@ -859,6 +903,7 @@ public class IrCodeVisitor implements monaVisitor {
           String mType;
           SimpleNode node0;
           SimpleNode node1;
+
           // gives a variable a boolean value from condition
           node0 = (SimpleNode)node.jjtGetChild(0);
           String node0T = (String) node0.toString();
@@ -877,7 +922,6 @@ public class IrCodeVisitor implements monaVisitor {
                i= "f";
                o = "o";
                s = "" ;
-               System.out.println(i + o);
           }
           switch (comp)
 	    {
@@ -912,7 +956,27 @@ public class IrCodeVisitor implements monaVisitor {
         temp = getTemp();
         lhs = node.jjtGetChild(0).jjtAccept(this,data).toString();
         rhs = node.jjtGetChild(1).jjtAccept(this,data).toString();
+        try{
+                  System.out.println(isChar);
+                  String a = ( "%."+((SimpleNode)node.jjtGetChild(0)).jjtGetValue()) ;
+                  String b = ( "%."+((SimpleNode)node.jjtGetChild(1)).jjtGetValue()) ;
+                  System.out.println(rhs);
+                  a = isChar.get(a) ;
+                  b = isChar.get(b) ;
+                  if(!a.equals(b)){
+                       lhs  = getTemp() ;
+                       rhs  = getTemp() ;
+                       prog = prog + lhs + "= load i8 , i8* " + a + "\n";
+                       prog = prog + rhs + "= load i8 , i8* " + b + "\n";
+                       mType = "i8" ;
+
+                  }
+                  System.out.println(rhs+ "hello");
+
+
+        }catch(NullPointerException e){}
         command = temp + " = " + i + "cmp " + o + cOp + " " + mType + " " + lhs + ", " + rhs ;
+        System.out.println(command);
         prog = prog + command + "\n";
 
         return temp;
@@ -1088,6 +1152,14 @@ public class IrCodeVisitor implements monaVisitor {
            listInc ++ ;
            return null;}
 
+           public Object visit(ASTgetStringLength node, Object data){
+                    String l =  listLenght.get("@."+((SimpleNode)node.jjtGetChild(0)).jjtGetValue()+"");
+                     l = (Integer.parseInt(l) -1 ) + " " ;
+
+                     return l;
+                }
+
+
       public Object visit(ASTgetLength node, Object data){
           String l = (String) node.jjtGetChild(0).jjtAccept(this,data);
           String temp = getTemp();
@@ -1117,6 +1189,7 @@ public class IrCodeVisitor implements monaVisitor {
           else{
               var = dec1;
           }
+            listLenght.put( var , (str.length() ) + "" ) ;
             temp = getTemp();
             String mem =  getTemp() ;
             String dec =  mem + " = alloca " + "i8*" ;
