@@ -12,7 +12,8 @@ def compileCode(code,compilerDirectory, inputCodeFilePath):
         file.write(str(code))
     os.chdir(compilerDirectory)
     os.system("./script")
-    codeOutput = os.popen("java mona Lexer_Test/inputCode.mona").read()
+    os.system("java mona Lexer_Test/inputCode.mona")
+    codeOutput = os.popen("lli irFileName").read()
     return str(codeOutput)
 
 
