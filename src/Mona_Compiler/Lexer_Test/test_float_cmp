@@ -1,0 +1,22 @@
+main{
+     var float a = 3.0 ;
+     if(3.0 <= 3.0){
+          print "greater than equal" ;
+     }
+     if(3.0 == 3.0){
+          print "equal" ;
+     }
+     if(3.01 != 3.0){
+          print "not equal" ;
+     }
+     if(3.0 >= 3.0){
+          print "less equal" ;
+     }
+
+     if(a > 2.0){
+          print "greater than ";
+     }
+     if(a < 12.0){
+          print "less than ";
+     }
+}

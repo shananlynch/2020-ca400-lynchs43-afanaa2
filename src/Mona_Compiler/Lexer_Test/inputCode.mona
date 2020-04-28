@@ -1,32 +1,16 @@
 main{
-    // nested ifs
-    var int a = 10 ;
-    if( a == 10 ){
-        a = 11 ;
-        if (a ==11 ){
-            print a ;
-        }
-    }
-    //if with else if
-    var int b = 12 ;
-    if (b == 10){
-        print b ;
-    }
-    else_if(b == 12){
-        print b ;
-    }
-    // if with else
-    if( a == b ){
-        print a ;
-    }
-    else{
-        var string k = "else statement evaluated";
-        print k ;
-        var string l = "else statement evaluated";
-        if( k  ==  l){
-            k = "if statement in else evaluated";
-            print k ;
-        }
-    }
-
+// arith_op test
+var float a;
+a = 2.0 + 2.0 ;
+print a ;
+a = 2.0 * 2.0 ;
+print a ;
+a = 2.0 / 2.0 ;
+print a ;
+a = 2.0 ^ 3 ;
+print a ;
+a = 2.0 % 2.0 ;
+print a ;
+a = 2.0 - 2.0 ;
+print a ;
 }

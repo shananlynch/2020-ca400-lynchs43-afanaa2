@@ -655,6 +655,13 @@ public class IrCodeVisitor implements monaVisitor {
                 prog = prog + "call i32 (i8*, ...) @printf (i8* getelementptr inbounds ([4 x i8], [4 x i8]* @.1arg_str, i32 0, i32 0), i32 ";
                 prog = prog +var + ") \n";
             }
+            if(isType.equalsIgnoreCase("float")){
+                sType = "undec";
+                var = node0.jjtGetValue().toString();
+                prog = prog +  "call i32 (i8*, ...) @printf (i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.1arg_, i32 0, i32 0), double ";
+                prog = prog +var + ") \n";
+                prog = prog + "call i32 @puts (i8* %.newline1098019) \n";
+            }
             if(sType.equals("i32")){
                String temp = getTemp();
                prog = prog + temp + "= load i32 , i32* " + var + "\n";
@@ -852,6 +859,26 @@ public class IrCodeVisitor implements monaVisitor {
           String mType;
           SimpleNode node0;
           SimpleNode node1;
+          // gives a variable a boolean value from condition
+          node0 = (SimpleNode)node.jjtGetChild(0);
+          String node0T = (String) node0.toString();
+          DataType dType = st.getType(node0.jjtGetValue().toString(),scope);
+          cType = dType.toString();
+          mType = machineType(cType);
+          String i = "i";
+          String o = "";
+          String s = "s";
+          if(node0T.equals("String")){
+                  mType = "i8*";
+          }
+
+          if(mType.equals("double") || node0T.equals("Float")){
+               mType = "double";
+               i= "f";
+               o = "o";
+               s = "" ;
+               System.out.println(i + o);
+          }
           switch (comp)
 	    {
 	    case "==":
@@ -863,37 +890,29 @@ public class IrCodeVisitor implements monaVisitor {
 		break;
 
 	    case ">":
-		cOp = "sgt";
+		cOp = s +"gt";
 		break;
 
 	    case ">=":
-		cOp = "sge";
+		cOp = s + "ge";
 		break;
 
 	    case "<":
-		cOp = "slt";
+		cOp =s +  "lt";
 		break;
 
 	    case "<=":
-		cOp = "sle";
+		cOp = s + "le";
 		break;
 
 	    default:
 		cOp = "eq";
 	    }
-        // gives a variable a boolean value from condition
-        node0 = (SimpleNode)node.jjtGetChild(0);
-        String node0T = (String) node0.toString();
-        DataType dType = st.getType(node0.jjtGetValue().toString(),scope);
-        cType = dType.toString();
-        mType = machineType(cType);
-        if(node0T.equals("String")){
-                mType = "i8*";
-        }
+
         temp = getTemp();
         lhs = node.jjtGetChild(0).jjtAccept(this,data).toString();
         rhs = node.jjtGetChild(1).jjtAccept(this,data).toString();
-        command = temp + " = icmp " + cOp + " " + mType + " " + lhs + ", " + rhs ;
+        command = temp + " = " + i + "cmp " + o + cOp + " " + mType + " " + lhs + ", " + rhs ;
         prog = prog + command + "\n";
 
         return temp;
