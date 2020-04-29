@@ -1,0 +1,10 @@
+string func(string a, string b ){
+     var int l =b.length() ;
+     print l ;
+     return (b) ;
+}
+main{
+     var string l = "kos" ;
+     var string h = "1";
+     func(l,h);
+}
