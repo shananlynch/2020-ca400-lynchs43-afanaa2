@@ -1,0 +1,10 @@
+// test function call with return , an argument and assigning function call value
+void func(int arg){
+     return (arg);
+
+}
+
+main{
+     var int b = 1 ;
+     var int a = func(b);
+}

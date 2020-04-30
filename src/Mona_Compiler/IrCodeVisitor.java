@@ -693,7 +693,10 @@ public class IrCodeVisitor implements monaVisitor {
           return null;}
 
       public Object visit(ASTstatement node, Object data){
-          SimpleNode node0 = (SimpleNode)node.jjtGetChild(0);
+           SimpleNode node0 = node ;
+          if(node.jjtGetNumChildren() > 0){
+                node0 = (SimpleNode)node.jjtGetChild(0);
+          }
           // printing
           if(node.jjtGetValue().equals("insert")){
              node0.jjtAccept(this,data);

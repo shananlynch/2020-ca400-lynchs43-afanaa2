@@ -1,0 +1,15 @@
+// test multiple if statements with all comparative operators
+main{
+     if(1 == 2){
+     }
+     if(1 < 2){
+     }
+     if(1 <= 2){
+     }
+     if(1 >= 2){
+     }
+     if(1 != 2){
+     }
+     if(1 < 2){
+     }
+}

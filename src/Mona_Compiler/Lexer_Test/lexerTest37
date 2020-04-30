@@ -1,0 +1,6 @@
+// test multiple if  with else
+main{
+     if(1 == 2){
+     }
+     else{}
+}

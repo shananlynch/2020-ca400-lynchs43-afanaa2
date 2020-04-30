@@ -1,0 +1,6 @@
+// test if statement with comparative operator ==
+main{
+     if(10 == 10){
+
+     }
+}
