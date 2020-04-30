@@ -1,0 +1,5 @@
+//tests grammer for function with int list argument and int list return
+[int] func([int] arg) {
+     return(arg);
+}
+main{}

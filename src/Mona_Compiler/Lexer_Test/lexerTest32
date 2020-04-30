@@ -1,0 +1,8 @@
+// test function call
+void func(){
+
+}
+
+main{
+     func();
+}

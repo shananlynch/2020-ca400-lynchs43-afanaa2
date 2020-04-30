@@ -1,0 +1,5 @@
+//tests grammer for function with float list argument and float list return
+[float] func([float] arg) {
+     return(arg);
+}
+main{}

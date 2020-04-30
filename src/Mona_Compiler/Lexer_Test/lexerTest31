@@ -1,0 +1,5 @@
+// statement assigning declared variable ;
+main{
+     var int a ;
+     a = 1 ;
+}

@@ -1,0 +1,5 @@
+//tests grammer for function with string argument and string return
+string func(string arg) {
+     return(arg);
+}
+main{}

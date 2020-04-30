@@ -12,6 +12,6 @@ class testRun(unittest.TestCase):
             self.assertEqual(result, 'mona Parser: mona program parsed successfully.')
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    for i in range(1,23):
+    for i in range(1,33):
         suite.addTest(testRun('test_lexer', i))
     unittest.TextTestRunner(verbosity=2).run(suite)

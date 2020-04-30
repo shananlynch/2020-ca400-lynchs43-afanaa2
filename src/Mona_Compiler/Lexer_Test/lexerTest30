@@ -1,0 +1,5 @@
+//tests grammer for function with multiple arguments
+bool func(bool arg, int arg2 ,string arg3 ) {
+     return(arg);
+}
+main{}
