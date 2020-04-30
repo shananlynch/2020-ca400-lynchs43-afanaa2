@@ -1,0 +1,9 @@
+//const declaration test with values
+main{
+const int a = 0;
+const string b ="" ;
+const float c = 0.0;
+const [int] d = [1];
+const [float] e = [1.0];
+const [string] f = ["j"];
+}

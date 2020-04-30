@@ -1,0 +1,4 @@
+//tests grammer for function with float list argument
+void func([float] arg) {
+}
+main{}

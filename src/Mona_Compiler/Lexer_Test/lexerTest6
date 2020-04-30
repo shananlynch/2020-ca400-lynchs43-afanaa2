@@ -1,0 +1,10 @@
+//const declaration test
+
+main{
+const int a ;
+const string b ;
+const float c ;
+const [int] d ;
+const [float] e ;
+const [string] f ;
+}

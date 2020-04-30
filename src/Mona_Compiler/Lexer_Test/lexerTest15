@@ -1,0 +1,4 @@
+//tests grammer for function with type bool return
+bool func() {
+}
+main{}

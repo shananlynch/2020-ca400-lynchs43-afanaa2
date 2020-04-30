@@ -1,0 +1,4 @@
+//tests grammer for function with type list int  return
+[int] func() {
+}
+main{}

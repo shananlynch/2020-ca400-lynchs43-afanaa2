@@ -1,0 +1,4 @@
+//tests grammer for function with bool argument
+void func(bool arg) {
+}
+main{}

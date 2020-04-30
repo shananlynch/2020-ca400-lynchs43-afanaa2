@@ -1,0 +1,4 @@
+//tests grammer for function with int list argument
+void func([int] arg) {
+}
+main{}

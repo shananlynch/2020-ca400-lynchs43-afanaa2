@@ -1,0 +1,9 @@
+//var declaration test with values
+main{
+var int a = 0;
+var string b ="" ;
+var float c = 0.0;
+var [int] d = [1];
+var [float] e = [1.0];
+var [string] f = ["j"];
+}

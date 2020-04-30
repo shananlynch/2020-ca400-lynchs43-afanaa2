@@ -1,0 +1,4 @@
+//tests grammer for function with string arg
+void func(string arg) {
+}
+main{}

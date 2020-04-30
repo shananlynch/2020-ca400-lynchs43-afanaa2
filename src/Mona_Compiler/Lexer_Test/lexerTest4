@@ -1,0 +1,11 @@
+//var declaration test
+
+main{
+var int a ;
+var string b ;
+var float c ;
+var [int] d ;
+var [float] e ;
+var [string] f ;
+
+}
