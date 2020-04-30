@@ -1,0 +1,63 @@
+define i1 @BINStringCmp( [20 x i8]* %.a, i32 %.la, [20 x i8]* %.b, i32 %.lb )
+ {
+
+%.true = getelementptr [5 x i8], [5 x i8]*@.true, i64 0, i64 0
+%.false = getelementptr [6 x i8], [6 x i8]*@.false, i64 0, i64 0
+%.newline1098019 = getelementptr [2 x i8], [2 x i8]*@.newline1098019, i64 0, i64 0
+%.t1 = icmp ne i32 %.la, %.lb
+br i1 %.t1, label %label1, label %label2
+label1:
+ret i1 0
+br label %label3
+label2:
+br label %label3
+label3:
+%.i = alloca i32
+store i32 0, i32* %.i
+%.t4 = load i32, i32* %.i
+br label %label4
+label4:
+%.t6 = load i32, i32* %.i
+%.t5 = icmp slt i32 %.t6, %.la
+br i1 %.t5, label %label5, label %label6
+label5:
+
+%.charA= alloca [20 x i8]
+%.t9 = load i32, i32* %.i
+%.t8= getelementptr [ 20 x i8 ] , [20 x i8]* %.a, i32 0 , i32 %.t9
+%.t10 = load i8 , i8* %.t8
+%.t11 = alloca i8
+ store i8 %.t10, i8* %.t11
+%.t12 = bitcast i8* %.t11 to  [20 x i8 ]*
+%.t13 = load [20 x i8 ]  ,[20 x i8 ]* %.t12
+ store [20 x i8 ] %.t13, [20 x i8 ]* %.charA
+
+%.charB= alloca [20 x i8]
+%.t15 = load i32, i32* %.i
+%.t14= getelementptr [ 20 x i8 ] , [20 x i8]* %.b, i32 0 , i32 %.t15
+%.t16 = load i8 , i8* %.t14
+%.t17 = alloca i8
+ store i8 %.t16, i8* %.t17
+%.t18 = bitcast i8* %.t17 to  [20 x i8 ]*
+%.t19 = load [20 x i8 ]  ,[20 x i8 ]* %.t18
+ store [20 x i8 ] %.t19, [20 x i8 ]* %.charB
+%.t21 = load [20 x i8], [20 x i8]* %.charA
+%.t22 = load [20 x i8], [20 x i8]* %.charB
+%.t23= load i8 , i8* %.t11
+%.t24= load i8 , i8* %.t17
+%.t20 = icmp ne i8 %.t23, %.t24
+br i1 %.t20, label %label7, label %label8
+label7:
+ret i1 0
+br label %label9
+label8:
+br label %label9
+label9:
+%.t25 = load i32, i32* %.i
+%.t26 = add i32 %.t25, 1
+store i32 %.t26, i32* %.i
+%.t27 = load i32, i32* %.i
+br label %label4
+label6:
+ret i1 1
+}

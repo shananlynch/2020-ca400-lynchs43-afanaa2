@@ -1,10 +1,9 @@
-string func(string a, string b ){
-     var int l =b.length() ;
-     print l ;
-     return (b) ;
-}
 main{
-     var string l = "kos" ;
-     var string h = "1";
-     func(l,h);
+     var string a = "kos";
+     var string b = "kos";
+     if( a == b){
+          print true ;
+     }
+
+
 }

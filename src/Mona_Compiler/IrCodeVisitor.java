@@ -2,9 +2,16 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.io.FileInputStream;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.Map;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 public class IrCodeVisitor implements monaVisitor {
     private int tmpCount = 1;
     private IrVar iv = new IrVar();
@@ -59,6 +66,22 @@ public class IrCodeVisitor implements monaVisitor {
         prog = prog + "br label %" + endl + "\n";
         prog = prog + endl + ": \n";
     }
+    private static void stringCompareFunction()throws  java.io.FileNotFoundException,IOException
+    {
+         try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                new FileInputStream("StringCompare"), StandardCharsets.UTF_8));) {
+
+            String line;
+
+            while ((line = br.readLine()) != null) {
+
+               buff.write(line);
+               buff.write("\n");
+            }
+        }
+
+        System.out.println();
+    }
 
     /*
     getStringDeclN this functions increments how many times a string is redeclared
@@ -106,6 +129,7 @@ public class IrCodeVisitor implements monaVisitor {
       prog = prog + "}\n";
       buff.write(global);
       buff.write(stringDec);
+      stringCompareFunction();
       buff.write(prog);
       buff.flush ();
 
@@ -327,7 +351,7 @@ public class IrCodeVisitor implements monaVisitor {
                     var =" %." + var;
                     String value = (String) val.jjtAccept(this,data);
                     String t = "i8*";
-                    prog = prog + "store " + t + " " + value + " , " + t + "* " + var + "\n";
+                    prog = prog + "store [20 x i8] " + value + ",  [20 x i8]* " + var+  "\n";
                     return("getArray");
 
                }
@@ -363,7 +387,8 @@ public class IrCodeVisitor implements monaVisitor {
                    var =" %." + var;
                    String value = (String) val.jjtAccept(this,data);
                    String t = "i8*";
-                   prog = prog + "store " + t + " " + value + " , " + t + "* " + var + "\n";
+
+                   prog = prog + "store [20 x i8] " + value + ",  [20 x i8]* " + var+  "\n";
                    return("getArray");
 
               }
@@ -1002,9 +1027,22 @@ public class IrCodeVisitor implements monaVisitor {
 
 
         }catch(NullPointerException e){}
-        command = temp + " = " + i + "cmp " + o + cOp + " " + mType + " " + lhs + ", " + rhs ;
-        prog = prog + command + "\n";
+             if(mType.equals("[20 x i8]")){
+                  System.out.println(lhs + " "  + rhs);
+                  String a = ( "@."+((SimpleNode)node.jjtGetChild(0)).jjtGetValue()) ;
+                  String b = ( "@."+((SimpleNode)node.jjtGetChild(1)).jjtGetValue()) ;
+                  String lena = listLenght.get(a);
+                  String lenb = listLenght.get(b);
+                  lhs = "%." + ((SimpleNode)node.jjtGetChild(0)).jjtGetValue() ;
+                  rhs = "%." + ((SimpleNode)node.jjtGetChild(1)).jjtGetValue() ;
 
+                  System.out.println(lena);
+                 prog = prog + temp + " = call i1 @BINStringCmp([20 x i8]* " + lhs + ", i32 " + lena + ", [20 x i8]* " + rhs + ", i32 " + lenb + ") \n ";
+             }
+        else{
+          command = temp + " = " + i + "cmp " + o + cOp + " " + mType + " " + lhs + ", " + rhs ;
+          prog = prog + command + "\n";
+        }
         return temp;
         }
       public Object visit(ASTandCondition node, Object data){
