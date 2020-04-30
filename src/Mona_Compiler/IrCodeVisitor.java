@@ -80,7 +80,6 @@ public class IrCodeVisitor implements monaVisitor {
             }
         }
 
-        System.out.println();
     }
 
     /*
@@ -1028,7 +1027,6 @@ public class IrCodeVisitor implements monaVisitor {
 
         }catch(NullPointerException e){}
              if(mType.equals("[20 x i8]")){
-                  System.out.println(lhs + " "  + rhs);
                   String a = ( "@."+((SimpleNode)node.jjtGetChild(0)).jjtGetValue()) ;
                   String b = ( "@."+((SimpleNode)node.jjtGetChild(1)).jjtGetValue()) ;
                   String lena = listLenght.get(a);
@@ -1036,7 +1034,6 @@ public class IrCodeVisitor implements monaVisitor {
                   lhs = "%." + ((SimpleNode)node.jjtGetChild(0)).jjtGetValue() ;
                   rhs = "%." + ((SimpleNode)node.jjtGetChild(1)).jjtGetValue() ;
 
-                  System.out.println(lena);
                  prog = prog + temp + " = call i1 @BINStringCmp([20 x i8]* " + lhs + ", i32 " + lena + ", [20 x i8]* " + rhs + ", i32 " + lenb + ") \n ";
              }
         else{

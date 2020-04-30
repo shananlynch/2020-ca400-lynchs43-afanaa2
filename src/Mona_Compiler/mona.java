@@ -38,7 +38,6 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
                     SimpleNode root =     mona_parser.program();
                     System.out.println("----------------------Abstract Syntax tree ----------------------");
                     root.dump("");
-                    System.out.println("mona Parser: mona program parsed successfully."); // success message
                     System.out.println("----------------------Symbol Table----------------------");
                     ST.print();
                     TypeCheckVisitor tcv = new TypeCheckVisitor();
@@ -59,6 +58,7 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
              System.out.println ("Failed to write LLVM code to file. Exception: ");
              e.printStackTrace (System.out);
          }
+         System.out.println("mona Parser: mona program parsed successfully."); // success message
          System.out.println ("LLVM code generated");
 
 
