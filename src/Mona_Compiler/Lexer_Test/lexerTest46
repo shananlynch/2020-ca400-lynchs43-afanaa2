@@ -1,0 +1,5 @@
+//test get element from array
+main{
+     var [string] a = ["hello","hello","hello"];
+     var string s = a.get(0);
+}

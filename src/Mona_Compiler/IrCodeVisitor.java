@@ -374,6 +374,7 @@ public class IrCodeVisitor implements monaVisitor {
               String temp2 = getTemp() ;
               prog = prog + temp2 + " = load [20 x i8] , [20 x i8]* " + temp1 + "\n";
               prog = prog + "store [20 x i8] " + temp2 + ",  [20 x i8]* %." + sVar1 +  "\n";
+              System.out.println(temp2);
 
               iv.put(sVar1,temp);
           }
@@ -693,10 +694,7 @@ public class IrCodeVisitor implements monaVisitor {
           return null;}
 
       public Object visit(ASTstatement node, Object data){
-           SimpleNode node0 = node ;
-          if(node.jjtGetNumChildren() > 0){
-                node0 = (SimpleNode)node.jjtGetChild(0);
-          }
+          SimpleNode node0 = (SimpleNode)node.jjtGetChild(0);
           // printing
           if(node.jjtGetValue().equals("insert")){
              node0.jjtAccept(this,data);
@@ -799,7 +797,7 @@ public class IrCodeVisitor implements monaVisitor {
                  String node1 = (String) node.jjtGetChild (1).jjtAccept (this, data);
                  return "";
             }
-            if(mt.equals("i8*")){
+            if(mt.equals("[20 x i8]")){
                 String var = node0.jjtGetValue().toString();
                 getStringDeclN(var);
                 String node1 = (String) node.jjtGetChild (1).jjtAccept (this, data);

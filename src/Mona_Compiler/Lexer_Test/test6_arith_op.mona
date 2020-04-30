@@ -3,17 +3,17 @@ int arith_op(int x , int y)
     // arith_op test
    var int a;
    a = 2 + 2 ;
-   print a ;
+   print (a) ;
    a = 2 * 2 ;
-   print a ;
+   print (a) ;
    a = 2 / 2 ;
-   print a ;
+   print (a) ;
    a = 2 ^ 2 ;
-   print a ;
+   print (a) ;
    a = 2 % 2 ;
-   print a ;
+   print (a) ;
    a = 2 - 2 ;
-    print a ;
+    print (a) ;
    return (a);
   }
 main

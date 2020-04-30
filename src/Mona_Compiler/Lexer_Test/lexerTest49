@@ -1,0 +1,6 @@
+//test get charachter from string and length string
+main{
+     var string a = "hello";
+     var string c = a.getChar(0);
+     var int l = a.length();
+}

@@ -1,0 +1,10 @@
+// test  Arrithmetic operations int
+main{
+var int a;
+a = 2 + 2 ;
+a = 2 * 2 ;
+a = 2 / 2 ;
+a = 2 ^ 2 ;
+a = 2 % 2 ;
+a = 2 - 2 ;
+}

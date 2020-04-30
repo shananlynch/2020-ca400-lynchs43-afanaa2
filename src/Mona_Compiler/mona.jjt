@@ -319,8 +319,7 @@ void statement() #statement : {Token t; String r ;} {
        <LCBR> statement_block()  <RCBR> { jjtThis.value = t.image;}
      |<SKIP_mona> <SEMIC>
      | r = decl() { jjtThis.value = r;}
-     | t =  <PRINT> values() <SEMIC> { jjtThis.value = t.image;}
-     | break_() <SEMIC>
+     | t =  <PRINT> <LBR> values() <RBR> <SEMIC> { jjtThis.value = t.image;}
      |  return_() { jjtThis.value = "return";}
 }
 

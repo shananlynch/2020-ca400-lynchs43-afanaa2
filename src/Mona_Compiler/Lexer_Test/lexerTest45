@@ -1,0 +1,6 @@
+//test array multiple values
+main{
+     var [string] a = ["hello","hello","hello"];
+     var [int] a = [1,2,3];
+     var [float] a = [1.0,2.0,3.0];
+}

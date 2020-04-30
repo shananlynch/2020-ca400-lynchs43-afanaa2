@@ -1,0 +1,5 @@
+//test insert element to array
+main{
+     var [string] a = ["hello","hello","hello"];
+     a.insert("hello");
+}

@@ -7,5 +7,7 @@ main{
      }
      else_if(1 > 2){
      }
-     else{}
+     else{
+     var int a = 0 ;
+     }
 }

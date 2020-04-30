@@ -1,0 +1,5 @@
+//test lenght array
+main{
+     var [string] a = ["hello","hello","hello"];
+     var int l = a.length();
+}

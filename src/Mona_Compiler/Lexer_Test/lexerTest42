@@ -1,0 +1,10 @@
+// test  Arrithmetic operations float
+main{
+var float a;
+a = 2.0 + 2.0 ;
+a = 2.0 * 2.0 ;
+a = 2.0 / 2.0 ;
+a = 2.0 ^ 3 ;
+a = 2.0 % 2.0 ;
+a = 2.0 - 2.0 ;
+}
