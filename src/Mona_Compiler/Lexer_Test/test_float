@@ -1,8 +1,0 @@
-main{
-     var float a = 1.0 ;
-     print a ;
-     a = 10.1 ;
-     print a ;
-
-
-}

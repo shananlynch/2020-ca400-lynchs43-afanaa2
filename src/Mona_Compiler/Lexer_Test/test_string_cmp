@@ -1,9 +1,0 @@
-main{
-     var string a = "kos";
-     var string b = "kos";
-     if( a == b){
-          print true ;
-     }
-
-
-}
