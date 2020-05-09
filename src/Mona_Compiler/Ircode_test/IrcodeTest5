@@ -1,0 +1,5 @@
+//test subtracting two numbers in a variable
+main{
+     var int a = 1 - 1  ;
+     print(a) ;
+}
