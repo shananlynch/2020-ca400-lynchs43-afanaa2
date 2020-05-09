@@ -1,0 +1,4 @@
+//test print an float
+main{
+     print(10.1);
+}
