@@ -1,0 +1,8 @@
+[int] lis(int a){
+
+     var int l = 1;
+     return (l);
+}
+main{
+     var [int] a = lis(20);
+}
