@@ -57,10 +57,30 @@ class testRun(unittest.TestCase):
                 self.assertEqual(result, "1.000000")
             if self.i  == 24 :
                 self.assertEqual(result, "hi")
+            if self.i  == 25 :
+                self.assertEqual(result, "6")
+            if self.i  == 26 :
+                self.assertEqual(result, "6.000000")
+            if self.i  == 27 :
+                self.assertEqual(result, "if(10 == 10) is true")
+            if self.i  == 28 :
+                self.assertEqual(result, "if(10 < 11 )is true")
+            if self.i  == 29 :
+                self.assertEqual(result, "if(12 > 11 )is true")
+            if self.i  == 30 :
+                self.assertEqual(result, "if(12 >= 11 )is true")
+            if self.i  == 31 :
+                self.assertEqual(result, "if(10 <= 11 )is true")
+            if self.i  == 32 :
+                self.assertEqual(result, "1")
+            if self.i  == 33 :
+                self.assertEqual(result, "3")
+            if self.i  == 34 :
+                self.assertEqual(result, "0")
             print(self.i);
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    for i in range(1,25):
+    for i in range(1,35):
         suite.addTest(testRun('test_Ir', i))
 
     unittest.TextTestRunner(verbosity=2).run(suite)

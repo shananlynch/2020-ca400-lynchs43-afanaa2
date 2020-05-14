@@ -1,0 +1,8 @@
+//test if == operator
+// test if statement with comparative operator ==
+main{
+     if(10 == 10){
+          print("if(10 == 10) is true");
+
+     }
+}

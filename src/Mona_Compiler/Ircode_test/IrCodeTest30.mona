@@ -1,0 +1,8 @@
+//test if == operator
+// test if statement with comparative operator <
+main{
+     if(12 >= 11){
+          print("if(12 >= 11 )is true");
+
+     }
+}

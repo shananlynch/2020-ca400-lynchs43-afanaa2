@@ -1,0 +1,7 @@
+//test list insert element and get it
+main{
+     var [int] a = [1,2,3,4,5] ; 
+     a.insert(6);
+     var int i = a.get(5);
+     print(i);
+}

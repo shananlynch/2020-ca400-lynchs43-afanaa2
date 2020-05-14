@@ -1,4 +1,4 @@
-//test list string
+//test list string length
 main{
      var [string] a = ["hello","hello","hello","hello","hello"] ;
      var int l = a.length();

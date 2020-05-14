@@ -1,0 +1,12 @@
+// test multiple if  with else
+main{
+     var int a ;
+     if(1 == 2){
+          a = 3 ;
+
+     }
+     else{
+          a = 1 ;
+     }
+     print(a);
+}
