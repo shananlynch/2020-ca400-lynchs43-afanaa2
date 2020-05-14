@@ -42,12 +42,17 @@ class testRun(unittest.TestCase):
             if self.i  == 16 :
                 self.assertEqual(result, "2.200000")
             if self.i  == 17 :
-                print(result)
                 self.assertEqual(result, "")
+            if self.i  == 18 :
+                self.assertEqual(result, "")
+            if self.i  == 19 :
+                self.assertEqual(result, "")
+            if self.i  == 20 :
+                self.assertEqual(result, "5")
             print(self.i);
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    for i in range(1,18):
+    for i in range(1,21):
         suite.addTest(testRun('test_Ir', i))
 
     unittest.TextTestRunner(verbosity=2).run(suite)

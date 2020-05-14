@@ -1,0 +1,6 @@
+//test list string
+main{
+     var [string] a = ["hello","hello","hello","hello","hello"] ;
+     var int l = a.length();
+     print(l);
+}
