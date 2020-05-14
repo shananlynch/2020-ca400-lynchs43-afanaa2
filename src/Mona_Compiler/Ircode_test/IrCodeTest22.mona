@@ -1,0 +1,6 @@
+//test list insert
+main{
+     var [int] a = [1,2,3,4,5] ; 
+     var int i = a.get(0);
+     print(i);
+}

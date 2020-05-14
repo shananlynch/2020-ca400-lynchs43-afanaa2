@@ -1,0 +1,7 @@
+//test list insert element and get it
+main{
+     var [string] a = ["hello","hello","hello","hello","hello"] ;
+     a.insert("hi");
+     var string s = a.get(5);
+     print(s);
+}

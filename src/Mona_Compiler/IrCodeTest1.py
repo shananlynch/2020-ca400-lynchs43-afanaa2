@@ -49,10 +49,18 @@ class testRun(unittest.TestCase):
                 self.assertEqual(result, "")
             if self.i  == 20 :
                 self.assertEqual(result, "5")
+            if self.i  == 21 :
+                self.assertEqual(result, "hello")
+            if self.i  == 22 :
+                self.assertEqual(result, "1")
+            if self.i  == 23 :
+                self.assertEqual(result, "1.000000")
+            if self.i  == 24 :
+                self.assertEqual(result, "hi")
             print(self.i);
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    for i in range(1,21):
+    for i in range(1,25):
         suite.addTest(testRun('test_Ir', i))
 
     unittest.TextTestRunner(verbosity=2).run(suite)

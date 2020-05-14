@@ -83,20 +83,20 @@ public class IrCodeVisitor implements monaVisitor {
     }
 
     private static void builtInModFunction()throws  java.io.FileNotFoundException,IOException
-    {
-         try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                new FileInputStream("BuilInMod"), StandardCharsets.UTF_8));) {
+   {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(
+               new FileInputStream("BuilInMod"), StandardCharsets.UTF_8));) {
 
-            String line;
+           String line;
 
-            while ((line = br.readLine()) != null) {
+           while ((line = br.readLine()) != null) {
 
-               buff.write(line);
-               buff.write("\n");
-            }
-        }
+              buff.write(line);
+              buff.write("\n");
+           }
+       }
+ }   
 
-    }
 
     /*
     getStringDeclN this functions increments how many times a string is redeclared
@@ -144,8 +144,8 @@ public class IrCodeVisitor implements monaVisitor {
       prog = prog + "}\n";
       buff.write(global);
       buff.write(stringDec);
-      stringCompareFunction();
       builtInModFunction();
+      stringCompareFunction();
       buff.write(prog);
       buff.flush ();
 
@@ -536,7 +536,7 @@ public class IrCodeVisitor implements monaVisitor {
               else if(arith_op_l.get(i).equals( "%" ) && !arith_op_l.contains("^") && !arith_op_l.contains("/") ){
                   String temp = getTemp() ;
                   String fOrS = "s";
-                 if (mType.equals("double")){
+                  if (mType.equals("double")){
                       fOrS = "f";
                       String a = getTemp();
                       String b = getTemp();
@@ -1252,6 +1252,12 @@ public class IrCodeVisitor implements monaVisitor {
            String temp1 = getTemp();
            prog = prog + temp1 + " = add i32 " + temp +" , 1 \n";
            prog = prog + "store i32 " + temp1 + ",  i32* @." +  scope + var.substring(2) + "len \n" ;
+           String stTemp ;
+           if((node0 + "").equalsIgnoreCase("string")){
+                stTemp = getTemp();
+                prog = prog +  stTemp + " = load [20 x i8] , [20 x i8]* " + newElement + "\n" ;
+                newElement = stTemp;
+           }
            replaceList(temp,num2, mt, var , newElement );
            iv.put(sVar,var);
            listLenght.put(var,num2);
