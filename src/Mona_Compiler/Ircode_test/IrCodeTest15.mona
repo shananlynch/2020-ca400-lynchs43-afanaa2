@@ -1,0 +1,4 @@
+main{
+     var float mod = 10.3 % 2.1 ;
+     print(mod);
+}

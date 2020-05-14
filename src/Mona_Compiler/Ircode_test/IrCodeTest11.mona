@@ -1,8 +1,4 @@
-//Assigning a value to an identifier
-//Performing an arithmetic operation with the id
-//Storing the value of the arithmetic operation in that id
-
-//test adding two numbers in a variable
+//test adding two floats in a variable
 main{
      var float a = 1.0 + 1.0 ;
      print(a) ;

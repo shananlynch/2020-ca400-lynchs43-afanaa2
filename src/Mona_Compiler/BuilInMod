@@ -1,0 +1,65 @@
+define double @BuiltInFindMod( double* %.a, double* %.b )
+ {
+
+%.true = getelementptr [5 x i8], [5 x i8]*@.true, i64 0, i64 0
+%.false = getelementptr [6 x i8], [6 x i8]*@.false, i64 0, i64 0
+%.newline1098019 = getelementptr [2 x i8], [2 x i8]*@.newline1098019, i64 0, i64 0
+%.t2 = load double, double* %.a
+%.t1 = fcmp olt double %.t2, 0.0
+br i1 %.t1, label %label1, label %label2
+label1:
+%.t3 = load double, double* %.a
+%.t4 = fmul double %.t3, -1.0
+store double %.t4, double* %.a
+%.t5 = load double, double* %.a
+br label %label3
+label2:
+br label %label3
+label3:
+%.t7 = load double, double* %.b
+%.t6 = fcmp olt double %.t7, 0.0
+br i1 %.t6, label %label4, label %label5
+label4:
+%.t8 = load double, double* %.b
+%.t9 = fmul double %.t8, -1.0
+store double %.t9, double* %.b
+%.t10 = load double, double* %.b
+br label %label6
+label5:
+br label %label6
+label6:
+%.mod = alloca double
+%.t11 = load double, double* %.a
+store double %.t11, double* %.mod
+%.t12 = load double, double* %.mod
+br label %label7
+label7:
+%.t14 = load double, double* %.mod
+%.t15 = load double, double* %.b
+%.t13 = fcmp oge double %.t14, %.t15
+br i1 %.t13, label %label8, label %label9
+label8:
+%.t16 = load double, double* %.mod
+%.t17 = load double, double* %.b
+%.t18 = fsub double %.t16, %.t17
+store double %.t18, double* %.mod
+%.t19 = load double, double* %.mod
+br label %label7
+label9:
+%.t21 = load double, double* %.a
+%.t20 = fcmp olt double %.t21, 0.0
+br i1 %.t20, label %label10, label %label11
+label10:
+%.t22 = load double, double* %.mod
+%.t23 = fmul double %.t22, -1.0
+store double %.t23, double* %.mod
+%.t24 = load double, double* %.mod
+%.t25 = load double, double* %.mod
+ret double %.t25
+br label %label12
+label11:
+br label %label12
+label12:
+%.t26 = load double, double* %.mod
+ret double %.t26
+}

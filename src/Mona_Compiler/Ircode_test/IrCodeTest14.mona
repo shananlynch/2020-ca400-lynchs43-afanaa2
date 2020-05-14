@@ -1,0 +1,5 @@
+//test subtracting two floats in a variable
+main{
+     var float a = 10.1 / 5.05 ;
+     print(a) ;
+}

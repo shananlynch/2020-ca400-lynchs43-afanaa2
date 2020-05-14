@@ -1,0 +1,9 @@
+//Assigning a value to an identifier
+//Performing an arithmetic operation with the id
+//Storing the value of the arithmetic operation in that id
+
+main{
+     var float a = 1.1 ;
+     a = a + a ;
+     print(a) ;
+}

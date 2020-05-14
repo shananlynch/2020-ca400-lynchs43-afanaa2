@@ -432,7 +432,7 @@ void arg_list() #argumentList : {}
 
 void nemp_arg_list() : {}
 {
-      (identifier() | number() | string() | array() | dictionary()) (<COMMA> nemp_arg_list() | {})
+      (identifier() | number() | string() | array() | float_() | dictionary()) (<COMMA> nemp_arg_list() | {})
 }
 
 

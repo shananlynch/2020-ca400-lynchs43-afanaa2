@@ -82,6 +82,22 @@ public class IrCodeVisitor implements monaVisitor {
 
     }
 
+    private static void builtInModFunction()throws  java.io.FileNotFoundException,IOException
+    {
+         try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                new FileInputStream("BuilInMod"), StandardCharsets.UTF_8));) {
+
+            String line;
+
+            while ((line = br.readLine()) != null) {
+
+               buff.write(line);
+               buff.write("\n");
+            }
+        }
+
+    }
+
     /*
     getStringDeclN this functions increments how many times a string is redeclared
     */
@@ -129,6 +145,7 @@ public class IrCodeVisitor implements monaVisitor {
       buff.write(global);
       buff.write(stringDec);
       stringCompareFunction();
+      builtInModFunction();
       buff.write(prog);
       buff.flush ();
 
@@ -521,7 +538,21 @@ public class IrCodeVisitor implements monaVisitor {
                   String fOrS = "s";
                  if (mType.equals("double")){
                       fOrS = "f";
+                      String a = getTemp();
+                      String b = getTemp();
+                      temp = temp ;
+                      prog = prog + a + " = alloca double " +  " \n";
+                      prog = prog + b + " = alloca double " +" \n";
+                      prog = prog +  "store double " + arith_op_l.get(i-1) + " , double* "  + a + " \n";
+                      prog = prog + " store double " + arith_op_l.get(i+1) + " , double* "  + b + " \n";
+                      command = temp + " = call double @BuiltInFindMod (double* " + a + ", double* " + b+")";
+                      right(buff,command);
+                      arith_op_l.set(i,temp);
+                      arith_op_l.remove(i+1);
+                      arith_op_l.remove(i-1);
+                      i = 0 ;
                  }
+                 else{
                   command = temp + " = " + fOrS + "div "+ mType + " " + arith_op_l.get(i-1) + ", " + arith_op_l.get(i+1);
                   right(buff,command);
                   String temp_1 = temp;
@@ -536,6 +567,7 @@ public class IrCodeVisitor implements monaVisitor {
                   arith_op_l.remove(i+1);
                   arith_op_l.remove(i-1);
                   i = 0 ;
+               }
               }
               else if(arith_op_l.get(i).equals("*") && !arith_op_l.contains("^")  && !arith_op_l.contains("%") ){
                   String temp = getTemp() ;
