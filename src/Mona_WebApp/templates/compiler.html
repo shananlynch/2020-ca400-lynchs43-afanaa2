@@ -1,25 +1,38 @@
 {% extends "layout.html" %} {% block content %}
-<div class="content-section">
-  <form method="POST" action="">
-    {{ form.hidden_tag() }}
-    <fieldset class="form-group">
-      <legend class="border-bottom mb-4">Mona Compiler</legend>
-      <div class="form-group">
-        {{ form.validateCode.label(class="form-control-label") }} {% if
-        form.validateCode.errors %} {{ form.validateCode(class="form-control
-        rounded-0 is-invalid", rows="30") }}
-        <div class="invalid-feedback">
-          {% for error in form.validateCode.errors %}
-          <span> {{ error }}</span>
-          {% endfor %}
+<div class="col-md-8">
+  <div class="content-section">
+    <form method="POST" action="">
+      {{ form.hidden_tag() }}
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Mona Compiler</legend>
+        <div class="form-group">
+          {{ form.validateCode.label(class="form-control-label") }} {% if
+          form.validateCode.errors %} {{ form.validateCode(class="form-control
+          rounded-0 is-invalid", rows="20") }}
+          <div class="invalid-feedback">
+            {% for error in form.validateCode.errors %}
+            <span> {{ error }}</span>
+            {% endfor %}
+          </div>
+          {% else %} {{ form.validateCode(class="form-control rounded-0"
+          ,rows="20") }} {% endif %}
         </div>
-        {% else %} {{ form.validateCode(class="form-control rounded-0"
-        ,rows="30") }} {% endif %}
+      </fieldset>
+      <div class="form-group">
+        {{ form.compileCode(class="btn btn-outline-info") }}
       </div>
-    </fieldset>
-    <div class="form-group">
-      {{ form.compileCode(class="btn btn-outline-info") }}
-    </div>
-  </form>
+    </form>
+  </div>
 </div>
+<div class="col-md-8">
+  <div class="output-section">
+    <legend class="border-bottom mb-4">Output</legend>
+    <div class="card">
+      <div class="card-body">
+        <pre>{{ compiledCode }}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock content %}

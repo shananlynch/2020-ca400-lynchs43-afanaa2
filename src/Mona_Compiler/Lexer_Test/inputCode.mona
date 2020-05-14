@@ -1,2 +1,13 @@
+<<<<<<< HEAD
 \
 }
+=======
+//test while loop
+main{
+     var int i = 0 ;
+     while (i < 10 ){
+          print (i) ;
+          i = i + 1;
+     }
+}
+>>>>>>> 5f426900a650c23c30f40cb251730b577141447f
