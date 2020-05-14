@@ -77,10 +77,21 @@ class testRun(unittest.TestCase):
                 self.assertEqual(result, "3")
             if self.i  == 34 :
                 self.assertEqual(result, "0")
+            if self.i  == 35 :
+                result = result.split("\n")
+                self.assertEqual(result, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
+            if self.i  == 36 :
+                self.assertEqual(result,str(len("hello")))
+            if self.i  == 37 :
+                self.assertEqual(result,"true")
+            if self.i  == 38 :
+                self.assertEqual(result,"true")
+            if self.i  == 39 :
+                self.assertEqual(result,"true")
             print(self.i);
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    for i in range(1,35):
+    for i in range(1,40):
         suite.addTest(testRun('test_Ir', i))
 
     unittest.TextTestRunner(verbosity=2).run(suite)

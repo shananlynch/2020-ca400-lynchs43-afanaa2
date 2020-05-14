@@ -40,6 +40,7 @@ public class IrCodeVisitor implements monaVisitor {
     private static String listT = "" ;
     private static String rlen = "";
     private Map<String,String> isChar = new HashMap<String, String>();
+    List<String> stringDeca = new ArrayList<String>();
 
     /*
     getTemp funtion gets a temporary local variable
@@ -95,7 +96,7 @@ public class IrCodeVisitor implements monaVisitor {
               buff.write("\n");
            }
        }
- }   
+ }
 
 
     /*
@@ -1043,6 +1044,12 @@ public class IrCodeVisitor implements monaVisitor {
         temp = getTemp();
         lhs = node.jjtGetChild(0).jjtAccept(this,data).toString();
         rhs = node.jjtGetChild(1).jjtAccept(this,data).toString();
+        String sttr = (node.jjtGetChild(0)) + "";
+        String sttr1 = (node.jjtGetChild(1)) + "";
+        if(sttr.equalsIgnoreCase("string") || sttr.equalsIgnoreCase("string") ){
+             mType = "[20 x i8]";
+
+        }
         try{
                   String a = ( "%."+((SimpleNode)node.jjtGetChild(0)).jjtGetValue()) ;
                   String b = ( "%."+((SimpleNode)node.jjtGetChild(1)).jjtGetValue()) ;
@@ -1059,6 +1066,7 @@ public class IrCodeVisitor implements monaVisitor {
 
 
         }catch(NullPointerException e){}
+
              if(mType.equals("[20 x i8]")){
                   String a = ( "@."+((SimpleNode)node.jjtGetChild(0)).jjtGetValue()) ;
                   String b = ( "@."+((SimpleNode)node.jjtGetChild(1)).jjtGetValue()) ;
@@ -1066,6 +1074,18 @@ public class IrCodeVisitor implements monaVisitor {
                   String lenb = listLenght.get(b);
                   lhs = "%." + ((SimpleNode)node.jjtGetChild(0)).jjtGetValue() ;
                   rhs = "%." + ((SimpleNode)node.jjtGetChild(1)).jjtGetValue() ;
+                  if(sttr.equalsIgnoreCase("string")){
+                       lena = "20" ;
+                       lenb = "20" ;
+                       lhs =  "" + ((SimpleNode)node.jjtGetChild(0)).jjtAccept(this,data) ;
+
+                  }
+                  if(sttr1.equalsIgnoreCase("string")){
+                      lena = "20" ;
+                      lenb = "20" ;
+                      rhs =  "" + ((SimpleNode)node.jjtGetChild(1)).jjtAccept(this,data) ;
+                 }
+
 
                  prog = prog + temp + " = call i1 @BINStringCmp([20 x i8]* " + lhs + ", i32 " + lena + ", [20 x i8]* " + rhs + ", i32 " + lenb + ") \n ";
              }
@@ -1299,22 +1319,29 @@ public class IrCodeVisitor implements monaVisitor {
           String dec1 = sv.get(str);
           String var = "";
           String temp = "";
+          String len =  " " +(str.length() - 1);
           /* string declaration */
           if(dec1 ==  null){
             getStringDeclN("undec");
             int v = varInc.get("undec");
             var = "@." + v;
             stringDec = stringDec + var + " = constant [" + (str.length() - 1) + " x i8] c" + str.substring(0, str.length() - 1) + "\\00\"" + "\n";
+            stringDeca.add(var);
           }
           else{
               var = dec1;
+              if(!stringDeca.contains(var)){
+                   len = "20" ;
+              }
           }
+          System.out.println(stringDeca);
+           System.out.println(len);
            listLenght.put( var , (str.length() - 2  ) + "" ) ;
            temp = getTemp();
            String mem =  getTemp() ;
            String dec =  mem + " = alloca " + "[20 x i8]" ;
            prog = prog + dec + "\n" ;
-           prog = prog + temp + " = getelementptr [" +(str.length() - 1) + " x i8], [" + (str.length() - 1) + " x i8]*" + var + ", i64 0, i64 0\n";
+           prog = prog + temp + " = getelementptr [" +len + " x i8], [" +len + " x i8]*" + var + ", i64 0, i64 0\n";
            String temp1 = getTemp();
            prog = prog +  temp1 + " = bitcast i8* " + temp + " to [20 x i8]* \n";
            String temp2 = getTemp() ;

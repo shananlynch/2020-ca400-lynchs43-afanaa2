@@ -1,0 +1,8 @@
+//comparing two undeclared strings
+main{
+     if( "a" == "a"){
+          print (true) ;
+     }
+
+
+}

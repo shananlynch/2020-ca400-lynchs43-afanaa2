@@ -1,0 +1,11 @@
+//comparing two declared strings
+main{
+     var string a = "hello";
+     var string b = "hello";
+
+     if( a == b){
+          print (true) ;
+     }
+
+
+}

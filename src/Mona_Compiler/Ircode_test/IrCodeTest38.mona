@@ -1,0 +1,10 @@
+//comparing declared string with undeclared string 
+main{
+     var string a = "hello";
+
+     if( a == "hello"){
+          print (true) ;
+     }
+
+
+}

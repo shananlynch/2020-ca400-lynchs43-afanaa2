@@ -1,0 +1,6 @@
+// test  if statements with else ifs and else
+main{
+     var string s = "hello";
+     var int l = s.length();
+     print(l);
+}
