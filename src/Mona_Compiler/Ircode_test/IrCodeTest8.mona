@@ -1,4 +1,4 @@
-//test subtracting two numbers in a variable
+//test modules two numbers in a variable
 main{
      var int a = 2 % 2 ;
      print (a) ;

@@ -27,11 +27,15 @@ class testRun(unittest.TestCase):
                     self.assertEqual(result, "0")
             if self.i  == 9 :
                     self.assertEqual(result, "8")
+            if self.i  == 10 :
+                self.assertEqual(result, "2")
+            if self.i  == 11 :
+                self.assertEqual(result, "2.000000")
 
             print(self.i);
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    for i in range(1,10):
+    for i in range(1,12):
         suite.addTest(testRun('test_Ir', i))
 
     unittest.TextTestRunner(verbosity=2).run(suite)
