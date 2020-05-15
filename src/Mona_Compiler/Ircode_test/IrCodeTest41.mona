@@ -1,0 +1,8 @@
+//function call helloWorld
+void helloWorld(){
+     print("helloWorld");
+}
+
+main{
+     helloWorld();
+}

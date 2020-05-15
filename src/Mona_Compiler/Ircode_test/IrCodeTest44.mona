@@ -1,0 +1,8 @@
+//function call arg
+void printArgument(float a ){
+     print(a);
+}
+
+main{
+     printArgument(1.0);
+}

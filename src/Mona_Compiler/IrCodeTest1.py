@@ -88,10 +88,21 @@ class testRun(unittest.TestCase):
                 self.assertEqual(result,"true")
             if self.i  == 39 :
                 self.assertEqual(result,"true")
+            if self.i  == 40 :
+                self.assertEqual(result,"h")
+            if self.i  == 41 :
+                self.assertEqual(result,"helloWorld")
+            if self.i  == 42 :
+                self.assertEqual(result,"hello")
+            if self.i  == 43 :
+                self.assertEqual(result,"10")
+            if self.i  == 44 :
+                self.assertEqual(result,"1.000000")
+
             print(self.i);
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    for i in range(1,40):
+    for i in range(1,45):
         suite.addTest(testRun('test_Ir', i))
 
     unittest.TextTestRunner(verbosity=2).run(suite)

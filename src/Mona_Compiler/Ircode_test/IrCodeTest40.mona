@@ -1,0 +1,7 @@
+//get char
+main{
+     var string a = "hello" ;
+     var int i = 0 ;
+     var string char = a.getChar(0);
+     print(char);
+}

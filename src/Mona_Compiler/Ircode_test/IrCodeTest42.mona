@@ -1,0 +1,8 @@
+//function call print arg string
+void printArgument(string a ){
+     print(a);
+}
+
+main{
+     printArgument("hello");
+}
