@@ -12,7 +12,7 @@ def compileCode(code, compilerDirectory, inputCodeFilePath):
     with open(inputCodeFilePath, 'w') as file:
         file.write(str(code))
     os.chdir(compilerDirectory)
-    os.system("./script")
+    #os.system("./script")
     os.system("java mona Lexer_Test/inputCode.mona")
     cCode = os.popen("lli irFileName").read()
     print("Is this working?")

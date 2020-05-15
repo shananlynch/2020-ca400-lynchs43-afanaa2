@@ -1,2 +1,4 @@
-main{gsdfg
-}dfsg
+main{
+var int a = 2;
+print(a);
+}
