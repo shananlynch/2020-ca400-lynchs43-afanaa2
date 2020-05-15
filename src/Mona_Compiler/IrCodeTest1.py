@@ -121,10 +121,13 @@ class testRun(unittest.TestCase):
             if self.i  == 53 :
                 result = result.split("\n")
                 self.assertEqual(result,["1.000000 ","2.000000 ","3.000000 ","4.000000 ","5.000000"])
+            if self.i  == 54 :
+                result = result.split("\n")
+                self.assertEqual(result,["1","1.000000 ","hello"])
             print(self.i);
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    for i in range(1,54):
+    for i in range(1,55):
         suite.addTest(testRun('test_Ir', i))
 
     unittest.TextTestRunner(verbosity=2).run(suite)

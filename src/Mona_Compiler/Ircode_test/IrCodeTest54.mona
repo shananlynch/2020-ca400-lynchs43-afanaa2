@@ -1,0 +1,9 @@
+main{
+     const  int a = 1;
+     print(a);
+     const  float l = 1.0;
+     print(l);
+     const string s = "hello";
+     print(s);
+
+}

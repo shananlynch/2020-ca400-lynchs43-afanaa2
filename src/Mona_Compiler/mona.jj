@@ -336,36 +336,63 @@ void const_decl()                       : {/*@bgen(jjtree) ConstantDeclaration *
                                            jjtree.openNodeScope(jjtn000);
 /*@egen*/Token t; String id ; String type ;}
 {/*@bgen(jjtree) ConstantDeclaration */
-    try {
+     try {
 /*@egen*/
-    t = <CONST> type = type() id = identifier() (assign() expression() | {} ) <SEMIC>/*@bgen(jjtree)*/
-    {
-      jjtree.closeNodeScope(jjtn000, true);
-      jjtc000 = false;
-    }
+     t = <CONST> type = type() id = identifier() (assign()/*@bgen(jjtree) assigns */
+                                                           {
+                                                             ASTassigns jjtn001 = new ASTassigns(JJTASSIGNS);
+                                                             boolean jjtc001 = true;
+                                                             jjtree.openNodeScope(jjtn001);
+                                                           }
+                                                           try {
+/*@egen*/ expression()/*@bgen(jjtree)*/
+                                                           } catch (Throwable jjte001) {
+                                                             if (jjtc001) {
+                                                               jjtree.clearNodeScope(jjtn001);
+                                                               jjtc001 = false;
+                                                             } else {
+                                                               jjtree.popNode();
+                                                             }
+                                                             if (jjte001 instanceof RuntimeException) {
+                                                               throw (RuntimeException)jjte001;
+                                                             }
+                                                             if (jjte001 instanceof ParseException) {
+                                                               throw (ParseException)jjte001;
+                                                             }
+                                                             throw (Error)jjte001;
+                                                           } finally {
+                                                             if (jjtc001) {
+                                                               jjtree.closeNodeScope(jjtn001, true);
+                                                             }
+                                                           }
+/*@egen*/        {} | {}) <SEMIC>/*@bgen(jjtree)*/
+   {
+     jjtree.closeNodeScope(jjtn000, true);
+     jjtc000 = false;
+   }
 /*@egen*/
-    {      jjtn000.value = t.image;
-           ST.insert(id, type, "variable",classScope + scope);
-    }/*@bgen(jjtree)*/
-    } catch (Throwable jjte000) {
-      if (jjtc000) {
-        jjtree.clearNodeScope(jjtn000);
-        jjtc000 = false;
-      } else {
-        jjtree.popNode();
-      }
-      if (jjte000 instanceof RuntimeException) {
-        throw (RuntimeException)jjte000;
-      }
-      if (jjte000 instanceof ParseException) {
-        throw (ParseException)jjte000;
-      }
-      throw (Error)jjte000;
-    } finally {
-      if (jjtc000) {
-        jjtree.closeNodeScope(jjtn000, true);
-      }
-    }
+   {      jjtn000.value = t.image;
+          ST.insert(id, type, "variable", classScope+scope);
+   }/*@bgen(jjtree)*/
+     } catch (Throwable jjte000) {
+       if (jjtc000) {
+         jjtree.clearNodeScope(jjtn000);
+         jjtc000 = false;
+       } else {
+         jjtree.popNode();
+       }
+       if (jjte000 instanceof RuntimeException) {
+         throw (RuntimeException)jjte000;
+       }
+       if (jjte000 instanceof ParseException) {
+         throw (ParseException)jjte000;
+       }
+       throw (Error)jjte000;
+     } finally {
+       if (jjtc000) {
+         jjtree.closeNodeScope(jjtn000, true);
+       }
+     }
 /*@egen*/
 }
 

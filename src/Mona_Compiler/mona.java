@@ -218,35 +218,59 @@ public class mona/*@bgen(jjtree)*/implements monaTreeConstants, monaConstants {/
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ASSIGN:
         assign();
-        expression();
+                                                             ASTassigns jjtn001 = new ASTassigns(JJTASSIGNS);
+                                                             boolean jjtc001 = true;
+                                                             jjtree.openNodeScope(jjtn001);
+        try {
+          expression();
+        } catch (Throwable jjte001) {
+                                                             if (jjtc001) {
+                                                               jjtree.clearNodeScope(jjtn001);
+                                                               jjtc001 = false;
+                                                             } else {
+                                                               jjtree.popNode();
+                                                             }
+                                                             if (jjte001 instanceof RuntimeException) {
+                                                               {if (true) throw (RuntimeException)jjte001;}
+                                                             }
+                                                             if (jjte001 instanceof ParseException) {
+                                                               {if (true) throw (ParseException)jjte001;}
+                                                             }
+                                                             {if (true) throw (Error)jjte001;}
+        } finally {
+                                                             if (jjtc001) {
+                                                               jjtree.closeNodeScope(jjtn001, true);
+                                                             }
+        }
+
         break;
       default:
         jj_la1[3] = jj_gen;
 
       }
       jj_consume_token(SEMIC);
-      jjtree.closeNodeScope(jjtn000, true);
-      jjtc000 = false;
-           jjtn000.value = t.image;
-           ST.insert(id, type, "variable",classScope + scope);
+     jjtree.closeNodeScope(jjtn000, true);
+     jjtc000 = false;
+          jjtn000.value = t.image;
+          ST.insert(id, type, "variable", classScope+scope);
     } catch (Throwable jjte000) {
-      if (jjtc000) {
-        jjtree.clearNodeScope(jjtn000);
-        jjtc000 = false;
-      } else {
-        jjtree.popNode();
-      }
-      if (jjte000 instanceof RuntimeException) {
-        {if (true) throw (RuntimeException)jjte000;}
-      }
-      if (jjte000 instanceof ParseException) {
-        {if (true) throw (ParseException)jjte000;}
-      }
-      {if (true) throw (Error)jjte000;}
+       if (jjtc000) {
+         jjtree.clearNodeScope(jjtn000);
+         jjtc000 = false;
+       } else {
+         jjtree.popNode();
+       }
+       if (jjte000 instanceof RuntimeException) {
+         {if (true) throw (RuntimeException)jjte000;}
+       }
+       if (jjte000 instanceof ParseException) {
+         {if (true) throw (ParseException)jjte000;}
+       }
+       {if (true) throw (Error)jjte000;}
     } finally {
-      if (jjtc000) {
-        jjtree.closeNodeScope(jjtn000, true);
-      }
+       if (jjtc000) {
+         jjtree.closeNodeScope(jjtn000, true);
+       }
     }
   }
 

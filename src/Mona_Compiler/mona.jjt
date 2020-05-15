@@ -239,10 +239,10 @@ void var_decl() #VariableDeclaration  : {Token t; String id; String type;}
 
 void const_decl()  #ConstantDeclaration : {Token t; String id ; String type ;}
 {
-    t = <CONST> type = type() id = identifier() (assign() expression() | {} ) <SEMIC>
-    {      jjtThis.value = t.image;
-           ST.insert(id, type, "variable",classScope + scope);
-    }
+     t = <CONST> type = type() id = identifier() (assign() expression()#assigns{} | {}) <SEMIC>
+   {      jjtThis.value = t.image;
+          ST.insert(id, type, "variable", classScope+scope);
+   }
 }
 
 void function_list() : {}

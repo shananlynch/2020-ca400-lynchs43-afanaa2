@@ -620,7 +620,107 @@ public class IrCodeVisitor implements monaVisitor {
          prog = prog + command + "\n";
 
       }
-      public Object visit(ASTConstantDeclaration node, Object data){return null;}
+      public Object visit(ASTConstantDeclaration node, Object data){
+           String dec = "";
+           String command =  "";
+           String load = "";
+           SimpleNode node1 = (SimpleNode) node.jjtGetChild (1);
+           String node0 = (String)( (SimpleNode) node.jjtGetChild (0)).jjtGetValue();
+
+           String mt = machineType(node0) ;
+
+           if(scope.equals("global")){
+                global = global + "@." + node1.jjtGetValue() + " = global " + mt + " " +((String) node.jjtGetChild (2).jjtAccept (this, data)) ;
+                global = global + "\n";
+                iv.put(node1.jjtGetValue().toString(),"@." + node1.jjtGetValue());
+           }
+           else {
+           if(node0.equals("string") && node.jjtGetNumChildren() > 2 ){
+             prog = prog + dec + "\n" ;
+             prog = prog + "%." + node1.jjtGetValue() + "= alloca [20 x i8] \n";
+
+             String node2 = (String) node.jjtGetChild (2).jjtAccept (this, data);
+
+             if(!node2.equals("getArray")){
+             String dec1 = sv.get(node2);
+             String var = "";
+             String temp = "";
+
+             /* string declaration */
+
+            var = "@." + node1.jjtGetValue();
+            stringDec = stringDec + var + " = constant [" + (node2.length() - 1) + " x i8] c" + node2.substring(0, node2.length() - 1) + "\\00\"" + "\n";
+            listLenght.put( var , (node2.length() - 2 ) + "" ) ;
+
+             temp = getTemp();
+             prog = prog + temp + " = getelementptr [" +(node2.length() - 1) + " x i8], [" + (node2.length() - 1) + " x i8]*" + var + ", i64 0, i64 0\n";
+             String temp1 = getTemp();
+             prog = prog +  temp1 + " = bitcast i8* " + temp + " to [20 x i8]* \n";
+             String temp2 = getTemp() ;
+             prog = prog + temp2 + " = load [20 x i8] , [20 x i8]* " + temp1 + "\n";
+             prog = prog + "store [20 x i8] " + temp2 + ",  [20 x i8]* " + "%." + node1.jjtGetValue() +  "\n";
+             global = global + "@." + scope + node1.jjtGetValue()  + "len = global i32 "+ (node2.length() - 2) + "\n";
+
+             sv.put(node2,"%." + node1.jjtGetValue());
+             iv.put( node1.jjtGetValue().toString(),"%." +   node1.jjtGetValue());
+             listLenght.put( "@." + node1.jjtGetValue() , (node2.length() - 2  ) + "" ) ;
+
+           }
+           }
+
+            else if(node0.equals("[")  ){
+                 String var = "%." +  node1.jjtGetValue();
+                 currentList = var ;
+                 listT=machineType(((SimpleNode)node.jjtGetChild(0)).jjtAccept(this,data)+ "");
+                 listType.put(var,listT);
+                 global = global + "@." + scope + currentList.substring(2) + "len = global i32 0\n";
+                 rlen = "@." + scope + currentList.substring(2) + "len" ;
+                  String mtype = machineType(((SimpleNode)node.jjtGetChild(0)).jjtAccept(this,data)+ "") ;
+                  String type = "[ " + "256" + " x " + mtype + " ]";
+                  prog  = prog + currentList + " = alloca " + type + " \n" ;
+                 if(node.jjtGetNumChildren() > 2 ){
+
+                     String node2 = (String) node.jjtGetChild (2).jjtAccept (this, data);
+                 }
+                 iv.put(node1.jjtGetValue().toString(),var);
+            }
+           else {
+             if(mt.equals("i8*")){
+                  mt = "[20 x i8]";
+             }
+             dec = "%." +  node1.jjtGetValue() + " = alloca " + mt ;
+             prog = prog + dec + "\n";
+
+             String node2 = "";
+             if( node.jjtGetNumChildren() > 2 ){
+                  node2 = (String) node.jjtGetChild (2).jjtAccept (this, data);
+             }
+             if(!node2.equals("getArray"))
+             {
+             if(node.jjtGetNumChildren() > 2){
+               if(node2.equals("true")){
+                   node2 = "1";
+               }
+               else if(node2.equals("false")){
+                   node2 = "0" ;
+               }
+               String var = "%." + node1.jjtGetValue() ;
+               if(st.in_scope(node1.jjtGetValue()+"","global")){
+                     var = "@." + node1.jjtGetValue() ;
+
+               }
+               command = "store " + mt + " " + node2 + ", " + mt + "* " + var ;
+               String temp = getTemp();
+               load = temp + " = load " + mt + ", " + mt + "* " +var;
+               iv.put(node1.jjtGetValue().toString(),temp);
+           }
+               prog = prog + command + "\n";
+               prog = prog + load + "\n" ;
+        }
+     }
+      }
+           return null;
+     }
       public Object visit(ASTfunction node, Object data){
           SimpleNode sty = (SimpleNode)node.jjtGetChild (0)   ;       // Type
           SimpleNode sid = (SimpleNode)node.jjtGetChild (1)    ;      // Identifier
