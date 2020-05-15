@@ -1,0 +1,10 @@
+//function call arg
+float printArgument(float a ){
+     return(a);
+}
+
+main{
+     var float a = printArgument(1.0);
+     print(a);
+
+}

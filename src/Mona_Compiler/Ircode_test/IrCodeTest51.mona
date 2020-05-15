@@ -1,0 +1,11 @@
+//function call list and printing all values in list
+[string] printArgument([string] a ){
+     return(a);
+}
+
+main{
+     var  [string] a = ["hello"] ;
+     var [string] retA = printArgument(a);
+     var int l = retA.length();
+     print(l);
+}

@@ -1,0 +1,16 @@
+//function call list and printing all values in list
+void printArgument([string] a ){
+     var int i = a.length();
+     var int j = 0 ;
+     while(j < i){
+          var string val = a.get(j);
+          print (val) ;
+          j = j + 1 ;
+     }
+
+}
+
+main{
+     var  [string] a = ["hello","hello","hello","hello","hello"] ;
+     printArgument(a);
+}

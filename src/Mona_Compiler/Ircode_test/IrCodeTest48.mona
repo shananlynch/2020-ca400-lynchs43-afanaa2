@@ -1,0 +1,9 @@
+//function call print arg string
+string printArgument(string a ){
+     return(a);
+}
+
+main{
+     var string a = printArgument("hello");
+     print(a);
+}

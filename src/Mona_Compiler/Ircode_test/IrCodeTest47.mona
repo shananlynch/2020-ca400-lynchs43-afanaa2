@@ -1,0 +1,16 @@
+//function call list and printing all values in list
+void printArgument([float] a ){
+     var int i = a.length();
+     var int j = 0 ;
+     while(j < i){
+          var float val = a.get(j);
+          print (val) ;
+          j = j + 1 ;
+     }
+
+}
+
+main{
+     var  [float] a = [1.0,2.0,3.0,4.0,5.0] ;
+     printArgument(a);
+}

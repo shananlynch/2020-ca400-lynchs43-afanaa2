@@ -98,11 +98,33 @@ class testRun(unittest.TestCase):
                 self.assertEqual(result,"10")
             if self.i  == 44 :
                 self.assertEqual(result,"1.000000")
-
+            if self.i  == 45 :
+                result = result.split("\n")
+                self.assertEqual(result,["1","2","3","4","5"])
+            if self.i  == 46 :
+                result = result.split("\n")
+                self.assertEqual(result,["hello","hello","hello","hello","hello"])
+            if self.i  == 47 :
+                result = result.split("\n")
+                self.assertEqual(result,["1.000000 ","2.000000 ","3.000000 ","4.000000 ","5.000000"])
+            if self.i  == 48 :
+                self.assertEqual(result,"hello")
+            if self.i  == 49 :
+                self.assertEqual(result,"10")
+            if self.i  == 50 :
+                self.assertEqual(result,"1.000000")
+            if self.i  == 51 :
+                self.assertEqual(result,"1")
+            if self.i  == 52 :
+                result = result.split("\n")
+                self.assertEqual(result,["1","2","3","4","5"])
+            if self.i  == 53 :
+                result = result.split("\n")
+                self.assertEqual(result,["1.000000 ","2.000000 ","3.000000 ","4.000000 ","5.000000"])
             print(self.i);
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-    for i in range(1,45):
+    for i in range(1,54):
         suite.addTest(testRun('test_Ir', i))
 
     unittest.TextTestRunner(verbosity=2).run(suite)
