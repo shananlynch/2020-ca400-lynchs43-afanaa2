@@ -6,15 +6,24 @@ rootDirectory = os.path.dirname(__file__)[:-11]
 inputCodeFilePath = os.path.join(
     rootDirectory, "Mona_Compiler/Lexer_Test/inputCode.mona")
 compilerDirectory = os.path.join(rootDirectory, "Mona_Compiler/")
+checksOutputFile = os.path.join(compilerDirectory, "semanticErrors.txt")
 
 
 def compileCode(code, compilerDirectory, inputCodeFilePath):
     with open(inputCodeFilePath, 'w') as file:
         file.write(str(code))
     os.chdir(compilerDirectory)
-    #os.system("./script")
+    with open(checksOutputFile, 'w') as filetowrite:
+        filetowrite.write('')
     os.system("java mona Lexer_Test/inputCode.mona")
-    cCode = os.popen("lli irFileName").read()
+    checkFilesize = os.path.getsize(checksOutputFile)
+    if checkFilesize != 0:
+        with open(checksOutputFile, 'r') as filetoread:
+            lines = filetoread.readlines()
+            cCode = "\n".join(lines)
+
+    else:
+        cCode = os.popen("lli irFileName").read()
     print("Is this working?")
     print(cCode)
     return cCode

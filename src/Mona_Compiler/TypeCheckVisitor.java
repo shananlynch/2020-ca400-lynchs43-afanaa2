@@ -1,4 +1,8 @@
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,13 +12,54 @@ import java.util.Map;
 public class TypeCheckVisitor implements monaVisitor {
     private static String scope = "global";
     private static STC st;
-    HashMap<String, HashMap<String, Object>> scopeVarCheck = new HashMap<String, HashMap<String, Object>>();
-    HashMap<String, HashMap<String, Object>> paramList = new HashMap<String, HashMap<String, Object>>();
-    HashMap<String, Object> tmp = new HashMap<String, Object>();
+    Map<String, HashMap<String, Object>> scopeVarCheck = new HashMap<String, HashMap<String, Object>>();
+    Map<String, HashMap<String, Object>> paramList = new HashMap<String, HashMap<String, Object>>();
     private static BufferedWriter buff;
+    ArrayList<String> errors = new ArrayList<String>();
+    File file = new File("semanticErrors.txt");
+
+    /*
+     * try { FileWriter fr = new FileWriter(file, true); BufferedWriter br = new
+     * BufferedWriter(fr); PrintWriter pr = new PrintWriter(br); }catch( IOException
+     * e) { e.printStackTrace(); }
+     */
+    private void wrightFile(int arraySize, String line) {
+
+        if (arraySize < 2) {
+            try {
+                FileWriter fWright = new FileWriter(file, false);
+                BufferedWriter buff = new BufferedWriter(fWright);
+                PrintWriter pWright = new PrintWriter(buff);
+
+                pWright.println(line);
+
+                pWright.close();
+                buff.close();
+                fWright.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            FileWriter fWright = new FileWriter(file, true);
+            BufferedWriter buff = new BufferedWriter(fWright);
+            PrintWriter pWright = new PrintWriter(buff);
+
+            pWright.println(line);
+
+            pWright.close();
+            buff.close();
+            fWright.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public Object visit(ASTgetArray node, Object data) {
-        System.out.print("At get Array");
+        // System.out.print("At get Array");
         Object l = (Object) node.jjtGetChild(0).jjtAccept(this, data);
         Object type = null;
         if (l instanceof List<?>) {
@@ -22,7 +67,9 @@ public class TypeCheckVisitor implements monaVisitor {
             type = arrayType1.get(1);
         } else {
             DataType d = (DataType) l;
-            System.out.println(d + " is not an array type");
+            String s = d + " is not an array type";
+            errors.add(s);
+            wrightFile(errors.size(), s);
         }
         return type;
     }
@@ -32,20 +79,23 @@ public class TypeCheckVisitor implements monaVisitor {
         DataType node1type = (DataType) node1.jjtAccept(this, data);
         Object l = (Object) node.jjtGetChild(0).jjtAccept(this, data);
         Object type = null;
+        String s;
 
         if (l instanceof List<?>) {
             ArrayList arrayType1 = (ArrayList) l;
             type = arrayType1.get(1);
             if (!type.equals(node1type)) {
-                System.out.println(
-                        "Paremeter " + node1type.toString() + " is not compatible with array type " + type.toString());
+                s = "Paremeter " + node1type.toString() + " is not compatible with array type " + type.toString();
+                errors.add(s);
+                wrightFile(errors.size(), s);
             }
         } else {
             DataType d = (DataType) l;
-            System.out.println(d + " is not an array type");
+            s = d + " is not an array type";
+            errors.add(s);
+            wrightFile(errors.size(), s);
         }
 
-        System.out.println("Insert type : " + node1type.toString());
         return type;
     }
 
@@ -69,8 +119,16 @@ public class TypeCheckVisitor implements monaVisitor {
     public Object visit(ASTProgram node, Object data) {
         st = (STC) data;
         node.childrenAccept(this, data); // accepts nodes
-        // System.out.println(st.get_scope("i","global"));
-        System.out.println("At program");
+        try {
+            buff = new BufferedWriter(new FileWriter("semanticErrors"));
+            for (String line : errors) {
+                buff.write(line);
+                buff.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Failed to write semantic errors ");
+            e.printStackTrace(System.out);
+        }
         return null;
     }
 
@@ -83,7 +141,7 @@ public class TypeCheckVisitor implements monaVisitor {
         Object node0type = (Object) node0.jjtAccept(this, data);
         SimpleNode node1 = (SimpleNode) node.jjtGetChild(1);
         String varId = (String) node1.jjtGetValue().toString();
-        System.out.println("VarDec id: " + varId + " type: " + node0type);
+        String s;
 
         if (!scopeVarCheck.containsKey(scope)) {
             HashMap<String, Object> vars = new HashMap<String, Object>();
@@ -92,7 +150,10 @@ public class TypeCheckVisitor implements monaVisitor {
         } else {
             HashMap<String, Object> vars = scopeVarCheck.get(scope);
             if (vars.containsKey(varId)) {
+                s = varId + " has already been declared in scope " + scope;
                 System.out.println(varId + " has already been declared in scope " + scope);
+                errors.add(s);
+                wrightFile(errors.size(), s);
             } else {
                 vars.put(varId, node0type);
                 scopeVarCheck.put(scope, vars);
@@ -102,10 +163,11 @@ public class TypeCheckVisitor implements monaVisitor {
         if (node.jjtGetNumChildren() == 3) {
             SimpleNode node2 = (SimpleNode) node.jjtGetChild(2);
             Object node1type = (Object) node2.jjtAccept(this, data);
-            System.out.println("Var:" + node0type.toString());
 
             if (!node0type.equals(node1type)) {
-                System.out.println("incompatible types: " + node0type.toString() + " " + node1type.toString());
+                s = "incompatible types: " + node0type.toString() + " " + node1type.toString();
+                errors.add(s);
+                wrightFile(errors.size(), s);
             }
 
         }
@@ -118,18 +180,20 @@ public class TypeCheckVisitor implements monaVisitor {
         Object node0type = (Object) node0.jjtAccept(this, data);
         SimpleNode node1 = (SimpleNode) node.jjtGetChild(1);
         String varId = (String) node1.jjtGetValue().toString();
+        String s;
 
         if (node.jjtGetNumChildren() == 3) {
             SimpleNode node2 = (SimpleNode) node.jjtGetChild(2);
             Object node1type = (Object) node2.jjtAccept(this, data);
-            System.out.println("Var:" + node0type.toString());
 
             if (!node0type.equals(node1type)) {
-                System.out.println("incompatible types: " + node0type.toString() + " " + node1type.toString());
+
+                s = "incompatible types: " + node0type.toString() + " " + node1type.toString();
+                errors.add(s);
+                wrightFile(errors.size(), s);
             }
 
         }
-        System.out.println("scopeVarCheck: " + scope);
         if (scopeVarCheck.containsKey(scope) == false) {
             HashMap<String, Object> vars = new HashMap<String, Object>();
             vars.put(varId, node0type);
@@ -137,7 +201,9 @@ public class TypeCheckVisitor implements monaVisitor {
         } else {
             HashMap<String, Object> vars = scopeVarCheck.get(scope);
             if (vars.containsKey(varId)) {
-                System.out.println(varId + " has already been declared in scope " + scope);
+                s = varId + " has already been declared in scope " + scope;
+                errors.add(s);
+                wrightFile(errors.size(), s);
             }
         }
 
@@ -151,7 +217,7 @@ public class TypeCheckVisitor implements monaVisitor {
         Object retType = (Object) node.jjtGetChild(0).jjtAccept(this, data); // Type
         params.put("returnType", retType);
         paramList.put(scope, params);
-        SimpleNode sid = (SimpleNode) node.jjtGetChild(1); // Identifier
+        String s;
 
         for (int i = 2; i < num - 1; i++) {
             node.jjtGetChild(i).jjtAccept(this, data);
@@ -161,7 +227,9 @@ public class TypeCheckVisitor implements monaVisitor {
         if (retCheck.jjtGetValue() == "return") {
             Object retArgs = (Object) retCheck.jjtAccept(this, data);
             if (!retArgs.equals(retType)) {
-                System.out.println("Type returned: " + retArgs + " Does not equal return type: " + retType);
+                s = "Type returned: " + retArgs + " Does not equal return type: " + retType;
+                errors.add(s);
+                wrightFile(errors.size(), s);
             }
         } else {
             retCheck.jjtAccept(this, data);
@@ -172,7 +240,6 @@ public class TypeCheckVisitor implements monaVisitor {
     public Object visit(ASTreturn_ node, Object data) {
         SimpleNode node0 = (SimpleNode) node.jjtGetChild(0);
         Object node0type = (Object) node0.jjtAccept(this, data);
-        System.out.println("Return node 0 " + node0type.toString());
         return node0type;
     }
 
@@ -210,7 +277,7 @@ public class TypeCheckVisitor implements monaVisitor {
                 Object node0type = (Object) node0.jjtAccept(this, data);
                 SimpleNode node1 = (SimpleNode) node.jjtGetChild(i + 1);
                 String varId = (String) node1.jjtGetValue().toString();
-                System.out.println("ParamList id: " + varId + " type: " + node0type);
+                String s;
 
                 if (!scopeVarCheck.containsKey(scope)) {
                     HashMap<String, Object> vars = new HashMap<String, Object>();
@@ -219,7 +286,9 @@ public class TypeCheckVisitor implements monaVisitor {
                 } else {
                     HashMap<String, Object> vars = scopeVarCheck.get(scope);
                     if (vars.containsKey(varId)) {
-                        System.out.println(varId + " has already been declared in scope " + scope);
+                        s = varId + " has already been declared in scope " + scope;
+                        errors.add(s);
+                        wrightFile(errors.size(), s);
                     } else {
                         vars.put(varId, node0type);
                         scopeVarCheck.put(scope, vars);
@@ -234,66 +303,58 @@ public class TypeCheckVisitor implements monaVisitor {
     }
 
     public Object visit(ASTmain node, Object data) {
-        System.out.println("At main");
         scope = "main";
-        scopeVarCheck.put(scope, tmp);
         node.childrenAccept(this, data);
         return null;
     }
 
     public Object visit(ASTstatement node, Object data) {
-        System.out.println("At statement");
         SimpleNode node0 = (SimpleNode) node.jjtGetChild(0);
         String value = (String) node.jjtGetValue();
-        System.out.println("Statement value: " + value);
         int num = node.jjtGetNumChildren();
-        // System.out.println("statement node 0 :" + node0.jjtAccept(this,
-        // data).toString());
+        String s;
 
         if (value.equals("return")) { // Give return type to function
             Object retType = (Object) node0.jjtAccept(this, data);
-            System.out.println(retType);
             return retType;
         }
 
         else if (value.equals("insert")) {
             node0.jjtAccept(this, data);
-            System.out.println("insert");
             return null;
 
         } else if (value.equals("functionCall")) {
             node0.jjtAccept(this, data);
-            System.out.println("functionCall");
             return null;
         }
 
         else if (value.equals("print")) {
             node0.jjtAccept(this, data);
-            System.out.println("print");
             return null;
         } else if (value.equals("while")) {
             node0.jjtAccept(this, data);
-            System.out.println("while");
             return null;
         } else if (value.equals("insert")) {
             node0.jjtAccept(this, data);
-            System.out.println("insert");
             return null;
         }
 
         else if (value.equals("=")) { // If assigns
-            System.out.println("Statement assigns");
             Object idType = (Object) node0.jjtAccept(this, data);
             SimpleNode as = (SimpleNode) node.jjtGetChild(1);
             Object asType = (Object) as.jjtAccept(this, data);
             if (!idType.equals(asType)) {
-                System.out.println("Invalid assignment with type " + idType + " to " + asType);
+                s = "Invalid assignment with type " + idType + " to " + asType;
+                errors.add(s);
+                wrightFile(errors.size(), s);
             }
             return null;
         } else if (value.equals("if")) { // If assigns
             Object fibs = (Object) node0.jjtAccept(this, data);
             if (!fibs.equals(DataType.Bool)) {
-                System.out.println("Invalid if statement");
+                s = "Invalid if statement";
+                errors.add(s);
+                wrightFile(errors.size(), s);
             }
             SimpleNode tmpValue = null;
             if (num > 1) {
@@ -303,24 +364,26 @@ public class TypeCheckVisitor implements monaVisitor {
                     DataType elif = (DataType) tmpValue.jjtAccept(this, data);
                     if (condVal.equals("else_if")) {
                         if (!elif.equals(DataType.Bool)) {
-                            System.out.println("Invalid else if statement");
+                            s = "Invalid else if statement";
+                            errors.add(s);
+                            wrightFile(errors.size(), s);
                         }
                     }
                 }
             }
             return null;
         } else if (value.equals("else")) {
-            System.out.println("At else");
             node0.jjtAccept(this, data);
             return null;
         }
 
         else if (value.equals("decl")) {
-            System.out.println("At statement dec and " + num + " children");
             node0.jjtAccept(this, data);
             return null;
         } else {
-            System.out.println("Node " + node.jjtGetValue() + "has not been accounted for in statement");
+            s = "Node " + node.jjtGetValue() + "has not been accounted for in statement";
+            errors.add(s);
+            wrightFile(errors.size(), s);
         }
         return null;
     }
@@ -329,9 +392,10 @@ public class TypeCheckVisitor implements monaVisitor {
         SimpleNode node0 = (SimpleNode) node.jjtGetChild(0);
         Object elif = (Object) node0.jjtAccept(this, data);
         if (!elif.equals(DataType.Bool)) {
-            System.out.println("Invalid if statement");
+            String s = "Invalid if statement";
+            errors.add(s);
+            wrightFile(errors.size(), s);
         }
-        System.out.println("At elif");
         return elif;
     }
 
@@ -344,7 +408,6 @@ public class TypeCheckVisitor implements monaVisitor {
         String funcScope = (String) func.jjtGetValue();
         HashMap<String, Object> params = paramList.get(funcScope);
         Object retType = params.get("returnType");
-        System.out.println("Function Call Return type: " + retType);
         node.jjtGetChild(1).jjtAccept(this, data);
         return retType;
     }
@@ -355,19 +418,21 @@ public class TypeCheckVisitor implements monaVisitor {
     }
 
     public Object visit(ASTarith_op node, Object data) {
-        System.out.println("Reaches arithOp");
         SimpleNode node0 = (SimpleNode) node.jjtGetChild(0);
         SimpleNode node1 = (SimpleNode) node.jjtGetChild(1);
         DataType node0type = (DataType) node0.jjtAccept(this, data);
         DataType node1type = (DataType) node1.jjtAccept(this, data);
         DataType value = null;
+        String s;
         if (!(node0type.equals(DataType.Float) || node0type.equals(DataType.Integer))) {
-            System.out.println("Type: unsupported operand type(s) for " + node.jjtGetValue() + ":" + node0type + " and "
-                    + node1type);
+            s = "Type: unsupported operand type(s) for " + node.jjtGetValue() + ":" + node0type + " and " + node1type;
+            errors.add(s);
+            wrightFile(errors.size(), s);
             return node0type;
         } else if (!(node1type.equals(DataType.Float) || node1type.equals(DataType.Integer))) {
-            System.out.println("Type: unsupported operand type(s) for " + node.jjtGetValue() + ":" + node0type + " and "
-                    + node1type);
+            s = "Type: unsupported operand type(s) for " + node.jjtGetValue() + ":" + node0type + " and " + node1type;
+            errors.add(s);
+            wrightFile(errors.size(), s);
             return node1type;
         } else {
             if (node0type.equals(node1type)) {
@@ -381,16 +446,16 @@ public class TypeCheckVisitor implements monaVisitor {
 
     public Object visit(ASTcomp_op node, Object data) {
 
-        System.out.println("Reaches comp_op");
         SimpleNode node0 = (SimpleNode) node.jjtGetChild(0);
         SimpleNode node1 = (SimpleNode) node.jjtGetChild(1);
         DataType node0type = (DataType) node0.jjtAccept(this, data);
-        System.out.println(node0type.toString());
         DataType node1type = (DataType) node1.jjtAccept(this, data);
         DataType value = null;
         if (!node0type.equals(node1type)) {
-            System.out.println("Type: unsupported operand type(s) for " + node.jjtGetValue() + ":" + node0type + " and "
-                    + node1type);
+            String s = "Type: unsupported operand type(s) for " + node.jjtGetValue() + ":" + node0type + " and "
+                    + node1type;
+            errors.add(s);
+            wrightFile(errors.size(), s);
         } else {
             value = DataType.Bool;
         }
@@ -398,16 +463,16 @@ public class TypeCheckVisitor implements monaVisitor {
     }
 
     public Object visit(ASTandCondition node, Object data) {
-        System.out.println("Reaches andCond");
         SimpleNode node0 = (SimpleNode) node.jjtGetChild(0);
         SimpleNode node1 = (SimpleNode) node.jjtGetChild(1);
         DataType node0type = (DataType) node0.jjtAccept(this, data);
-        System.out.println(node0type.toString());
         DataType node1type = (DataType) node1.jjtAccept(this, data);
         DataType value = null;
         if (!node0type.equals(node1type)) {
-            System.out.println("Type: unsupported operand type(s) for " + node.jjtGetValue() + ":" + node0type + " and "
-                    + node1type);
+            String s = "Type: unsupported operand type(s) for " + node.jjtGetValue() + ":" + node0type + " and "
+                    + node1type;
+            errors.add(s);
+            wrightFile(errors.size(), s);
         } else {
             value = DataType.Bool;
         }
@@ -415,16 +480,16 @@ public class TypeCheckVisitor implements monaVisitor {
     }
 
     public Object visit(ASTorCondition node, Object data) {
-        System.out.println("Reaches orCond");
         SimpleNode node0 = (SimpleNode) node.jjtGetChild(0);
         SimpleNode node1 = (SimpleNode) node.jjtGetChild(1);
         DataType node0type = (DataType) node0.jjtAccept(this, data);
-        System.out.println(node0type.toString());
         DataType node1type = (DataType) node1.jjtAccept(this, data);
         DataType value = null;
         if (!node0type.equals(node1type)) {
-            System.out.println("Type: unsupported operand type(s) for " + node.jjtGetValue() + ":" + node0type + " and "
-                    + node1type);
+            String s = "Type: unsupported operand type(s) for " + node.jjtGetValue() + ":" + node0type + " and "
+                    + node1type;
+            errors.add(s);
+            wrightFile(errors.size(), s);
         } else {
             value = DataType.Bool;
         }
@@ -433,6 +498,7 @@ public class TypeCheckVisitor implements monaVisitor {
 
     public Object visit(ASTargumentList node, Object data) {
         int num = node.jjtGetNumChildren();
+        String s;
         if (num > 0) {
             SimpleNode func = (SimpleNode) node.jjtGetParent().jjtGetChild(0);
             String funcId = (String) func.jjtGetValue().toString();
@@ -440,18 +506,24 @@ public class TypeCheckVisitor implements monaVisitor {
             Collection<Object> paramValues = params.values();
 
             if (num < params.size() - 1) {
-                System.out.println("Too few arguements for function: " + funcId);
+                s = "Too few arguements for function: " + funcId;
+                errors.add(s);
+                wrightFile(errors.size(), s);
             }
             if (num > params.size() - 1) {
-                System.out.println("Too many arguements for function: " + funcId);
+                s = "Too many arguements for function: " + funcId;
+                errors.add(s);
+                wrightFile(errors.size(), s);
             }
             int j = 0;
             for (Object o : paramValues) {
                 if (!o.equals("returnType")) {
                     Object tmpArg = (Object) node.jjtGetChild(j).jjtAccept(this, data);
                     if (!o.equals(tmpArg)) {
-                        System.out.println("Arguement(" + j + "): " + tmpArg + " does not match type " + o
-                                + " in parameter (" + j + ")");
+                        s = "Arguement(" + j + "): " + tmpArg + " does not match type " + o + " in parameter (" + j
+                                + ")";
+                        errors.add(s);
+                        wrightFile(errors.size(), s);
                     }
                     j++;
                 }
@@ -462,10 +534,10 @@ public class TypeCheckVisitor implements monaVisitor {
     }
 
     public Object visit(ASTarray node, Object data) {
-        System.out.println("Reached array");
         int num = node.jjtGetNumChildren();
         SimpleNode node0 = (SimpleNode) node.jjtGetChild(0);
         DataType node0type = (DataType) node0.jjtAccept(this, data);
+        String s;
 
         List<DataType> arrayType = new ArrayList<DataType>();
         arrayType.add(DataType.Array);
@@ -473,10 +545,10 @@ public class TypeCheckVisitor implements monaVisitor {
         if (num > 0) {
             for (int i = 0; i < num; i++) {
                 value = (DataType) node.jjtGetChild(i).jjtAccept(this, null);
-                System.out.println("Array Value at element(" + i + "): " + value);
                 if (value.toString() != node0type.toString()) {
-                    System.out.println(
-                            "incompatible types: " + value + " in element " + i + " != " + node0type + " in element 0");
+                    s = "incompatible types: " + value + " in element " + i + " != " + node0type + " in element 0";
+                    errors.add(s);
+                    wrightFile(errors.size(), s);
                     break;
                 }
             }
@@ -496,16 +568,16 @@ public class TypeCheckVisitor implements monaVisitor {
     }
 
     public Object visit(ASTIdentifier node, Object data) {
-        System.out.println("At identifier");
         HashMap<String, Object> vars = scopeVarCheck.get(scope);
         HashMap<String, Object> params = paramList.get(scope);
         String id = (String) node.jjtGetValue().toString();
-
-        System.out.println("ID: " + id.toString());
+        String s;
 
         if (!vars.containsKey(id)) {
             if (!params.containsKey(id)) {
-                System.out.println("Undeclared variable : " + id);
+                s = "Undeclared variable : " + id;
+                errors.add(s);
+                wrightFile(errors.size(), s);
             }
         }
 
@@ -514,7 +586,9 @@ public class TypeCheckVisitor implements monaVisitor {
             if (params.containsKey(id)) {
                 type = params.get(id);
             } else {
-                System.out.println("Undeclared variable : " + id);
+                s = "Undeclared variable : " + id;
+                errors.add(s);
+                wrightFile(errors.size(), s);
             }
         }
 
@@ -526,27 +600,30 @@ public class TypeCheckVisitor implements monaVisitor {
     }
 
     public Object visit(ASTassigns node, Object data) {
-        System.out.println("At assigns");
         Node node0 = (SimpleNode) node.jjtGetChild(0);
         SimpleNode type = (SimpleNode) node.jjtGetParent().jjtGetChild(0);
         Object sType = (Object) type.jjtAccept(this, data);
-        System.out.println(sType);
         Object node0type = (Object) node0.jjtAccept(this, data);
-        System.out.println(node0type);
+        String s;
+
         if (!sType.getClass().getSimpleName().equals(node0type.getClass().getSimpleName())) {
-            System.out.println("Type: " + sType.getClass().getSimpleName() + " is incompatible with type: "
-                    + node0type.getClass().getSimpleName());
+            s = "Type: " + sType.getClass().getSimpleName() + " is incompatible with type: "
+                    + node0type.getClass().getSimpleName();
+            errors.add(s);
+            wrightFile(errors.size(), s);
         } else if (sType instanceof List<?>) {
             ArrayList arrayType1 = (ArrayList) sType;
             ArrayList arrayType2 = (ArrayList) node0type;
             if (!arrayType1.get(1).equals(arrayType2.get(1))) {
-                System.out.println(
-                        "Type Array: " + arrayType1.get(1) + " is incompatible with type Array: " + arrayType2.get(1));
+                s = "Type Array: " + arrayType1.get(1) + " is incompatible with type Array: " + arrayType2.get(1);
+                errors.add(s);
+                wrightFile(errors.size(), s);
             }
         } else {
             if (!sType.equals(node0type)) {
-                System.out
-                        .println("Type : " + sType.toString() + " is incompatible with type : " + node0type.toString());
+                s = "Type : " + sType.toString() + " is incompatible with type : " + node0type.toString();
+                errors.add(s);
+                wrightFile(errors.size(), s);
             }
         }
         return node0type;

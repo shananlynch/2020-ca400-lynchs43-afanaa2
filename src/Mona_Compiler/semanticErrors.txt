@@ -1,0 +1,4 @@
+Type: unsupported operand type(s) for +:string and Integer
+Type: unsupported operand type(s) for +:string and Integer
+Type : Integer is incompatible with type : string
+Invalid assignment with type Integer to string
