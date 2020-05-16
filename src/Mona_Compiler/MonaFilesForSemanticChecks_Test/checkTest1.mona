@@ -1,3 +1,4 @@
+// Check on arith_op different type parameters
 main
 {
     var int a;

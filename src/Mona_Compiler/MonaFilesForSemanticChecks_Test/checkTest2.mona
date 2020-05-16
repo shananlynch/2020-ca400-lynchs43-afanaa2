@@ -1,0 +1,4 @@
+// test different types in an array
+main{
+    var [int]a = ["temp",2,3,4,5];
+}

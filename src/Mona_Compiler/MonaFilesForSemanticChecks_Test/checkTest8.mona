@@ -1,0 +1,9 @@
+// string a is not equal to return type int
+int func(int arg){
+     return (arg);
+
+}
+
+main{
+     var string a = func(1);
+}

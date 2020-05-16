@@ -1,0 +1,5 @@
+//error 1 is not type of array a
+main{
+     var [string] a = ["hello","hello","hello"];
+     a.insert(1);
+}

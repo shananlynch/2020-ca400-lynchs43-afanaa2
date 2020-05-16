@@ -1,0 +1,3 @@
+main{
+     var [int] a = ["hello","hello","hello"];
+}

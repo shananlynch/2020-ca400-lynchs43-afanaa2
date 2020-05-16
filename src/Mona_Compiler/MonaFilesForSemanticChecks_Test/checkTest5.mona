@@ -1,0 +1,6 @@
+// int a has already been declared
+main
+{
+    var int a = 2;
+    var int a = 4;
+}

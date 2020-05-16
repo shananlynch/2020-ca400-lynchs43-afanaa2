@@ -1,3 +1,3 @@
-a has already been declared in scope main
-a has already been declared in scope main
-a has already been declared in scope main
+Type : string is incompatible with type : Integer
+Type : string is incompatible with type : Integer
+incompatible types: string Integer

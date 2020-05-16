@@ -1,0 +1,5 @@
+//error element not type of var s
+main{
+     var [string] a = ["hello","hello","hello"];
+     var int s = a.get(0);
+}
