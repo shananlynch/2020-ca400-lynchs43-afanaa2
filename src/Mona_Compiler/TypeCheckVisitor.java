@@ -442,23 +442,26 @@ public class TypeCheckVisitor implements monaVisitor {
             if (num < params.size() - 1) {
                 System.out.println("Too few arguements for function: " + funcId);
             }
+
             if (num > params.size() - 1) {
                 System.out.println("Too many arguements for function: " + funcId);
             }
-            int j = 0;
-            for (Object o : paramValues) {
-                if (!o.equals("returnType")) {
-                    Object tmpArg = (Object) node.jjtGetChild(j).jjtAccept(this, data);
-                    if (!o.equals(tmpArg)) {
-                        System.out.println("Arguement(" + j + "): " + tmpArg + " does not match type " + o
-                                + " in parameter (" + j + ")");
-                    }
-                    j++;
-                }
 
-            }
-        }
-        return null;
+            int j = 0;
+          for (Object o : paramValues) {
+               if(j < num){
+                    if (!o.equals("returnType")) {
+                         Object tmpArg = (Object) node.jjtGetChild(j).jjtAccept(this, data);
+                         if (!o.equals(tmpArg)) {
+                              System.out.println("Arguement(" + j + "): " + tmpArg + " does not match type " + o
+                              + " in parameter (" + j + ")");
+                         }
+                         j++;
+                    }
+               }
+               }
+          }
+          return null;
     }
 
     public Object visit(ASTarray node, Object data) {
@@ -501,23 +504,26 @@ public class TypeCheckVisitor implements monaVisitor {
         HashMap<String, Object> params = paramList.get(scope);
         String id = (String) node.jjtGetValue().toString();
 
-        System.out.println("ID: " + id.toString());
+     System.out.println("ID: " + id.toString());
+     try{
+          if (!vars.containsKey(id)) {
+               if (!params.containsKey(id)) {
+                    System.out.println("Undeclared variable : " + id);
+               }
+          }
+     } catch (NullPointerException e ){}
 
-        if (!vars.containsKey(id)) {
-            if (!params.containsKey(id)) {
-                System.out.println("Undeclared variable : " + id);
-            }
-        }
+     Object type = vars.get(id);
+     try{
+          if (type.equals(DataType.TypeUnknown)) {
+               if (params.containsKey(id)) {
+                    type = params.get(id);
+               } else {
+                    System.out.println("Undeclared variable : " + id);
+               }
+          }
 
-        Object type = vars.get(id);
-        if (type.equals(DataType.TypeUnknown)) {
-            if (params.containsKey(id)) {
-                type = params.get(id);
-            } else {
-                System.out.println("Undeclared variable : " + id);
-            }
-        }
-
+     }catch (NullPointerException e ){}
         return type;
     }
 

@@ -1,9 +1,9 @@
 //function call print arg integer
-int printArgument(int a ){
+int printArgument(int a , int b ){
      return(a);
 }
 
 main{
-     var int a = printArgument(10);
+     var int a = printArgument(10,11);
      print(a);
 }
