@@ -1,5 +1,5 @@
 //test if == operator
-// test if statement with comparative operator <
+// test if statement with comparative operator <=
 main{
      if(10 <= 11){
           print("if(10 <= 11 )is true");

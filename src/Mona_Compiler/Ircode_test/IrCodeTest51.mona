@@ -1,4 +1,4 @@
-//function call list and printing all values in list
+//return list
 [string] printArgument([string] a ){
      return(a);
 }

@@ -392,7 +392,6 @@ public class IrCodeVisitor implements monaVisitor {
               String temp2 = getTemp() ;
               prog = prog + temp2 + " = load [20 x i8] , [20 x i8]* " + temp1 + "\n";
               prog = prog + "store [20 x i8] " + temp2 + ",  [20 x i8]* %." + sVar1 +  "\n";
-              System.out.println(temp2);
 
               iv.put(sVar1,temp);
           }
@@ -1434,8 +1433,6 @@ public class IrCodeVisitor implements monaVisitor {
                    len = "20" ;
               }
           }
-          System.out.println(stringDeca);
-           System.out.println(len);
            listLenght.put( var , (str.length() - 2  ) + "" ) ;
            temp = getTemp();
            String mem =  getTemp() ;

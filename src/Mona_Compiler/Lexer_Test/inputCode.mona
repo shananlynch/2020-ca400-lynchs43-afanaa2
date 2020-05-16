@@ -1,4 +1,20 @@
+bool isPalindrome(string s){
+     var int i = 0 ;
+     var int len = s.length();
+     var bool palindrome = true ;
+     while( i < len){
+          var string l = s.getChar(i);
+          var int j = len - i - 1 ;
+          var string k = s.getChar(j);
+          i = i + 1 ;
+          if(k != l){
+               palindrome = false ;
+          }
+     }
+      return(palindrome) ;
+}
 main{
-var int a = 2;
-print(a);
+        var string palindrome = "raceca" ;
+        var bool a = isPalindrome(palindrome);
+        print(a) ;
 }

@@ -139,12 +139,9 @@ TOKEN [IGNORE_CASE] : /* Reserved Words */
      | < VOID : "void" >
      | < MAIN : "main" >
      | < BREAK : "break" >
-     | < DICT  : "dict" >
      | < IF : "if" >
      | < ELSE : "else" >
      | < ELSEIF : "else_if" >
-     | < EXCEPT : "except" >
-     | < NOT : "not" >
      | < PRINT : "print" >
      | < IN : "in" >
      | < TRUE : "true" >
@@ -490,7 +487,7 @@ String type()       : {/*@bgen(jjtree) Type */
 {/*@bgen(jjtree) Type */
     try {
 /*@egen*/
-    (t = <INT> | t = <BOOL> | t = <VOID> | t = <STRING> | t = <LSBR> type() <RSBR> | t = <T_FLOAT> | t = <DICT>)/*@bgen(jjtree)*/
+    (t = <INT> | t = <BOOL> | t = <VOID> | t = <STRING> | t = <LSBR> type() <RSBR> | t = <T_FLOAT> )/*@bgen(jjtree)*/
      {
        jjtree.closeNodeScope(jjtn000, true);
        jjtc000 = false;
@@ -632,7 +629,7 @@ void statement()            : {/*@bgen(jjtree) statement */
                                                                  jjtc000 = false;
                                                                }
 /*@egen*/ { jjtn000.value = t.image;}
-     | t = <FOR> <LBR> identifier() <IN> (values()|dictionary()|array()) <RBR>
+     | t = <FOR> <LBR> identifier() <IN> (values()|array()) <RBR>
        <LCBR> statement_block()  <RCBR>/*@bgen(jjtree)*/
                                         {
                                           jjtree.closeNodeScope(jjtn000, true);
@@ -819,7 +816,7 @@ String statement_Left_factor_IDENTIFIER() : {String t ;}
 void expression() : {}
 {
     ( fragment() arith_op())
-     | <LBR> expression() <RBR> arith_op() | array() | dictionary()
+     | <LBR> expression() <RBR> arith_op() | array()
 }
 
 void arith_op() : {Token t ;}
@@ -1168,7 +1165,7 @@ void arg_list()               : {/*@bgen(jjtree) argumentList */
 
 void nemp_arg_list() : {}
 {
-      (identifier() | number() | string() | array() | float_() | dictionary()) (<COMMA> nemp_arg_list() | {})
+      (identifier() | number() | string() | array() | float_() ) (<COMMA> nemp_arg_list() | {})
 }
 
 
@@ -1206,9 +1203,6 @@ void element () : {}{
     ( string()| number() | identifier() | float_() )(<COMMA> element() | {} )
 }
 
-void dictionary () : {} {
-    <LCBR>d_structure()<RCBR>
-}
 
 void values() : {} {
     (identifier() |float_() | string() | number() |bool() )
