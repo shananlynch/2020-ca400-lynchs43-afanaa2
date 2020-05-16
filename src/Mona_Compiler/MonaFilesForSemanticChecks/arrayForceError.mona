@@ -1,7 +1,7 @@
 // test to force array semantic check error
 main{
-    a = ["temp",2,3,4,5];
+    var [int]a = ["temp",2,3,4,5];
     var int a = 1;
     var int a = 2;
-    print a;
+    print (a);
 }
