@@ -1,4 +1,4 @@
-// test  if statements with else ifs and else
+//test length string
 main{
      var string s = "hello";
      var int l = s.length();
